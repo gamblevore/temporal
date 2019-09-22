@@ -11,7 +11,7 @@ It should generate some randomness pictures in a `time_img` folder in your curre
 
 ![Temporal Randomness](screenshot.png)
 
-This project was inspired by the fatum project, a totally cool project that seems too much for me to describe, but for now I'll say its about: Novelty, deeper mystery, and expanded exploration. Give it a look. http://randonauts.com
+This project was inspired by the fatum project, a totally cool project about: Novelty, deeper mystery, and expanded exploration. Give it a look. http://randonauts.com
 
 
 
@@ -35,6 +35,7 @@ or use the Xcode project supplied
 * We use warmups to help timings.
 * We try various mod sizes to extract randomness. (like `temporal_rand() mod 17`)
 * We use some defines to make code more consistant. `Time_`, `for_`, `Gen`
+* Detects and rejects time-spikes caused by interupts, contention, etc.
     
 
 # Please experiment:
@@ -59,13 +60,6 @@ Improve / replace any code in here... for example:
 # issues
 
 * The output looks very non-random, until you do something like: `x = x mod SomePrime`. Which is what I do. Is this cheating? I don't think so? Someone with stats will have to answer this for me.
-* The output is VERY sensitive to different optimisation flags! As you'd expect!
-* Sometimes seems quite random! But sometimes seems "full of Bands"! No idea why! Needs code to detect + reject bands. Or "extract random bits" cos the bands are slightly wavy.
-* "Time-spikes" can be an issue! Caused by:
-    * Interupts
-    * Intel's hyper-threading causing CPU starvation
-    * Other programs on the same CPU (I try avoid this using a high priority thread)
-    * Memory contention from other apps
 * BTW, modern CPUs make a lot of effort to reduce randomness in the time-taken. For us its undesirable! Perhaps rarer CPUs have more random timings? Could be interesting!
     
 
