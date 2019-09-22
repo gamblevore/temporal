@@ -14,9 +14,12 @@ It should generate some randomness pictures in a `time_img` folder in your curre
 This project was inspired by the fatum project, a totally cool and super interesting project, give it a look. http://randonauts.com
 
 
-# single header    
+
+# single header   
+
 Can be used as a single-header project, like the stb-nothings files can be, using `temporal_research.h` (`temporal_main.cpp` is not needed to generate randomness, and is just a test file.)
     
+
 
 # compile
 
@@ -28,13 +31,14 @@ or use the Xcode project supplied
 # Efforts made
 
 * The design of the code is important. We need to "defeat optimisations" that would basically ruin the code! For example, my time-generator doesn't just call `Time32`, it ALSO xor's the result and returns it, ensuring it isn't optimised away.
-* Also, our time is 32-bit, we don't need 4GB time-deltas!
+* Also, our time is 32-bit, 4GB time-deltas is plenty!
 * We use warmups to help timings.
 * We try various mod sizes to extract randomness. (like `temporal_rand() mod 17`)
 * We use some defines to make code more consistant. `Time_`, `for_`, `Gen`
     
 
 # Please experiment:
+
 Improve / replace any code in here... for example:
 
     Time_ (Reps) {
@@ -51,7 +55,9 @@ Improve / replace any code in here... for example:
 * What about altering Reps? That affects things a lot! Are more reps good or less? Or certain numbers (primes?) of samples?
 
 
+
 # issues
+
 * The output looks very non-random, until you do something like: `x = x mod SomePrime`. Which is what I do. Is this cheating? I don't think so? Someone with stats will have to answer this for me.
 * The output is VERY sensitive to different optimisation flags! As you'd expect!
 * Sometimes seems quite random! But sometimes seems "full of Bands"! No idea why! Needs code to detect + reject bands. Or "extract random bits" cos the bands are slightly wavy.
@@ -65,6 +71,7 @@ Improve / replace any code in here... for example:
 
 
 # to do:
+
 * Try to auto-detect "the best settings"? Needs a randomness-test!
     * Current randomness test isn't good enough.
 * Allow "Choices" by temporal-logic? multiple temporal inputs, even? Let the CPU "play itself"!
