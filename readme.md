@@ -7,7 +7,7 @@ Time information is really important and interesting, because it is a physical s
 
 This is research to play around with! Don't expect anything more than that! Have fun experimenting or don't bother opening.
 
-It should generate some randomness pictures in a `time_img` folder in your current directory. Quite interesting and fun pictures! It would be a cool idea to make the randomness generated be animated, perhaps using SDL.
+It should generate some randomness pictures in a `time_img` folder in your current directory. Quite interesting and fun pictures!
 
 ![Temporal Randomness](screenshot.png)
 
@@ -55,7 +55,7 @@ Improve / replace any code in here... for example:
 * Do we need so many instructions? Do we need all? Some? Who knows! I don't! haha.
 * What about altering Reps? That affects things a lot! Are more reps good or less? Or certain numbers (primes?) of samples?
 * Modern CPUs try to reduce time randomness. For us its undesirable! Perhaps rarer CPUs have more random timings? Could be interesting!
-    
+* It would be a cool idea to make the randomness generated be animated, perhaps using SDL2.
 
 
 # to do:
