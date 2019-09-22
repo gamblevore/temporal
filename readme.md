@@ -3,7 +3,7 @@
 
 The idea is to generate random numbers, using the CPU's time() instruction, usually `rtdsc` on intel.
 
-Time information is really important and interesting, because it is a physical sensor, like a camera-pixel or a microphone. This makes it a physically based randomness reader. However, it's an **internal** physical sensor, which we hope we can do extra cool things with.
+Time information is really important and interesting, because it is a physical sensor, like a camera-pixel or a microphone. We can try get randomness from this sensor. However, it's an **internal** physical sensor, which we hope we can do extra cool things with.
 
 This is research to play around with! Don't expect anything more than that! Have fun experimenting or don't bother opening.
 
