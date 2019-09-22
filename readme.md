@@ -54,13 +54,7 @@ Improve / replace any code in here... for example:
 
 * Do we need so many instructions? Do we need all? Some? Who knows! I don't! haha.
 * What about altering Reps? That affects things a lot! Are more reps good or less? Or certain numbers (primes?) of samples?
-
-
-
-# issues
-
-* The output looks very non-random, until you do something like: `x = x mod SomePrime`. Which is what I do. Is this cheating? I don't think so? Someone with stats will have to answer this for me.
-* BTW, modern CPUs make a lot of effort to reduce randomness in the time-taken. For us its undesirable! Perhaps rarer CPUs have more random timings? Could be interesting!
+* Modern CPUs try to reduce time randomness. For us its undesirable! Perhaps rarer CPUs have more random timings? Could be interesting!
     
 
 
