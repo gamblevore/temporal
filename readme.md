@@ -11,7 +11,7 @@ It should generate some randomness pictures in a `time_img` folder in your curre
 
 ![Temporal Randomness](screenshot.png)
 
-This project was inspired by the fatum project, a totally cool project about bringing novelty, mystery and exploration to life. Give it a look. http://randonauts.com
+This project was inspired by the fatum project, a totally cool project about bringing novelty to life, deepening mystery through expanding exploration. Give it a look. http://randonauts.com
 
 
 
