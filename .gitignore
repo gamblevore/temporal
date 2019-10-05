@@ -35,6 +35,10 @@ Thumbs.db
 
 # Project specific #
 ########################
+/Debug/
+/temporal_research.build/
 temporal
 time_imgs
-temporal2
+time_out
+time_output
+

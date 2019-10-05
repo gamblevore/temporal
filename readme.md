@@ -28,7 +28,7 @@ or use the Xcode project supplied
 
 
 
-# Efforts made
+# efforts made
 
 * The design of the code is important. We need to "defeat optimisations". For example my time-generator doesn't just call `Time32`, it ALSO xor's the result and returns it, ensuring it isn't optimised away.
 * Also, our time is 32-bit, 4GB time-deltas is plenty!
