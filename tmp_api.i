@@ -35,7 +35,7 @@ int tr_hitbooks (BookHitter* f, void* Data, int N, tr_output* Out) {
 	auto &F = *f;
 	if (Data) memset(Data, 0, N);
 	
-	RandomBuildup B = {.Remaining=N, .Data = (u8*)Data};
+	RandomBuildup B = {}; B.Remaining=N; B.Data = (u8*)Data;
 	while (F.RandomnessALittle(B, *Out))
 		if (F.RandomnessBuild(B, *Out))
 			return 0;

@@ -102,11 +102,10 @@ void RandTest::end(GenApproach& App) {
 
 
 static void DetectRandomness (BookHitter& P) {
-	// App, &Buff[0];
 	u8* Start = P.Extracted();
 	
 	bool binary = false;  // App.BackToBytes );
-	RandTest RT = { .AsBits = binary, .sccfirst = true };
+	RandTest RT = {};  RT.AsBits = binary;  RT.sccfirst = true;
 	RT.GenPatterns();
 	for_ (P.App->Stats.Length) {
 		u8 C = Start[i];

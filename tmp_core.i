@@ -17,7 +17,7 @@ int BookHitter::UseApproach (tr_output& Out) {
 	
 	GenApproach& App = *this->App;
 	int N = ExtractRandomness(*this);
-	App.Stats = {.Length = N};
+	App.Stats = {}; App.Stats.Length = N;
 
 	if (LogOrDebug()) {
 		WriteFile(Extracted(), N, App.Name()+".raw");
@@ -59,7 +59,8 @@ void BookHitter::CreateVariants() {
 	while ((G = tr_nextgen(G)))  for (u16 R : RepList)  {
 		for (u8 Mod : ModList) {
 			auto App = new GenApproach;
-			*App = {.Gen = G,  .Mod = Mod,  .Reps = R,  .Class = ClassCount};
+			*App = {};
+			App->Gen = G;  App->Mod = Mod;  App->Reps = R;  App->Class = ClassCount;
 			Approaches.push_back(App); 
 		}
 		if (ClassCount++ >= 255) {
@@ -108,7 +109,7 @@ bool BookHitter::RandomnessBuild (RandomBuildup& B, tr_output& Out) {
 			WriteImg(Extracted(),  B.Avail,  Bye);
 			OpenFile(Bye);
 			WriteFile(Extracted(),	N,  App->Name() + ".raw");
-			App->Stats = {.Length = B.Avail};
+			App->Stats = {}; App->Stats.Length = B.Avail;
 			DetectRandomness( *this );
 		}
 		return false;
