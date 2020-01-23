@@ -3,7 +3,7 @@
 //  Generate temporal number stream: © 2019-2020 Theodore H. Smith
 //  Could be used in almost anything! Even games :3
 //  Can we make a computer FEEL Psychic energy?
-//  compile: gcc -std=c++0x -lc++ -Os temporal.cpp -o temporal
+//  compile: g++ -pthread -std=c++0x -Os temporal.cpp -o temporal
 //	  or use Xcode project
 //  
 

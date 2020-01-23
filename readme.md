@@ -16,7 +16,7 @@ This project was inspired by the fatum project, a totally cool project about: No
 
 # compile
 
-compile: `gcc -std=c++0x -lc++ -Os temporal.cpp -o temporal`
+compile: `g++ -pthread -std=c++0x -Os temporal.cpp -o temporal`
 or use the Xcode project supplied
 
 
