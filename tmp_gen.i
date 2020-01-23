@@ -209,6 +209,8 @@ static void* GenerateWrapper (void* arg) {
 		};
 		if (FIFOError) {
 			printf("Temporal Error: Can't set thread priority to FIFO. Error: %i\n", FIFOError);
+		} else {
+			printf("Thread priority FIFO: %i\n", sch.sched_priority);
 		}
 	}
 
