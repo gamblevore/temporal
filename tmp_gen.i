@@ -264,8 +264,8 @@ static bool TemporalGeneration(BookHitter& P, GenApproach& App) {
 	P.Time = {};
 	int Err = pthread_create(&P.GeneratorThread, NULL, &GenerateWrapper, &P);
 	if (!Err) Err = pthread_join(P.GeneratorThread, 0);
-	if (Err) {
-		P.Time.Error = Err;
+	if (Err)  P.Time.Error = Err;
+	if (P.Time.Error) {
 		printf("temporal generation err for '%s': %i\n", App.Gen->Name, Err);
 	} else { 
 		P.LastGen = App.Gen;
