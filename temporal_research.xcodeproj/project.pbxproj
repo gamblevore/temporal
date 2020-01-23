@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		ACD54ADC22999D1800526848 /* temporal_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACD54ADB22999D1800526848 /* temporal_main.cpp */; };
+		ACD54ADC22999D1800526848 /* temporal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACD54ADB22999D1800526848 /* temporal.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +23,32 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AC3EEFB323C1240500AB0611 /* tmp_gen.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_gen.i; sourceTree = SOURCE_ROOT; };
+		AC3EEFB423C13D0800AB0611 /* scoring.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = scoring.html; path = Debug/time_output/scoring.html; sourceTree = "<group>"; };
+		AC3EEFB523C1409000AB0611 /* temporal_research */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = temporal_research; path = Release/temporal_research; sourceTree = "<group>"; };
+		ACA7E85523D9D44D001A6BDA /* tmp_defines.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_defines.i; sourceTree = SOURCE_ROOT; };
+		ACA7E85623D9D44D001A6BDA /* tmp_stats.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_stats.i; sourceTree = SOURCE_ROOT; };
+		ACA7E85723D9D44D001A6BDA /* tmp_logging.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_logging.i; sourceTree = SOURCE_ROOT; };
+		ACA7E85823D9D44D001A6BDA /* tmp_gen.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_gen.i; sourceTree = SOURCE_ROOT; };
+		ACA7E85923D9D44D001A6BDA /* tmp_api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tmp_api.h; sourceTree = SOURCE_ROOT; };
+		ACA7E85A23D9D44D001A6BDA /* tmp_typedefs.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_typedefs.i; sourceTree = SOURCE_ROOT; };
+		ACA7E85B23D9D44D001A6BDA /* tmp_classes.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_classes.i; sourceTree = SOURCE_ROOT; };
+		ACA7E85C23D9D44D001A6BDA /* tmp_headers.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_headers.i; sourceTree = SOURCE_ROOT; };
+		ACA7E85D23D9D44D001A6BDA /* tmp_sorting.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_sorting.i; sourceTree = SOURCE_ROOT; };
+		ACA7E85E23D9D44D001A6BDA /* tmp_extraction.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_extraction.i; sourceTree = SOURCE_ROOT; };
+		ACA7E85F23D9D44E001A6BDA /* tmp_core.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_core.i; sourceTree = SOURCE_ROOT; };
+		ACA7E86023D9D44E001A6BDA /* tmp_api.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_api.i; sourceTree = SOURCE_ROOT; };
 		ACD54ACF2299957800526848 /* temporal_research */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = temporal_research; sourceTree = BUILT_PRODUCTS_DIR; };
-		ACD54ADB22999D1800526848 /* temporal_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = temporal_main.cpp; sourceTree = SOURCE_ROOT; };
+		ACD54ADB22999D1800526848 /* temporal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = temporal.cpp; sourceTree = SOURCE_ROOT; };
+		ACF1BDAF23D93D4A0085B8F4 /* tmp_defines.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_defines.i; sourceTree = SOURCE_ROOT; };
+		ACF1BDB023D93D4A0085B8F4 /* tmp_typedefs.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_typedefs.i; sourceTree = SOURCE_ROOT; };
+		ACF1BDB123D93D4A0085B8F4 /* tmp_sorting.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_sorting.i; sourceTree = SOURCE_ROOT; };
+		ACF1BDB223D93D4B0085B8F4 /* tmp_headers.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_headers.i; sourceTree = SOURCE_ROOT; };
+		ACF1BDB323D93D4B0085B8F4 /* tmp_logging.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_logging.i; sourceTree = SOURCE_ROOT; };
+		ACF1BDB423D93D4B0085B8F4 /* tmp_extraction.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_extraction.i; sourceTree = SOURCE_ROOT; };
+		ACF1BDB523D93D4B0085B8F4 /* tmp_classes.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_classes.i; sourceTree = SOURCE_ROOT; };
+		ACF1BDB623D93D4B0085B8F4 /* tmp_api.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_api.i; sourceTree = SOURCE_ROOT; };
+		ACF1BDB723D93D4B0085B8F4 /* tmp_stats.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_stats.i; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +67,8 @@
 			children = (
 				ACD54AD12299957800526848 /* temporal_research */,
 				ACD54AD02299957800526848 /* Products */,
+				AC3EEFB423C13D0800AB0611 /* scoring.html */,
+				AC3EEFB523C1409000AB0611 /* temporal_research */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,7 +83,29 @@
 		ACD54AD12299957800526848 /* temporal_research */ = {
 			isa = PBXGroup;
 			children = (
-				ACD54ADB22999D1800526848 /* temporal_main.cpp */,
+				ACD54ADB22999D1800526848 /* temporal.cpp */,
+				ACA7E85923D9D44D001A6BDA /* tmp_api.h */,
+				ACA7E86023D9D44E001A6BDA /* tmp_api.i */,
+				ACA7E85B23D9D44D001A6BDA /* tmp_classes.i */,
+				ACA7E85F23D9D44E001A6BDA /* tmp_core.i */,
+				ACA7E85523D9D44D001A6BDA /* tmp_defines.i */,
+				ACA7E85E23D9D44D001A6BDA /* tmp_extraction.i */,
+				ACA7E85823D9D44D001A6BDA /* tmp_gen.i */,
+				ACA7E85C23D9D44D001A6BDA /* tmp_headers.i */,
+				ACA7E85723D9D44D001A6BDA /* tmp_logging.i */,
+				ACA7E85D23D9D44D001A6BDA /* tmp_sorting.i */,
+				ACA7E85623D9D44D001A6BDA /* tmp_stats.i */,
+				ACA7E85A23D9D44D001A6BDA /* tmp_typedefs.i */,
+				AC3EEFB323C1240500AB0611 /* tmp_gen.i */,
+				ACF1BDB623D93D4B0085B8F4 /* tmp_api.i */,
+				ACF1BDB523D93D4B0085B8F4 /* tmp_classes.i */,
+				ACF1BDAF23D93D4A0085B8F4 /* tmp_defines.i */,
+				ACF1BDB423D93D4B0085B8F4 /* tmp_extraction.i */,
+				ACF1BDB223D93D4B0085B8F4 /* tmp_headers.i */,
+				ACF1BDB323D93D4B0085B8F4 /* tmp_logging.i */,
+				ACF1BDB123D93D4A0085B8F4 /* tmp_sorting.i */,
+				ACF1BDB723D93D4B0085B8F4 /* tmp_stats.i */,
+				ACF1BDB023D93D4A0085B8F4 /* tmp_typedefs.i */,
 			);
 			path = temporal_research;
 			sourceTree = "<group>";
@@ -102,6 +150,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = ACD54AC62299957800526848;
@@ -119,7 +168,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ACD54ADC22999D1800526848 /* temporal_main.cpp in Sources */,
+				ACD54ADC22999D1800526848 /* temporal.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,6 +274,7 @@
 		ACD54AD82299957800526848 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_OPTIMIZATION_LEVEL = 2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

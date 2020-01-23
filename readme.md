@@ -23,12 +23,12 @@ Can be used as a single-header project, like the stb-nothings files can be, usin
 
 # compile
 
-compile: `gcc -std=c++0x -lc++ -Os temporal_main.cpp -o temporal`
+compile: `gcc -std=c++0x -lc++ -Os temporal.cpp -o temporal`
 or use the Xcode project supplied
 
 
 
-# efforts made
+# Efforts made
 
 * The design of the code is important. We need to "defeat optimisations". For example my time-generator doesn't just call `Time32`, it ALSO xor's the result and returns it, ensuring it isn't optimised away.
 * Also, our time is 32-bit, 4GB time-deltas is plenty!
@@ -70,14 +70,3 @@ Some physical objects are better at sensing emotions/energy, just like some phys
 
 Thats the goal anyhow.
 
-
-# to do:
-
-* Try to auto-detect "the best settings"? Needs a randomness-test!
-    * Current randomness test isn't good enough.
-* Allow "Choices" by temporal-logic? multiple temporal inputs, even? Let the CPU "play itself"!
-* What about "opposing forces"? Like two energy-balls squeezed together. Can I do something like that with the bands? Like add them up but one in reverse order?
-* Same-input should be the standard... (like especially for floats)
-    * I guess we should try to find good same-input.
-* Detect frequencies in the patterns and draw as a bar graph? Need FFT I guess.
-    * Can anyone make the bars move, with their mind?
