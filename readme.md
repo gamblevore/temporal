@@ -11,21 +11,13 @@ It should generate some randomness pictures in a `time_img` folder in your curre
 
 ![Temporal Randomness](screenshot.png)
 
-This project was inspired by the fatum project, a totally cool project about: Novelty, deeper mystery, and expanded exploration. Give it a look. http://randonauts.com
-
-
-
-# single header   
-
-Can be used as a single-header project, like the stb-nothings files can be, using `temporal_research.h` (`temporal_main.cpp` is not needed to generate randomness, and is just a test file.)
-    
+This project was inspired by the fatum project, a totally cool project about: Novelty, deeper mystery, and expanded exploration. Give it a look. http://randonauts.com    
 
 
 # compile
 
 compile: `gcc -std=c++0x -lc++ -Os temporal.cpp -o temporal`
 or use the Xcode project supplied
-
 
 
 # Efforts made
