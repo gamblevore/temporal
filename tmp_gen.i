@@ -193,6 +193,7 @@ static void* GenerateWrapper (void* arg) {
 	BookHitter& P = *((BookHitter*)arg);
 	sched_param sch = {sched_get_priority_max(SCHED_FIFO)}; // higher priority = better signals.
 	P.Time.Error = pthread_setschedparam(P.GeneratorThread, SCHED_FIFO, &sch);
+	if 
 	puts("1");
 	require (!P.Time.Error);
 
@@ -266,7 +267,7 @@ static bool TemporalGeneration(BookHitter& P, GenApproach& App) {
 	if (!Err) Err = pthread_join(P.GeneratorThread, 0);
 	if (Err)  P.Time.Error = Err;
 	if (P.Time.Error) {
-		printf("temporal generation err for '%s': %i\n", App.Gen->Name, Err);
+		printf("temporal generation err for '%s': %i\n", App.Gen->Name, P.Time.Error);
 	} else { 
 		P.LastGen = App.Gen;
 		P.LastReps = App.Reps;
