@@ -262,12 +262,13 @@ static bool TemporalGeneration(BookHitter& P, GenApproach& App) {
 	P.Time = {};
 	puts("A\n");
 	int Err = pthread_create(&P.GeneratorThread, NULL, &GenerateWrapper, &P);
-	puts("B\n");
 	if (!Err) Err = pthread_join(P.GeneratorThread, 0);
 	if (Err) {
+		puts("B\n");
 		P.Time.Error = Err;
 		printf("temporal generation err for '%s': %i\n", App.Gen->Name, Err);
 	} else { 
+		puts("C\n");
 		P.LastGen = App.Gen;
 		P.LastReps = App.Reps;
 		BitShift_Pre(P);
