@@ -1,8 +1,10 @@
 
 
+int IgnoredError;
+
 void OpenFile(string Path) {
 	Path = string("open \"") + Path + "\"";
-	system(Path.c_str());
+	IgnoredError = system(Path.c_str());
 }
 
 
@@ -118,9 +120,9 @@ img {
 
 static void CreateDirs() {
 	int UnixMode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH; // oof unix.
-	chdir("/tmp");
-	mkdir("steve_output", UnixMode);
-	chdir("steve_output");
-	mkdir("time_imgs",	  UnixMode);
+	IgnoredError = chdir("/tmp");
+	IgnoredError = mkdir("steve_output", UnixMode);
+	IgnoredError = chdir("steve_output");
+	IgnoredError = mkdir("time_imgs",	  UnixMode);
 }
 
