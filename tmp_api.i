@@ -29,7 +29,6 @@ void tr_conf (BookHitter* f, int Channel, int* RepList) {
 }
 
 
-
 int tr_hitbooks (BookHitter* f, void* Data, int N, tr_output* Out) {
 	*Out = {};
 	auto &F = *f;
@@ -74,8 +73,9 @@ No idea if dis RanDmoNess iz "gud"? Seems ~eggsiiting~! >:3
 	
 	if (F.App)
 		F.CreateHTMLRandom(V, F.App->NameSub() + ".html");
+
 	BookHitter::ClearArray(V);
-	chdir(RestoreDir);
+	IgnoredErr = chdir(RestoreDir);
 	return Err;
 }
 
