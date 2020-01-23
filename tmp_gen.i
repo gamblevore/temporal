@@ -260,7 +260,9 @@ static bool TemporalGeneration(BookHitter& P, GenApproach& App) {
 	P.App = &App;
 	App.Stats = {};
 	P.Time = {};
+	puts("A\n");
 	int Err = pthread_create(&P.GeneratorThread, NULL, &GenerateWrapper, &P);
+	puts("B\n");
 	if (!Err) Err = pthread_join(P.GeneratorThread, 0);
 	if (Err) {
 		P.Time.Error = Err;
