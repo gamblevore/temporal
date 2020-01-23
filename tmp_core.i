@@ -84,9 +84,15 @@ static u8* XorCopy(u8* Src, u8* Dest, int N) {
 }
 
 
+#if DEBUG
+	#define StabilityCount 1
+#else
+	#define StabilityCount 5
+#endif
+
 bool BookHitter::RandomnessALittle (RandomBuildup& B, tr_output& Out) {
 	require (B.Attempt <= 31);
-	require (LastGen or StabilityCollector( 1 ));	// (5 - F.Log*3)); 
+	require (LastGen or StabilityCollector( StabilityCount )); 
 	B.Chan = ViewChannel(B.Attempt/2);
 	require (TemporalGeneration(*this, *B.Chan));		// pthread err
 	B.Avail = UseApproach(Out);
