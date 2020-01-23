@@ -23,6 +23,7 @@
 //    After a while of being stopped for debugging, the results get worse? wierd.
 //    
 
+int IgnoredError;
 #include "tmp_api.h"
 #include "tmp_headers.i"
 #include "tmp_typedefs.i"

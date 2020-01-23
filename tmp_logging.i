@@ -1,7 +1,5 @@
 
 
-int IgnoredError;
-
 void OpenFile(string Path) {
 	Path = string("open \"") + Path + "\"";
 	IgnoredError = system(Path.c_str());

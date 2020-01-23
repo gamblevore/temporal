@@ -75,7 +75,7 @@ No idea if dis RanDmoNess iz "gud"? Seems ~eggsiiting~! >:3
 		F.CreateHTMLRandom(V, F.App->NameSub() + ".html");
 
 	BookHitter::ClearArray(V);
-	IgnoredErr = chdir(RestoreDir);
+	IgnoredError = chdir(RestoreDir);
 	return Err;
 }
 
