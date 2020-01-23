@@ -192,27 +192,22 @@ static void CollectStats (u32* Results, int Count, BookHitter& S, bool NoMax) {
 static void* GenerateWrapper (void* arg) {
 	BookHitter& P = *((BookHitter*)arg);
 	static int FIFOError = 0;
-	static int OKPriority = 0;
 	static sched_param sch = {};
 	if (!FIFOError) {
-		if (OKPriority)
-			sch.sched_priority = OKPriority;
-		  else 
-			sch.sched_priority = sched_get_priority_max(SCHED_FIFO); // higher priority = better signals.
+		auto Priority = sch.sched_priority;
+		if (!Priority)
+		    sch.sched_priority = sched_get_priority_max(SCHED_FIFO); // higher priority = better signals.
 		while (sch.sched_priority >= 0) {
 			FIFOError = pthread_setschedparam(P.GeneratorThread, SCHED_FIFO, &sch);
-			if (!FIFOError) {
-				OKPriority = sch.sched_priority; 		
-				break;
-			}
+			if (!FIFOError) break;
 			sch.sched_priority--;
 		};
-		if (FIFOError) {
+		if (FIFOError)
 			printf("Temporal Error: Can't set thread priority to FIFO. Error: %i\n", FIFOError);
-		} else {
-			printf("Thread priority FIFO: %i\n", sch.sched_priority);
-		}
+		  else if (!Priority)
+			printf("Thread priority FIFO: %i\n", Priority);
 	}
+	
 
 	GenApproach& A = *P.App;	
 	auto Out       = P.Out();

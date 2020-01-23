@@ -10,6 +10,7 @@
 //  TODO:
 //  * Ues lasting statistical-mean in the stablity sorter! 
 //  * serial-stat too big... sqrt?
+//  * siri/chi blockers are too high
 //  * Do we even need 256/mod?
 //  * put raw files in tmp, the scoring files in chdir
 //  * debias using... histograms...
