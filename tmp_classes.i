@@ -214,10 +214,14 @@ struct BookHitter {
 		#if DEBUG
 			RepList = {5, 9, 213};
 		#else
-			RepList = {1, 2, 3, 5, 9, 10, 17, 25, 36, 88, 123, 179, 213};
+			// RepList = {1, 2, 3, 5, 9, 10, 17, 25, 36, 88, 123, 179, 213};
+			RepList = {5, 9, 17, 213};
 		#endif
-		} else while (*Reps)
-			RepList.push_back(*Reps++);
+		} else {
+			while (*Reps) {
+				RepList.push_back(*Reps++);
+			}
+		}
 		CreateVariants();
 	}
 	static void ClearArray(ApproachVec& V) {
