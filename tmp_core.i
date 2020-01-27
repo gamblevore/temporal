@@ -67,7 +67,7 @@ bool BookHitter::NextApproachOK(GenApproach& App) {
 		printf( "\n:: %s gen :: \n", App.Gen->Name );
 
 	require(TemporalGeneration(*this, App));
-	printf( "	:: %03i    \tSpikes=%i\t(took %.3fs) ::\n", App.Reps, Time.Spikes, Time.Generation );
+	printf( "	:: %03i    \t(took %.3fs) ::\n", App.Reps, Time.Generation );
 	return true;
 }
 
