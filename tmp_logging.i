@@ -4,8 +4,12 @@ const string rawdir = "/tmp/steve_raw/";
 
 
 void OpenFile(string Path) {
+#if __linux__
+	printf("Take a look at output file: %s\n", Path.c_str());
+#else
 	Path = string("open \"") + Path + "\"";
 	IgnoredError = system(Path.c_str());
+#endif
 }
 
 
