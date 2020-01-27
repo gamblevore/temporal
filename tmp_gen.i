@@ -9,10 +9,12 @@ static inline u32 rdtscp( u32 & aux ) {
 	return (u32)rax;
 }
 
+
 static inline u32 Time32 () {
 	u32 T;
 	return rdtscp(T);
 }
+
 
 static int TimeDiff (s64 A, s64 B) {
 	auto D = B - A;
@@ -136,13 +138,13 @@ Gen(Sudo) { // just to test our numerical strength.
 
 
 NamedGen GenList[] = {
-	{AtomicGenerator,		"atomic"		},
-	{BoolGenerator,			"bool"			},
-	{FloatSameGenerator,	"float"			},
-	{BitOpsGenerator,		"bitops"		},
-	{MemoryGenerator,		"memory"		},
-	{TimeGenerator,			"time"			},
-	{SudoGenerator,			"PSEUDO",	true},
+	{AtomicGenerator,		"atomic",	40			}, // rated at 4x slowness
+	{BoolGenerator,			"bool",		10			},
+	{FloatSameGenerator,	"float",	10			},
+	{BitOpsGenerator,		"bitops",	10			},
+	{MemoryGenerator,		"memory",	10			},
+	{TimeGenerator,			"time",		10			},
+	{SudoGenerator,			"PSEUDO",	10,		1 	},
 //	{BadGenerator,			"BAD"			},
 	{},
 };
@@ -203,9 +205,7 @@ static void* GenerateWrapper (void* arg) {
 			sch.sched_priority--;
 		};
 		if (FIFOError)
-			printf("Temporal Error: Can't set thread priority to FIFO. Error: %i\n", FIFOError);
-		  else if (!Priority)
-			printf("Thread priority FIFO: %i\n", Priority);
+			printf("    :: Temporal Error: Can't set thread priority to FIFO. Error: %i ::\n", FIFOError);
 	}
 	
 
@@ -216,7 +216,7 @@ static void* GenerateWrapper (void* arg) {
 	
 	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
-	CollectStats(Out,  P.Space(),  P,  A.Gen->Type or !A.AllowSpikes);	
+	CollectStats(Out,  P.Space(),  P,  A.IsSudo() or !A.AllowSpikes);	
 	
 	return 0;
 }

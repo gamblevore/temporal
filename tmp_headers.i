@@ -13,6 +13,7 @@
 #include <chrono>
 #include <atomic>
 #include <algorithm>
+#include <memory>
 #include <vector>
 #include <map>
 

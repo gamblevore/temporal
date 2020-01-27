@@ -13,7 +13,7 @@ static int DoModToBit (BookHitter& P, u8* Start, int Mod, int n) {
 	auto Data = P.Out();
 	u8* Write = Start;
 	u32 Cap = 256 - (256 % Mod);
-	if (P.App->Gen->Type) Cap = -1;
+	if (P.App->IsSudo()) Cap = -1;
 	FOR_ (i, n) {
 		u32 V = Data[i]; 
 		if (V > Cap)
@@ -79,14 +79,15 @@ static int DoXorShrink (u8* Bytes, int Shrink, int n) {
 }
 
 
-static int ExtractRandomness (BookHitter& P) {
-	int n = P.Space();
-	n = std::min(n, P.Time.Measurements);
-	u8* Start = P.Extracted();
-	n = DoModToBit			(P, Start, P.App->Mod, n);
+static void ExtractRandomness (BookHitter& B, int Mod) {
+	int n = B.Space();
+	n = std::min(n, B.Time.Measurements);
+	u8* Start = B.Extracted();
+	n = DoModToBit			(B, Start, Mod, n);
 	n = DoDebias			(Start, n);
 	n = DoXorShrink			(Start, 16, n);
 	n = DoBitsToBytes		(Start, n);
-	return n;
+	B.App->Stats = {};
+	B.App->Stats.Length = n;
 }
 

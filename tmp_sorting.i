@@ -17,7 +17,7 @@ void BookHitter::AddToStabilityRank() {
 		R->StableRank--;			// Makes no sense.
 	}
 	
-	auto SortComparer = [=] (GenApproach* a, GenApproach* b) {
+	auto SortComparer = [=] (ref(GenApproach) a, ref(GenApproach) b) {
 		if (a->Stats.Worst < b->Stats.Worst)
 			return true;
 		if (a->Stats.Worst == b->Stats.Worst)
@@ -34,9 +34,10 @@ void BookHitter::AddToStabilityRank() {
 	IncreaseRanks(Sorted);
 }
 
+
 bool BookHitter::StabilityCollector(int N) {
 	if (!Log) printf( "\n:: Locating Temporal Randomness. Be patient: %li approaches! :: \n", Approaches.size() );
-	tr_output Out;
+	bh_output Out;
 
 	for_ (N) {
 		if (Log) printf( "\n:: Stability %i/%i :: \n", i+1, N );
@@ -48,13 +49,14 @@ bool BookHitter::StabilityCollector(int N) {
 	}
 	
 	SortByBestApproach();
-	CreateHTMLRandom(SortedApproaches, "scoring.html");
+	SaveLists();
+	CreateHTMLRandom(LogApproaches, "scoring.html", "Fatum Temporal Randomness Test");
 	return true;
 }
 
 
 static void ApproachSort(ApproachVec& V) {
-	auto StabilityComparer = [] (GenApproach* a, GenApproach* b) {
+	auto StabilityComparer = [] (ref(GenApproach) a, ref(GenApproach) b) {
 		if (a->StableRank < b->StableRank)
 			return true;
 		if (a->StableRank == b->StableRank)
@@ -66,50 +68,41 @@ static void ApproachSort(ApproachVec& V) {
 
 
 void BookHitter::SortByBestApproach() {
-	SortedApproaches = {};
-	SudoApproaches = {};
 	ApproachVec Fails;
+	LogApproaches = {};
+	SudoApproaches = {};
+	auto NewMode = New(ApproachVec);
+
 	for (auto R : Approaches)
 		if (R->Fails)
 			Fails.push_back(R);
 		  else if (R->IsSudo())
 			SudoApproaches.push_back(R);
 		  else
-			SortedApproaches.push_back(R);
+			LogApproaches.push_back(R);
 
-	ApproachSort(SortedApproaches);
+	ApproachSort(LogApproaches);
 	ApproachSort(Fails);
 	ApproachSort(SudoApproaches);
-// The idea is... we want to get the best of each generator/Rep combination.
-// So... first the best atomic-5, then the best memory-7, then the best bitshift-19, etc...
-// Makes "fallbacks" more dynamic!
 
-	std::vector<ApproachVec> ClassList(ClassCount);
-	for (auto R : SortedApproaches)
-		ClassList[R->Class].push_back(R);
+	for (auto R : LogApproaches)
+		NewMode->push_back(R);
 
-	SortedApproaches.resize(0);
+	CPU_Modes.insert(CPU_Modes.begin(), NewMode);
+	while (CPU_Modes.size() > 16)
+		CPU_Modes.pop_back();
 
-	auto PerClass = ClassList[0].size();
-	for_(PerClass) {
-		ApproachVec CurrBest;
-		for (auto& C : ClassList)
-			if (i < C.size())
-				CurrBest.push_back(C[i]);
-
-		ApproachSort(CurrBest); // OK... so these are all the current best ones. Now... lets sort this too!
-		for (auto R : CurrBest)
-			SortedApproaches.push_back(R);
-	}
 	
 	for (auto R : Fails)
-		SortedApproaches.push_back(R);
+		LogApproaches.push_back(R);
 
 	for (auto R : SudoApproaches)
-		SortedApproaches.push_back(R);
+		LogApproaches.push_back(R);
+		
+	App = (*NewMode)[0].get();
 	
-	string TmpName = SortedApproaches[0]->Name();
-	printf("Steve chose temporal '%s'\n", TmpName.c_str());
+	string TmpName = App->Name();
+	printf("\nSteve chose temporal '%s'\n\n", TmpName.c_str());
 }
 
 

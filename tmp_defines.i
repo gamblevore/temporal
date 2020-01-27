@@ -10,6 +10,7 @@
 #define TimeEnd ; u32 Finish = Time32(); *Data++ = TimeDiff(Start,Finish);}
 #define Gen(name) static u64 name##Generator (u32* Data, u32* DataEnd, u32 Input, int Reps)
 #define sizecheck(a,b) if (sizeof(a)!=b) {return -100;} // sizecheck
+#define New(x) std::make_shared<x>()
 #ifdef DEBUG
 	#define debugger asm("int3")
 #else
@@ -17,8 +18,9 @@
 #endif
 
 
+IntVec	ModList			= {12, 17, 19, 23}; // arbitrary... can change these to whatever.
 string  ScoreNames[]	= {"entropy", "chisq", "mean", "monte",  "serial", "persistant"}; 
 string  MaxNames[]		= {"",        "min",   "max",  "pmin",   "pmax"}; 
 #define kSudo		  	1
-#define kBad		  	2
+#define kSlow		  	2
 #define kTotalTemporalGenerateError 0x00F1E

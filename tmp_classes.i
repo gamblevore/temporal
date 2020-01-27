@@ -4,7 +4,8 @@
 struct NamedGen {
 	GenFunc		Func;
 	const char*	Name;
-	u8       	Type;
+	u8       	Slowness;
+	u8       	GenType;
 };
 
 
@@ -26,9 +27,9 @@ struct RandoStats {
 	float		Serial;
 	float       Worst;
 	int			Length;
-	u8			Failed		: 1;
-	u8			Type		: 3;
-	u8			WorstIndex	: 3;
+	u8			Failed;
+	u8			Type		: 4;
+	u8			WorstIndex	: 4;
 	
 	void Unify(int i, float Low, float High, float Bad, float Value);
 	float& operator[] (int i) {
@@ -46,29 +47,29 @@ struct GenApproach {
 	u16			StableRank;
 	u16			UseCount;
 	u8			Class;
-	u8			Mod				: 5;
 	u8			Debias			: 1;
 	u8			PhysicalSystem	: 1; // non-power of 2 more physical system to creating numbers
 	u8			UseMidPoint 	: 1; // just use the midpoint... Find a point where half above and half-below.
 	u8			NumForName		: 7;
 	u8			AllowSpikes		: 1;
 	
+
+	void EndExtract() {
+		Fails += Stats.Failed;
+	}
 	float& operator[] (int i) {
 		return (&Stats.Entropy)[i];
 	}
 	bool IsSudo() {
-		return Gen->Type == kSudo;
-	}
-	bool GoodEnough() {
-		return (Stats.Worst < 1 and !Stats.Failed);
+		return Gen->GenType == kSudo;
 	}
 	bool IncreaseRank (u32 i) {
-		u32 Desired = (u32)StableRank + i + (u32)(Stats.Failed * 50);
+		u32 Desired = (u32)StableRank + i;
 		StableRank = std::min((int)Desired, (int)0xFFFF);
 		return (StableRank != Desired);
 	}
 	string NameSub() {
-		string name = string(Gen->Name) + to_string(Reps) + string("_") + to_string(Mod) + "m";
+		string name = string(Gen->Name) + to_string(Reps);
 		if (Debias)				name += "v";
 		if (PhysicalSystem)		name += "b";
 		if (UseMidPoint)		name += "p";
@@ -82,6 +83,11 @@ struct GenApproach {
 	}
 	string FileName(string s="") {
 		return "time_imgs/" + Name() + s + ".png";
+	}
+	static std::shared_ptr<GenApproach> neww() {
+		auto M = New(GenApproach);
+		*M = {};
+		return M;
 	}
 };
 NamedGen* tr_sudogen();
@@ -112,16 +118,17 @@ struct RandTest {
 
 
 struct RandomBuildup {
-	u8*			Data;
-	GenApproach*Chan;
-	float		Score;
-	int			Remaining;
-	int			Avail;
-	int			Attempt;
+	u8*				Data;
+	GenApproach*    Chan;
+	float			Score;
+	int				Remaining;
+	int				Avail;
+	int				Attempt;
 	
 	float Worst() {
 		return std::max(Chan->Stats.Worst, 0.0f);
 	}
+	
 	float RandomnessAdd() {
 		float ToAdd = 1.0f - Worst(); 
 		return std::max(ToAdd, 0.0f);
@@ -136,45 +143,53 @@ struct BookHitter {
 	UintVec			Samples;
 	ByteArray		Buff;
 	IntVec			RepList;
+	ApproachMap		Map;
 	ApproachVec		Approaches;
-	ApproachVec		SortedApproaches;
+	CPU_ModeVec		CPU_Modes;
+	ApproachVec		LogApproaches;
 	ApproachVec		SudoApproaches;
 	ApproachVec		MinMaxes;
 	TimeStats   	Time;
-	u8				ClassCount;
+	bool			CreatedDirs;
 	u16				LastReps:15;
 	u16				Log:1;
 	short			UserChannel;
-	
+
+	void DebugRandoBuild(RandomBuildup& B, int N);
+	void CreateDirs();
 	void CreateHTMLRandomOne(GenApproach& V, string Name);
-	void CreateHTMLRandom(ApproachVec& V, string Name);
-	void AddToLastingScore();
+	void CreateHTMLRandom(ApproachVec& V, string Name, string Title);
 	void AddToStabilityRank();
-	void FindMinMax(GenApproach& V);
+	void FindMinMax();
+	void SaveLists();
+	bool LoadLists();
+	bool LoadListsSub(string Path);
 	void CreateVariants();
-	int  UseApproach (tr_output& Out);
+	int  UseApproach (bh_output& Out);
 	bool NextApproachOK(GenApproach& App);
-	bool RandomnessBuild (RandomBuildup& B, tr_output& Out);
-	bool RandomnessALittle (RandomBuildup& B, tr_output& Out);
-	int  FinaliseGet (RandomBuildup& B, GenApproach& Chan, tr_output& Out);
+	bool RandomnessBuild (RandomBuildup& B, bh_output& Out);
+	bool RandomnessALittle (RandomBuildup& B, bh_output& Out);
 	bool StabilityCollector(int N);
 	void SortByBestApproach();
+	void LogApproach();
 	bool LogOrDebug() {
 		#ifdef DEBUG
 			return true;
 		#endif 
 		return Log;
 	}
-	~BookHitter() {
-		ClearArray(Approaches);
-		ClearArray(MinMaxes);
-	}
-	GenApproach* ViewChannel(int Attempt) {
+	ref(GenApproach) ViewChannel(int Attempt) {
 		int i = UserChannel;
 		if (i < 0)
-			return SudoApproaches[(1-i) % SudoApproaches.size()];
+			return (SudoApproaches)[(1-i) % SudoApproaches.size()];
 		if (!i) i = Attempt;
-		return SortedApproaches[i % SortedApproaches.size()];
+		return (CurrSorted())[i % CurrSorted().size()];
+	}
+	ref(GenApproach) operator[] (string Name) {
+		return Map[Name];
+	}
+	ApproachVec& CurrSorted() {
+		return (*CPU_Modes[0]);
 	}
 	void ResetApproach() {
 		App = 0;
@@ -191,14 +206,13 @@ struct BookHitter {
 		return (int)Samples.size();
 	}
 	void AddM (float Default, int Type) {
-		auto M = new GenApproach;
-		* M = {}; // sigh
+		auto M = GenApproach::neww();
 		for_(5) (*M)[i] = Default;
 		M->Stats.Type = Type;
 		MinMaxes.push_back(M);
 	}
 	string CollectInto(ApproachVec& V, int i) {
-		auto M = new GenApproach;
+		auto M = New(GenApproach);
 		*M = *App;
 		M->NumForName = i;
 		V.push_back(M);
@@ -215,7 +229,7 @@ struct BookHitter {
 			RepList = {5, 9, 213};
 		#else
 			// RepList = {1, 2, 3, 5, 9, 10, 17, 25, 36, 88, 123, 179, 213};
-			RepList = {5, 9, 17, 213};
+			RepList = {3, 5, 9, 17, 213};
 		#endif
 		} else {
 			while (*Reps) {
@@ -223,10 +237,6 @@ struct BookHitter {
 			}
 		}
 		CreateVariants();
-	}
-	static void ClearArray(ApproachVec& V) {
-		for (auto R : V) delete(R);
-		V.resize(0);
 	}
 };
 

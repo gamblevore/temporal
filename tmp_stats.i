@@ -45,9 +45,8 @@ void RandTest::add_byte (int oc) {
 
 
 void RandoStats::Unify(int i, float Low, float High, float Bad, float Value) {
-	Failed = (Value >= Bad);
-	float Range = High - Low;
-	float Result = (Value - Low) / Range;
+	float Result = (Value - Low) / (High - Low);
+	Failed += (Result >= Bad);
 	(*this)[i] = Result;
 	if (Result > Worst) {
 		WorstIndex = i + 1;
@@ -90,28 +89,28 @@ void RandTest::end(GenApproach& App) {
 	App.Mean += Mean;
 	auto& Result = App.Stats;
 
-	Result.Unify(0,		-6.93,	-6.415,		-6,			1.0-ent					); // Entropy
-	Result.Unify(1, 	217.5,	1810.0,		2300.0,		chisq					); // ChiSq
+	Result.Unify(0,		-6.93,	-6.415,		1.8059,		1.0-ent					); // Entropy
+	Result.Unify(1, 	217.5,	1810.0,		1.3077,		chisq					); // ChiSq
 	Result.Unify(2, 	0.0,	1.0,		1.21,		fabs(Mean)				); // Mean
-	Result.Unify(3, 	0,		0.35,		0.5,		fabs(M_PI - montepi)	); // Monte
-	Result.Unify(4, 	-1,		-0.953,		-0.78,		fabs(0.01 - scc) - 1	); // Serial
+	Result.Unify(3, 	0,		0.35,		1.428,		fabs(M_PI - montepi)	); // Monte
+	Result.Unify(4, 	-1,		-0.953,		4.680,		fabs(0.01 - scc) - 1	); // Serial
 	
-	App.Fails += Result.Failed;
 	App.UseCount++;
 }
 
 
 static void DetectRandomness (BookHitter& P) {
 	u8* Start = P.Extracted();
-	
 	bool binary = false;  // App.BackToBytes );
 	RandTest RT = {};  RT.AsBits = binary;  RT.sccfirst = true;
 	RT.GenPatterns();
+
 	for_ (P.App->Stats.Length) {
 		u8 C = Start[i];
 		RT.PatternCheck(C, i);
 		RT.add_byte(C);
 	}
+	
 	RT.end(*P.App);
 }
 

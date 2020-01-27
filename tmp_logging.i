@@ -1,4 +1,7 @@
 
+const string rawdir = "/tmp/steve_raw/";
+
+
 
 void OpenFile(string Path) {
 	Path = string("open \"") + Path + "\"";
@@ -13,7 +16,14 @@ static void WriteImg (u8* Data, int N, string Name) {
 }
 
 
-static string ReadFile (string name) {
+static string ReadFile (string name, int MaxLength) {
+	struct stat sb;
+	require (stat(name.c_str(), &sb)==0);
+	if (sb.st_size > MaxLength) {
+		printf("File too big: %s\n", name.c_str());
+		return "";
+	}
+
 	std::ifstream inFile;
 	inFile.open(name);
 	std::stringstream strStream;
@@ -31,13 +41,14 @@ static void WriteFile (u8* Data, int N, string Name) {
 }
 
 
-static void HTMLImg(std::ofstream& ofs, GenApproach* V) {
+static void HTMLImg(std::ofstream& ofs, ref(GenApproach) V) {
 	GenApproach& R = *V;
 	ofs << "<td>";
 	if (R.Stats.Length and !R.Stats.Type)
 		ofs << "<img src='" + R.FileName() + "'/><br/>";
 
 	ofs << R.Name();
+	ofs << ((R.Fails) ? " (fail)" : "");
 	int W = R.Stats.WorstIndex - 1;
 	for_ (5) {
 		if (i == W)  ofs << "<b>";
@@ -46,21 +57,23 @@ static void HTMLImg(std::ofstream& ofs, GenApproach* V) {
 		if (i == W)  ofs << "</b>";
 	}
 	
-	ofs << ((R.Fails) ? "<br/>fail" : "");
 	ofs << "<br/>";
 	ofs << "</td>\n";
 }
 
-void BookHitter::CreateHTMLRandom(ApproachVec& V, string FIleName) {
+
+void BookHitter::CreateHTMLRandom(ApproachVec& V, string FileName, string Title) {
 	printf(":: %li Randomness variations!  :: \n", V.size());
 
-	string Path = string(getcwd(0, 0)) + string("/") + FIleName;
+	string Path = string(getcwd(0, 0)) + string("/") + FileName;
 	std::ofstream ofs;
-	ofs.open (Path.c_str());
+	ofs.open (Path);
 	
 	ofs << R"(<html>
 <head>
-	<title>Fatum Temporal Randomness Test</title>
+	<title>)";
+	ofs << Title;
+	ofs << R"(</title>
 	<style>
 
 body {
@@ -116,11 +129,24 @@ img {
 }
 
 
-static void CreateDirs() {
+void BookHitter::CreateDirs() {
+	if (CreatedDirs) {
+		return;
+	}
+	CreatedDirs = true;
 	int UnixMode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH; // oof unix.
-	IgnoredError = chdir("/tmp");
-	IgnoredError = mkdir("steve_output", UnixMode);
+	IgnoredError = mkdir(rawdir.c_str(),  UnixMode);
+	IgnoredError = mkdir("steve_output",  UnixMode);
 	IgnoredError = chdir("steve_output");
 	IgnoredError = mkdir("time_imgs",	  UnixMode);
 }
 
+
+void BookHitter::LogApproach() {
+	if (LogOrDebug()) {
+		CreateDirs();
+		int N = App->Stats.Length;
+		WriteFile(Extracted(), N, rawdir + App->Name() + ".raw");
+		WriteImg(Extracted(), N, App->FileName());
+	}
+}
