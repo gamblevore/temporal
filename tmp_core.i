@@ -9,7 +9,7 @@
 
 void BookHitter::FindMinMax() {
 	GenApproach& S = *App;
-	if (S.Stats.Failed) return;
+	if (S.Stats.FailedCount) return;
 
 	int Su = S.IsSudo() * 2;
 	auto Min = MinMaxes[0 + Su];
@@ -64,15 +64,15 @@ bool BookHitter::NextApproachOK(GenApproach& App) {
 		return true;
 		
 	if ( App.Gen != LastGen )
-		printf( "\n:: Method %s :: \n", App.Gen->Name );
+		printf( "\n:: %s gen :: \n", App.Gen->Name );
 
 	require(TemporalGeneration(*this, App));
-	printf( "	:: Reps %i:  \tSpikes=%i\t(took %.3fs) ::\n", App.Reps, Time.Spikes, Time.Generation );
+	printf( "	:: %03i    \tSpikes=%i\t(took %.3fs) ::\n", App.Reps, Time.Spikes, Time.Generation );
 	return true;
 }
 
 
-void BookHitter::CreateVariants() {
+void BookHitter::CreateApproaches() {
 	Approaches = {};
 	Map = {};
 	MinMaxes = {};
@@ -93,6 +93,8 @@ void BookHitter::CreateVariants() {
 			printf("%s ", App->Name().c_str());
 		Map[App->Name()] = App;
 		Prev = App.get();
+		if (App->IsSudo()) // there's really only 1 sudo
+			break;
 	}
 
 	if (LogOrDebug())

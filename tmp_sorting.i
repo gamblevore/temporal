@@ -70,23 +70,20 @@ static void ApproachSort(ApproachVec& V) {
 void BookHitter::SortByBestApproach() {
 	ApproachVec Fails;
 	LogApproaches = {};
-	SudoApproaches = {};
 	auto NewMode = New(ApproachVec);
 
 	for (auto R : Approaches)
 		if (R->Fails)
 			Fails.push_back(R);
-		  else if (R->IsSudo())
-			SudoApproaches.push_back(R);
 		  else
 			LogApproaches.push_back(R);
 
 	ApproachSort(LogApproaches);
 	ApproachSort(Fails);
-	ApproachSort(SudoApproaches);
 
 	for (auto R : LogApproaches)
-		NewMode->push_back(R);
+		if (!R->IsSudo())
+			NewMode->push_back(R);
 
 	CPU_Modes.insert(CPU_Modes.begin(), NewMode);
 	while (CPU_Modes.size() > 16)
@@ -95,9 +92,12 @@ void BookHitter::SortByBestApproach() {
 	
 	for (auto R : Fails)
 		LogApproaches.push_back(R);
-
-	for (auto R : SudoApproaches)
-		LogApproaches.push_back(R);
+	
+	if (!NewMode->size()) { // if all are fails, just put the fails in...
+		fprintf( stderr, "All temporal-generators failed! Using failiures then?");
+		for (auto R : LogApproaches) // more robust.
+			NewMode->push_back(R);
+	}
 		
 	App = (*NewMode)[0].get();
 	

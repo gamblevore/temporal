@@ -27,7 +27,8 @@ struct RandoStats {
 	float		Serial;
 	float       Worst;
 	int			Length;
-	u8			Failed;
+	u8			FailedCount;
+	u8			FailedIndexes;
 	u8			Type		: 4;
 	u8			WorstIndex	: 4;
 	
@@ -55,7 +56,7 @@ struct GenApproach {
 	
 
 	void EndExtract() {
-		Fails += Stats.Failed;
+		Fails += Stats.FailedCount;
 	}
 	float& operator[] (int i) {
 		return (&Stats.Entropy)[i];
@@ -69,7 +70,8 @@ struct GenApproach {
 		return (StableRank != Desired);
 	}
 	string NameSub() {
-		string name = string(Gen->Name) + to_string(Reps);
+		string name = string(Gen->Name);
+		if (!IsSudo())          name += to_string(Reps);
 		if (Debias)				name += "v";
 		if (PhysicalSystem)		name += "b";
 		if (UseMidPoint)		name += "p";
@@ -147,7 +149,6 @@ struct BookHitter {
 	ApproachVec		Approaches;
 	CPU_ModeVec		CPU_Modes;
 	ApproachVec		LogApproaches;
-	ApproachVec		SudoApproaches;
 	ApproachVec		MinMaxes;
 	TimeStats   	Time;
 	bool			CreatedDirs;
@@ -164,7 +165,7 @@ struct BookHitter {
 	void SaveLists();
 	bool LoadLists();
 	bool LoadListsSub(string Path);
-	void CreateVariants();
+	void CreateApproaches();
 	int  UseApproach (bh_output& Out);
 	bool NextApproachOK(GenApproach& App);
 	bool RandomnessBuild (RandomBuildup& B, bh_output& Out);
@@ -181,7 +182,7 @@ struct BookHitter {
 	ref(GenApproach) ViewChannel(int Attempt) {
 		int i = UserChannel;
 		if (i < 0)
-			return (SudoApproaches)[(1-i) % SudoApproaches.size()];
+			return (*this)["PSEUDO"];
 		if (!i) i = Attempt;
 		return (CurrSorted())[i % CurrSorted().size()];
 	}
@@ -226,17 +227,18 @@ struct BookHitter {
 		RepList = {};
 		if (!Reps) {
 		#if DEBUG
-			RepList = {5, 9, 213};
+			RepList = {5, 9, 123};
 		#else
 			// RepList = {1, 2, 3, 5, 9, 10, 17, 25, 36, 88, 123, 179, 213};
-			RepList = {3, 5, 9, 17, 213};
+			RepList = {3, 5, 9, 17};
 		#endif
+			RepList = {3, 5, 9, 10, 17, 25, 36, 88, 123, 179};
 		} else {
 			while (*Reps) {
 				RepList.push_back(*Reps++);
 			}
 		}
-		CreateVariants();
+		CreateApproaches();
 	}
 };
 

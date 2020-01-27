@@ -22,7 +22,7 @@ BookHitter* tr_create(bool Log) {
 	try {
 		F.Allocate(512);
 		F.CreateReps(0);
-//		if (!F.Log)
+		if (!F.Log)
 			F.LoadLists();
 	} catch (std::bad_alloc& e) {
 		std::cerr << e.what();

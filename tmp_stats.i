@@ -46,8 +46,12 @@ void RandTest::add_byte (int oc) {
 
 void RandoStats::Unify(int i, float Low, float High, float Bad, float Value) {
 	float Result = (Value - Low) / (High - Low);
-	Failed += (Result >= Bad);
 	(*this)[i] = Result;
+	if (i == 4) return; // serial too unreliable?
+	if (Result >= Bad) {
+		FailedCount++;
+		FailedIndexes |= 1 << i;
+	}
 	if (Result > Worst) {
 		WorstIndex = i + 1;
 		Worst = Result;
@@ -89,11 +93,15 @@ void RandTest::end(GenApproach& App) {
 	App.Mean += Mean;
 	auto& Result = App.Stats;
 
-	Result.Unify(0,		-6.93,	-6.415,		1.8059,		1.0-ent					); // Entropy
-	Result.Unify(1, 	217.5,	1810.0,		1.3077,		chisq					); // ChiSq
+// Please tweak these numbers!
+// no idea if they are "right"?!
+// ent seems to range from 8 to 7.4, for good entropy? so why cant I get it right?
+	Result.Unify(0,		0,	    0.5,		0.7,	    8.0 - ent				); // Entropy
+//	Result.Unify(0,		-6.93,	-6.415,		1.8059,		1.0-ent					); // Entropy
+	Result.Unify(1, 	217.5,	1810.0,		0.7,		chisq					); // ChiSq
 	Result.Unify(2, 	0.0,	1.0,		1.21,		fabs(Mean)				); // Mean
 	Result.Unify(3, 	0,		0.35,		1.428,		fabs(M_PI - montepi)	); // Monte
-	Result.Unify(4, 	-1,		-0.953,		4.680,		fabs(0.01 - scc) - 1	); // Serial
+	Result.Unify(4, 	-1,		-0.90,		3.5,		fabs(0.01 - scc) - 1	); // Serial
 	
 	App.UseCount++;
 }

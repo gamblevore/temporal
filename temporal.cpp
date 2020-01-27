@@ -8,15 +8,14 @@
 //  
 
 //  TODO:
-//  * Ues lasting statistical-mean in the stablity sorter! 
-//  * serial-stat too big... sqrt?
-//  * seri/chi blockers are too high
-//  * Do we even need 256/mod?
 //  * debias using histograms... (after multiple approach xor!)
+//  * Use lasting statistical-mean in the stablity sorter! 
+//  * Do we even need 256/mod?
+//  * List switching, if one list starts to suck.
+//  * laying more ontop... use ent?
 
 
 
-int IgnoredError;
 #include "tmp_api.h"
 #include "tmp_headers.i"
 #include "tmp_typedefs.i"

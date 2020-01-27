@@ -13,7 +13,7 @@ void BookHitter::SaveLists() {
 	struct stat sb;
 	const char* ParentDir = "/var/tmp/";
 	if (stat(ParentDir, &sb) or !S_ISDIR(sb.st_mode)) { // doesn't exist :(
-		printf("Can't access folder: %s \n", ParentDir);
+		fprintf( stderr, "Can't access folder: %s \n", ParentDir);
 		return;
 	}
 
@@ -66,7 +66,7 @@ bool BookHitter::LoadListsSub(string Path) {
 				if (V->size() >= 16)
 					break;
 			} else if (Item.length()) {
-				printf("Can't find temporal-generator: %s\n", Item.c_str());
+				fprintf( stderr, "Can't find temporal-generator: %s\n", Item.c_str());
 			}
 		}
 		

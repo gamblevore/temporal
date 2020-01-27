@@ -31,9 +31,9 @@ struct Histo {
 };
 
 
-static int DoDebias (u8* Start, int n) {
-	Histo TrueFalse;
-	Histo Histogram[17];
+static int DoDe_Bias (u8* Start, int n) {
+	Histo TrueFalse = {};
+	Histo Histogram[17] = {};
 	bool Prev = Start[0];
 	int Length = 0;
 	for_(n) {
@@ -84,7 +84,7 @@ static void ExtractRandomness (BookHitter& B, int Mod) {
 	n = std::min(n, B.Time.Measurements);
 	u8* Start = B.Extracted();
 	n = DoModToBit			(B, Start, Mod, n);
-	n = DoDebias			(Start, n);
+	n = DoDe_Bias			(Start, n);
 	n = DoXorShrink			(Start, 16, n);
 	n = DoBitsToBytes		(Start, n);
 	B.App->Stats = {};

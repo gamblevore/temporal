@@ -20,7 +20,7 @@ static string ReadFile (string name, int MaxLength) {
 	struct stat sb;
 	require (stat(name.c_str(), &sb)==0);
 	if (sb.st_size > MaxLength) {
-		printf("File too big: %s\n", name.c_str());
+		fprintf( stderr, "File too big: %s\n", name.c_str());
 		return "";
 	}
 
@@ -48,12 +48,15 @@ static void HTMLImg(std::ofstream& ofs, ref(GenApproach) V) {
 		ofs << "<img src='" + R.FileName() + "'/><br/>";
 
 	ofs << R.Name();
-	ofs << ((R.Fails) ? " (fail)" : "");
+	ofs << ((R.Fails) ? " ❌" : "");
 	int W = R.Stats.WorstIndex - 1;
+	int F = R.Stats.FailedIndexes;
 	for_ (5) {
 		if (i == W)  ofs << "<b>";
 		ofs << "<br/>" + ScoreNames[i].substr(0,4) + " ";
 		ofs << std::fixed << std::setprecision(3) << R[i];
+		ofs << (((1<<i) & F) ? " ❌" : "");
+
 		if (i == W)  ofs << "</b>";
 	}
 	

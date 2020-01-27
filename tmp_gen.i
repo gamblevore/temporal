@@ -2,6 +2,12 @@
 
 //	 										//////// time utilities ////////	 
 
+
+// to make debugging give same timings as normal runs!
+#pragma GCC push_options
+#pragma GCC optimize ("Os")
+
+
 static inline u32 rdtscp( u32 & aux ) {
 	// remove aux?
 	u64 rax, rdx;
@@ -205,7 +211,7 @@ static void* GenerateWrapper (void* arg) {
 			sch.sched_priority--;
 		};
 		if (FIFOError)
-			printf("    :: Temporal Error: Can't set thread priority to FIFO. Error: %i ::\n", FIFOError);
+			fprintf( stderr, "    :: Temporal Error: Can't set thread priority to FIFO. Error: %i ::\n", FIFOError);
 	}
 	
 
@@ -278,7 +284,7 @@ static bool TemporalGeneration(BookHitter& P, GenApproach& App) {
 	if (!Err) Err = pthread_join(P.GeneratorThread, 0);
 	if (Err)  P.Time.Error = Err;
 	if (P.Time.Error) {
-		printf("temporal generation err for '%s': %i\n", App.Gen->Name, P.Time.Error);
+		fprintf( stderr, "temporal generation err for '%s': %i\n", App.Gen->Name, P.Time.Error);
 	} else { 
 		P.LastGen = App.Gen;
 		P.LastReps = App.Reps;
@@ -292,3 +298,5 @@ static bool TemporalGeneration(BookHitter& P, GenApproach& App) {
 	return !Err;
 }
 
+
+#pragma GCC pop_options
