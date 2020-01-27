@@ -149,7 +149,7 @@ void BookHitter::LogApproach() {
 	if (LogOrDebug()) {
 		CreateDirs();
 		int N = App->Stats.Length;
-		WriteFile(Extracted(), N, rawdir + App->Name() + ".raw");
 		WriteImg(Extracted(), N, App->FileName());
+		//		WriteFile(Extracted(), N, rawdir + App->Name() + ".raw"); // no need
 	}
 }
