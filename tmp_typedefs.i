@@ -19,6 +19,3 @@ typedef std::vector<ref(ApproachVec)>		CPU_ModeVec;
 typedef std::map<string, ref(GenApproach)>	ApproachMap;
 typedef u64 (*GenFunc) (u32* Data, u32* DataEnd, u32 Input, int Reps);
 
-NamedGen* tr_nextgen(NamedGen* G);
-NamedGen* tr_sudogen();
-

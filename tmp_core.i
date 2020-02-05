@@ -31,30 +31,36 @@ static float ExtractAndDetect (BookHitter& B, int Mod) {
 }
 
 
+static int FinishApproach(BookHitter& B, bh_output& Out, float Time) {
+	B.Time.Processing = Time;
+	Out.GenerateTime += B.Time.Generation + B.Time.Processing;
+
+	Out.WorstScore = std::max(Out.WorstScore, B.App->Stats.Worst);
+	return B.App->Stats.Length;
+}
+
+
 int BookHitter::UseApproach (bh_output& Out) {
-	auto t_Start = std::chrono::high_resolution_clock::now();
+	auto  t_Start = Now();
 	int   BestMod = 0;
 	float BestScore = 1000000.0;
+	bool  IsFinal = false;
 	
 	for (auto Mod : ModList) {
 		float Score = ExtractAndDetect(*this, Mod);
-		if (Score < BestScore) {
+		IsFinal = (Score < BestScore);
+		if (IsFinal) {
 			BestMod = Mod;
 			BestScore = Score;
 		}
 	}
-	if (LogOrDebug() or BestMod != ModList.back())
+	
+	if (LogOrDebug() or IsFinal)
 		ExtractAndDetect(*this, BestMod);
+
 	App->EndExtract();
 
-	Out.WorstScore = std::max(Out.WorstScore, App->Stats.Worst);
-
-	Out.GenerateTime += Time.Generation;
-	auto t_now = std::chrono::high_resolution_clock::now();
-	Time.Processing = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_Start).count();
-	Out.GenerateTime += Time.Processing;
-
-	return App->Stats.Length;
+	return FinishApproach(*this, Out, ChronoLength(t_Start));
 }
 
 
@@ -81,8 +87,8 @@ void BookHitter::CreateApproaches() {
 		printf("\n :: Available Generators ::\n\"");
 	NamedGen* G = 0;
 	GenApproach* Prev = 0;
-	while ((G = tr_nextgen(G)))  for (auto R : RepList)  {
-		ref(GenApproach) App = GenApproach::neww();
+	while ((G = NextGenerator(G)))  for (auto R : RepList)  {
+		auto App = GenApproach::neww();
 		App->Gen = G;
 		App->Reps = ((R * 10) + G->Slowness-1) / G->Slowness; 
 		Approaches.push_back(App);
@@ -131,9 +137,9 @@ void BookHitter::DebugRandoBuild(RandomBuildup& B, int N) {
 // Why? Find out, here!
 	CreateDirs();
 	printf( "failed worst = %f\n", B.Chan->Stats.Worst );
-	string Bye = App->FileName("_fail");
-	WriteImg(Extracted(),  B.Avail,  Bye);
-	OpenFile(Bye);
+	string FailPath = App->FileName("_fail");
+	WriteImg(Extracted(),  B.Avail,  FailPath);
+	FilesToOpenLater.push_back(FailPath);
 	WriteFile(Extracted(),	N,  App->Name() + ".raw");
 	App->Stats = {}; App->Stats.Length = B.Avail;
 	DetectRandomness( *this );

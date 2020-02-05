@@ -3,7 +3,7 @@
 //	 										//////// time utilities ////////	 
 
 
-// to make debugging give same timings as normal runs!
+// give debugging, same timings as normal runs!
 #pragma GCC push_options
 #pragma GCC optimize ("Os")
 
@@ -143,6 +143,21 @@ Gen(Sudo) { // just to test our numerical strength.
 }
 
 
+u64 uint64_hash (u64 x) {
+	x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9ULL;
+	x = (x ^ (x >> 27)) * 0x94d049bb133111ebULL;
+	x = x ^ (x >> 31);
+	return x;
+}
+
+
+u64 Random64 () {
+	static u64 Start = 123;
+	Start = uint64_hash(Start);
+	return Start;
+}
+
+
 NamedGen GenList[] = {
 	{AtomicGenerator,		"atomic",	40			}, // rated at 4x slowness
 	{BoolGenerator,			"bool",		10			},
@@ -150,18 +165,14 @@ NamedGen GenList[] = {
 	{BitOpsGenerator,		"bitops",	10			},
 	{MemoryGenerator,		"memory",	10			},
 	{TimeGenerator,			"time",		10			},
+//	{CameraGenerator,		"Camera",	10		 	},
 	{SudoGenerator,			"PSEUDO",	10,		1 	},
-//	{BadGenerator,			"BAD"			},
 	{},
 };
 
 
-NamedGen* tr_sudogen() {
-	return &GenList[6];
-}
 
-
-NamedGen* tr_nextgen(NamedGen* G) {
+NamedGen* NextGenerator(NamedGen* G) {
 	if (!G or !G->Name)
 		return &GenList[0];
 	G++;
@@ -276,10 +287,10 @@ static void BitShift_Pre (BookHitter& P) {
 
 
 static bool TemporalGeneration(BookHitter& P, GenApproach& App) {
-	auto t_Start = std::chrono::high_resolution_clock::now();
+	auto t_Start = Now();
 	P.App = &App;
-	App.Stats = {};
 	P.Time = {};
+	App.Stats = {};
 	int Err = pthread_create(&P.GeneratorThread, NULL, &GenerateWrapper, &P);
 	if (!Err) Err = pthread_join(P.GeneratorThread, 0);
 	if (Err)  P.Time.Error = Err;
@@ -293,8 +304,7 @@ static bool TemporalGeneration(BookHitter& P, GenApproach& App) {
 			Divide_Pre(P);
 	}
 	
-	auto t_now = std::chrono::high_resolution_clock::now();
-	P.Time.Generation = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_Start).count();
+	P.Time.Generation = ChronoLength(t_Start);
 	return !Err;
 }
 

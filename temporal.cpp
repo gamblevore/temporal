@@ -8,11 +8,9 @@
 //  
 
 //  TODO:
-//  * debias using histograms... (after multiple approach xor!)
 //  * Use lasting statistical-mean in the stablity sorter! 
 //  * Do we even need 256/mod?
-//  * List switching, if one list starts to suck.
-//  * laying more ontop... use ent?
+//  * Save the expected score? So if it gets worse suddenly, we switch lists
 
 
 
@@ -20,11 +18,14 @@
 #include "tmp_headers.i"
 #include "tmp_typedefs.i"
 #include "tmp_defines.i"
+#include "tmp_math.i"
 #include "tmp_classes.i"
 #include "tmp_gen.i"
 #include "tmp_stats.i"
 #include "tmp_logging.i"
 #include "tmp_saving.i"
+#include "tmp_histogram.i"
+#include "tmp_drawhisto.i"
 #include "tmp_extraction.i"
 #include "tmp_sorting.i"
 #include "tmp_core.i"

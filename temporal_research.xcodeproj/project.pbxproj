@@ -27,6 +27,8 @@
 		AC3EEFB323C1240500AB0611 /* tmp_gen.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_gen.i; sourceTree = SOURCE_ROOT; };
 		AC3EEFB423C13D0800AB0611 /* scoring.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = scoring.html; path = Debug/time_output/scoring.html; sourceTree = "<group>"; };
 		AC3EEFB523C1409000AB0611 /* temporal_research */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = temporal_research; path = Release/temporal_research; sourceTree = "<group>"; };
+		AC671D7A23E7021D002019A9 /* tmp_drawhisto.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_drawhisto.i; sourceTree = SOURCE_ROOT; };
+		AC671D7C23E702BB002019A9 /* tmp_histogram.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_histogram.i; sourceTree = SOURCE_ROOT; };
 		ACA7E85523D9D44D001A6BDA /* tmp_defines.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_defines.i; sourceTree = SOURCE_ROOT; };
 		ACA7E85623D9D44D001A6BDA /* tmp_stats.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_stats.i; sourceTree = SOURCE_ROOT; };
 		ACA7E85723D9D44D001A6BDA /* tmp_logging.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_logging.i; sourceTree = SOURCE_ROOT; };
@@ -39,6 +41,7 @@
 		ACA7E85E23D9D44D001A6BDA /* tmp_extraction.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_extraction.i; sourceTree = SOURCE_ROOT; };
 		ACA7E85F23D9D44E001A6BDA /* tmp_core.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_core.i; sourceTree = SOURCE_ROOT; };
 		ACA7E86023D9D44E001A6BDA /* tmp_api.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_api.i; sourceTree = SOURCE_ROOT; };
+		ACAB07E723E8BD0D00DA0C85 /* tmp_math.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_math.i; sourceTree = SOURCE_ROOT; };
 		ACD54ACF2299957800526848 /* temporal_research */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = temporal_research; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACD54ADB22999D1800526848 /* temporal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = temporal.cpp; sourceTree = SOURCE_ROOT; };
 		ACF1BDAF23D93D4A0085B8F4 /* tmp_defines.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_defines.i; sourceTree = SOURCE_ROOT; };
@@ -93,9 +96,12 @@
 				ACA7E85B23D9D44D001A6BDA /* tmp_classes.i */,
 				ACA7E85F23D9D44E001A6BDA /* tmp_core.i */,
 				ACA7E85E23D9D44D001A6BDA /* tmp_extraction.i */,
+				AC671D7A23E7021D002019A9 /* tmp_drawhisto.i */,
+				AC671D7C23E702BB002019A9 /* tmp_histogram.i */,
 				ACA7E85823D9D44D001A6BDA /* tmp_gen.i */,
 				ACA7E85723D9D44D001A6BDA /* tmp_logging.i */,
 				AC2BC71E23DE674D0055621C /* tmp_saving.i */,
+				ACAB07E723E8BD0D00DA0C85 /* tmp_math.i */,
 				ACA7E85D23D9D44D001A6BDA /* tmp_sorting.i */,
 				ACA7E85623D9D44D001A6BDA /* tmp_stats.i */,
 				AC3EEFB323C1240500AB0611 /* tmp_gen.i */,

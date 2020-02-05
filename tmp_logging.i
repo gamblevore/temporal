@@ -130,7 +130,7 @@ img {
 	ofs.close();
 	
 	if (LogOrDebug())
-		OpenFile(Path);
+		FilesToOpenLater.push_back(Path);
 	  else
 	    printf("Debug Steve output at: %s\n", Path.c_str());
 }

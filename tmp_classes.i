@@ -24,7 +24,7 @@ struct RandoStats {
 	float		ChiSq;
 	float		Mean;
 	float		Monte;
-	float		Serial;
+	float		Hist;
 	float       Worst;
 	int			Length;
 	u8			FailedCount;
@@ -92,7 +92,6 @@ struct GenApproach {
 		return M;
 	}
 };
-NamedGen* tr_sudogen();
 
 
 struct RandTest {
@@ -100,7 +99,6 @@ struct RandTest {
 	constexpr static const double BIGX = 20.0;
 
 	int			ccount[256];			/* Bins to count occurrences of values */
-	double		prob[256];				/* Probabilities per bin for entropy */
 	int			totalc;					/* Total bytes counted */
 	int			AsBits;					/* Treat input as a bitstream */
 	int			mp;
@@ -108,7 +106,6 @@ struct RandTest {
 	int			inmont;
 	int			mcount;
 	u32			monte[MONTEN];
-	double		sccfirst, sccu0, scclast, scct1, scct2, scct3;
 
 //  Funcs
 	void		add_byte (int oc);
@@ -132,7 +129,16 @@ struct RandomBuildup {
 	}
 	
 	float RandomnessAdd() {
-		float ToAdd = 1.0f - Worst(); 
+		float W = Worst();
+		if (W >= 0.9) { // just a heuristic... seems OK.
+						// sometimes monte-carlo wierdly fails even though it looks good. thats why.
+			W = Chan->Stats.ChiSq;
+			if (W >= 0.9) {
+				W = (Chan->Stats.ChiSq + Chan->Stats.Entropy) / 2.0;
+			}
+		}
+
+		float ToAdd = 1 - W;
 		return std::max(ToAdd, 0.0f);
 	}
 };
@@ -220,20 +226,21 @@ struct BookHitter {
 		return M->FileName();
 	}
 	void Allocate(int W) {
+		if (1<<(Log2i(W)-1)!=W) {
+			puts("Need a power of 2 for allocate.");
+			exit(-1);
+		}
 		Samples.resize(4 * W * W);
 		Buff.resize(Samples.size());
 	}
 	void CreateReps(int* Reps) {
-		RepList = {};
 		if (!Reps) {
-		#if DEBUG
-			RepList = {5, 9, 123};
-		#else
-			// RepList = {1, 2, 3, 5, 9, 10, 17, 25, 36, 88, 123, 179, 213};
-			RepList = {3, 5, 9, 17};
-		#endif
 			RepList = {3, 5, 9, 10, 17, 25, 36, 88, 123, 179};
+			#if DEBUG
+				RepList = {5, 9, 17, 25};
+			#endif
 		} else {
+			RepList = {};
 			while (*Reps) {
 				RepList.push_back(*Reps++);
 			}

@@ -30,6 +30,11 @@ BookHitter* tr_create(bool Log) {
 	return G;
 }
 
+void tr_logfiles(BookHitter* f) {
+	for (auto S : FilesToOpenLater) {
+		OpenFile(S);
+	}
+}
 
 void tr_free (BookHitter* f) {
 	delete(f);
@@ -67,6 +72,8 @@ static void CleanupMain () {
 int main (int argc, const char* argv[]) {
 	sizecheck(u64, 8);  sizecheck(u32, 4);  sizecheck(u16, 2);  sizecheck(u8, 1);
 	
+	PrintProbabilities();
+
 	RestoreDir = getcwd(0, 0);
 	atexit(CleanupMain);
 	puts(WelcomeMsg);
@@ -84,9 +91,12 @@ int main (int argc, const char* argv[]) {
 		if (Err) break;
 		WriteImg(DataBuff, TROut.N, F.CollectInto(V, i+1));
 	}
-	
+		
 	if (F.App)
 		F.CreateHTMLRandom(V,  F.App->NameSub() + ".html",  "Randomness Test");
+
+	tr_logfiles(&F);
+	tr_free(&F);
 	return Err;
 }
 
