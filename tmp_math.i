@@ -41,8 +41,8 @@ float HistoProb(int N, int X) {
 	// because n is around 65536. (1<<n) lol.
 	// This equality: (1<<a)/(1<<b) == (1<<(a-b))
 	// brings (a-b) into reasonable range, and removes a divide!
-	// if (a-b) is negative, we right-shift instead of left-shift
-	// To preserve fractional-part, all math is in fixed-point.
+	// because (a-b) is always negative for our case,
+	// we right-shift instead, using fixed-poiint
 
 	if (X > N  or  N <= 0  or  X <= 0) return 0;
 	

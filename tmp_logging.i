@@ -149,11 +149,10 @@ void BookHitter::CreateDirs() {
 }
 
 
-void BookHitter::LogApproach() {
+void BookHitter::LogApproach(const char* Debiased="") {
 	if (LogOrDebug()) {
 		CreateDirs();
 		int N = App->Stats.Length;
-		WriteImg(Extracted(), N, App->FileName());
-		//		WriteFile(Extracted(), N, rawdir + App->Name() + ".raw"); // no need
+		WriteImg(Extracted(), N, App->FileName(Debiased));
 	}
 }

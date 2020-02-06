@@ -23,8 +23,10 @@ void BookHitter::FindMinMax() {
 
 
 static float ExtractAndDetect (BookHitter& B, int Mod) {
-	ExtractRandomness(B, Mod);
+	ExtractRandomness(B, Mod, false);
 	B.LogApproach();
+	ExtractRandomness(B, Mod, true);
+	B.LogApproach("deb");
 	DetectRandomness( B );
 	B.FindMinMax();
 	return B.App->Stats.Worst;

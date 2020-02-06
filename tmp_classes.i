@@ -84,6 +84,8 @@ struct GenApproach {
 		return NameSub();
 	}
 	string FileName(string s="") {
+		if (s)
+			s = "_" + s;
 		return "time_imgs/" + Name() + s + ".png";
 	}
 	static std::shared_ptr<GenApproach> neww() {
@@ -110,9 +112,6 @@ struct RandTest {
 //  Funcs
 	void		add_byte (int oc);
 	void		end(GenApproach& Result);
-	
-	void 		PatternCheck(u8 C, int i) {}
-	void 		GenPatterns() {}
 };
 
 
@@ -178,7 +177,7 @@ struct BookHitter {
 	bool RandomnessALittle (RandomBuildup& B, bh_output& Out);
 	bool StabilityCollector(int N);
 	void SortByBestApproach();
-	void LogApproach();
+	void LogApproach(const char* name);
 	bool LogOrDebug() {
 		#ifdef DEBUG
 			return true;

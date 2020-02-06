@@ -89,15 +89,12 @@ void RandTest::end(GenApproach& App) {
 
 static void DetectRandomness (BookHitter& P) {
 	u8* Start = P.Extracted();
-	bool binary = false;  // App.BackToBytes );
-	RandTest RT = {};  RT.AsBits = binary;//  RT.sccfirst = true;
-	RT.GenPatterns();
+	bool binary = false;
+	RandTest RT = {};  RT.AsBits = binary;
 
-	for_ (P.App->Stats.Length) {
-		u8 C = Start[i];
-		RT.PatternCheck(C, i);
-		RT.add_byte(C);
-	}
+	int n = P.App->Stats.Length; 
+	for_ (n)
+		RT.add_byte(*Start++);
 	
 	RT.end(*P.App);
 }

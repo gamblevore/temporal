@@ -79,6 +79,8 @@ static void PerfectBitDebias (u8* Start, int n) {
 
 
 static void Do_Debias (BookHitter& B, u8* Start, int n) {
+	if (B.App->IsSudo()) return;
+	
 	Histogram H = CollectHistogram(Start, n);
 	if (B.LogOrDebug())
 		DrawHistogram(B, H);
@@ -139,14 +141,17 @@ static int DoModToBit (BookHitter& P, u8* Start, int Mod, int n) {
 }
 
 
-static void ExtractRandomness (BookHitter& B, int Mod) {
+static void ExtractRandomness (BookHitter& B, int Mod, bool Debias) {
 	int n = B.Space();
 	n = std::min(n, B.Time.Measurements);
 	u8* Start = B.Extracted();
+	
 	n = DoModToBit			(B, Start, Mod, n);
 	n = DoXorShrink			(Start, 16, n);
-	    Do_Debias			(B, Start, n);
+	if (Debias)
+		Do_Debias			(B, Start, n);
 	n = DoBitsToBytes		(Start, n);
+
 	B.App->Stats = {};
 	B.App->Stats.Length = n;
 }

@@ -9,6 +9,8 @@
 
 //  TODO:
 //  * Use lasting statistical-mean in the stablity sorter! 
+//  * sliding window debiaser... dump the histogram debiaser?
+//  * figure out why the histogram isnt working... (need capture source, pin-point error location, etc)
 //  * Do we even need 256/mod?
 //  * Save the expected score? So if it gets worse suddenly, we switch lists
 
