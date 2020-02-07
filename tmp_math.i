@@ -1,4 +1,5 @@
 
+
 int Log2i(u32 i) {
 	return 32-__builtin_clz(i);
 }
@@ -41,8 +42,8 @@ float HistoProb(int N, int X) {
 	// because n is around 65536. (1<<n) lol.
 	// This equality: (1<<a)/(1<<b) == (1<<(a-b))
 	// brings (a-b) into reasonable range, and removes a divide!
-	// because (a-b) is always negative for our case,
-	// we right-shift instead, using fixed-poiint
+	// because (a-b) is always negative for us,
+	// we right-shift instead, using fixed-point
 
 	if (X > N  or  N <= 0  or  X <= 0) return 0;
 	
@@ -53,3 +54,4 @@ float HistoProb(int N, int X) {
 	P2 /= (double)(0x80000000u);
 	return P2;
 }
+

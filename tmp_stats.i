@@ -82,8 +82,8 @@ void RandTest::end(GenApproach& App) {
 	Result.Unify(2, 	0.0,	1.0,		1.21,		fabs(Mean)				); // Mean
 	Result.Unify(3, 	0,		0.35,		1.428,		fabs(M_PI - montepi)	); // Monte
 //	Result.Unify(4, 	0,		1,			2,			Hist					); // Histogram
-	
-	App.UseCount++;
+
+	Result.Hist = Result.BitsRandomised;
 }
 
 

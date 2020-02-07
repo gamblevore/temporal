@@ -119,16 +119,15 @@ struct Histogram {
 	}
 	
 	void Reset () {
-		for_( BarCount ) {
+		for_( BarCount )
 			Slot[i] = {};
-		}
 	}
 	
 	Chances FlipBits(int x) {
   // If we have 10 too many, within 100, we will eliminate 1/10. in any random order
 		float Lim = 0;
 		if (x < BarCount-1)
-			Lim = Interp(Betweenness(x, 1, 11), 0.025, 0.5) + Expected->Values[x];
+			Lim = Expected->Values[x] + Interp(Betweenness(x, 1, 11), 0.025, 0.5);
 		Histo TrueAndFalse = (*this)[x];
 		Chances Result;
 		for (int b = 0;  b < 2;  b++) {

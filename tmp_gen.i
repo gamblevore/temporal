@@ -57,6 +57,7 @@ Gen(Time) {
 	u32 x = Input;
 	Time_ (Reps) {
 		x = x xor Time32();
+		x = x xor Time32();
 	} TimeEnd
 
 	return x;
@@ -147,12 +148,12 @@ u64 uint64_hash (u64 x) {
 	x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9ULL;
 	x = (x ^ (x >> 27)) * 0x94d049bb133111ebULL;
 	x = x ^ (x >> 31);
-	return x;
+	return x ^ 1;
 }
 
 
 u64 Random64 () {
-	static u64 Start = 123;
+	static u64 Start = 1;
 	Start = uint64_hash(Start);
 	return Start;
 }
@@ -257,6 +258,16 @@ static bool AllDivisible (BookHitter& P, const int oof) {
 }
 
 
+static void FindHighest (BookHitter& P) {
+	auto Data = P.Out();
+	int n = P.Time.Measurements;
+	u32 H = 0;
+	for_(n)
+		H = std::max(*Data++, H);
+	if (!H) debugger;
+	P.App->Highest = H;
+}
+
 static void Divide_Pre (BookHitter& P) {
 	for (int oof = 15; oof >= 3; oof -= 2)
 		if (AllDivisible(P, oof)) break;
@@ -296,12 +307,14 @@ static bool TemporalGeneration(BookHitter& P, GenApproach& App) {
 	if (Err)  P.Time.Error = Err;
 	if (P.Time.Error) {
 		fprintf( stderr, "temporal generation err for '%s': %i\n", App.Gen->Name, P.Time.Error);
-	} else { 
+	} else {
+		App.UseCount++;
 		P.LastGen = App.Gen;
 		P.LastReps = App.Reps;
 		BitShift_Pre(P);
 		for_(3)
 			Divide_Pre(P);
+		FindHighest(P);
 	}
 	
 	P.Time.Generation = ChronoLength(t_Start);

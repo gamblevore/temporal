@@ -23,13 +23,14 @@ void BookHitter::FindMinMax() {
 
 
 static float ExtractAndDetect (BookHitter& B, int Mod) {
+	auto& App = *B.App;
 	ExtractRandomness(B, Mod, false);
 	B.LogApproach();
-	ExtractRandomness(B, Mod, true);
-	B.LogApproach("deb");
+	ExtractRandomness(B, Mod, !App.IsSudo());	
+	B.LogApproach("_d");
 	DetectRandomness( B );
 	B.FindMinMax();
-	return B.App->Stats.Worst;
+	return App.Stats.Worst;
 }
 
 
@@ -143,7 +144,8 @@ void BookHitter::DebugRandoBuild(RandomBuildup& B, int N) {
 	WriteImg(Extracted(),  B.Avail,  FailPath);
 	FilesToOpenLater.push_back(FailPath);
 	WriteFile(Extracted(),	N,  App->Name() + ".raw");
-	App->Stats = {}; App->Stats.Length = B.Avail;
+	App->Stats = {};
+	App->Stats.Length = B.Avail;
 	DetectRandomness( *this );
 }
 

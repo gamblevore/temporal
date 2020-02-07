@@ -27,6 +27,7 @@ struct RandoStats {
 	float		Hist;
 	float       Worst;
 	int			Length;
+	u32			BitsRandomised;
 	u8			FailedCount;
 	u8			FailedIndexes;
 	u8			Type		: 4;
@@ -43,11 +44,11 @@ struct GenApproach {
 	NamedGen*	Gen;
 	RandoStats  Stats;
 	float		Mean;
+	u32			Highest;
 	u16			Fails;
 	u16			Reps;
 	u16			StableRank;
 	u16			UseCount;
-	u8			Class;
 	u8			Debias			: 1;
 	u8			PhysicalSystem	: 1; // non-power of 2 more physical system to creating numbers
 	u8			UseMidPoint 	: 1; // just use the midpoint... Find a point where half above and half-below.
@@ -64,6 +65,10 @@ struct GenApproach {
 	bool IsSudo() {
 		return Gen->GenType == kSudo;
 	}
+	u64 StablePRndSeed(u64 i = 0) { // Stable-pRnd that changes between runs.
+		return (UseCount + 1 + i) * (100 + Reps);
+	}
+
 	bool IncreaseRank (u32 i) {
 		u32 Desired = (u32)StableRank + i;
 		StableRank = std::min((int)Desired, (int)0xFFFF);
@@ -84,8 +89,6 @@ struct GenApproach {
 		return NameSub();
 	}
 	string FileName(string s="") {
-		if (s)
-			s = "_" + s;
 		return "time_imgs/" + Name() + s + ".png";
 	}
 	static std::shared_ptr<GenApproach> neww() {

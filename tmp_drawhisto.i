@@ -23,7 +23,7 @@ static float HistogramHighest (Histogram& H) {
 }
 
 
-static void DrawHistogram (BookHitter& B, Histogram& H, const char* ExtraName="h") {
+static void DrawHistogram (BookHitter& B, Histogram& H, string ExtraName) {
 	int BarWidth = 10; // px
 	int BarGap = 2;
 	int TotalWidth = (BarWidth * BarCount*2) + (BarGap*(BarCount-1));
@@ -45,6 +45,6 @@ static void DrawHistogram (BookHitter& B, Histogram& H, const char* ExtraName="h
 	}
 	
 	B.CreateDirs();
-	WriteImg(Start, Size, B.App->FileName(ExtraName));
+	WriteImg(Start, Size, B.App->FileName(ExtraName + "h"));
 }
 

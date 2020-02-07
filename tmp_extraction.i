@@ -1,35 +1,33 @@
 
 
-static void DebiasSome (Histogram& H, u8* Curr, int n, bool Value) {
-// so... do we keep the histogram intact?
-// because we'll have altered the white/black next to it.
-// we can assume it's mostly OK I think? just see how well it does before correcting anything?
-	u64 Rand = Random64();
-	for_(n) {
-		u32 b = Rand & 1;
-		*Curr++ = b - 1;
-		Rand <<= 1;
-	}
-}
-
-
-static void DebiasAll (Histogram& H, u8* Start, int n, int x) {
+static void DebiasSectionsOfLength (Histogram& H, u8* Start, int n, int x, GenApproach& App) {
 	auto TF = H.FlipBits(x); // We won't add missing parts. it's just to break up computery patterns.
 	if (TF.NoNeed())
 		return;
+		
+	u64 Rand = App.StablePRndSeed(x);		
 	
 	bool Prev = Start[0];
 	auto End = Start + n;
 	auto Section = Start;
+	u32  BitsRandomised = 0;
+	
 	for (u8* Curr = Start; Curr < End; Curr++ ) {
 		if (*Curr != Prev) {
 			int Length = (int)(Curr - Section);
-			if (Length == x and TF.FlipThisBit(Prev))
-				DebiasSome(H, Section, Length, Prev);
+			if (Length == x and TF.FlipThisBit(Prev)) {
+			// don't alter histogram? assume it's mostly OK? just see how well it does.
+				Rand = uint64_hash(Rand);
+				BitsRandomised += Length;
+				for_(Length)
+					Curr[i] = ((Rand>>i) & 1) - 1;
+			}
 			Prev = !Prev;
 			Section = Curr;
 		}
 	}
+	
+	App.Stats.BitsRandomised += BitsRandomised;
 }
 
 
@@ -58,13 +56,18 @@ static int pdb (u8* Start, int i, int n, int Offness) {
 }
 
 
-static void PerfectBitDebias (u8* Start, int n) {
+static void PerfectBitDebias (u8* Start, int n, GenApproach& App) {
 	auto TotalBits = BitCount(Start, n)>>3;
 	int Offness = TotalBits - (n/2);
-	int RandBitsNeeded = Log2i(n-1);
-
-	while (Offness) {
-		u64 Rand = Random64();
+	int RandBitsNeeded = Log2i(n - 1);
+	App.Stats.BitsRandomised += abs(Offness);
+	
+	u64 V2 = App.StablePRndSeed(Offness);
+	if (!V2) debugger;
+	
+	for (int C = 0; Offness and C < 64*1024; C++ ) {
+		u64 Rand = V2 = uint64_hash(V2);
+		if (!V2) debugger;
 		for (int r = 64; Offness and r > RandBitsNeeded; r -= RandBitsNeeded) {
 			u64 i = (1<<RandBitsNeeded) - 1;
 			i &= Rand;
@@ -72,27 +75,33 @@ static void PerfectBitDebias (u8* Start, int n) {
 			Offness = pdb(Start, (int)i, n, Offness);
 		}
 	}
-	
-	TotalBits = BitCount(Start, n)>>3;
-	if (TotalBits!=n/2) debugger;
 }
 
 
-static void Do_Debias (BookHitter& B, u8* Start, int n) {
-	if (B.App->IsSudo()) return;
-	
+static void Do_WindowScanDebias (BookHitter& B, u8* Start, int n) {
+	// need some kinda array...
+	// and a bit collector...
+}
+
+
+static void Do_HistogramDebias (BookHitter& B, u8* Start, int n) {
+	if (B.LogOrDebug()) {
+		Histogram H = CollectHistogram(Start, n);
+		DrawHistogram(B, H, "");
+	}
+
+
+	Do_WindowScanDebias(B, Start, n);
 	Histogram H = CollectHistogram(Start, n);
-	if (B.LogOrDebug())
-		DrawHistogram(B, H);
 	
 	for (int i = BarCount - 1; i >= 1; i--)
-		DebiasAll(H, Start, n, i);
+		DebiasSectionsOfLength(H, Start, n, i, *B.App);
+	PerfectBitDebias(Start, n, *B.App);
 
-	PerfectBitDebias(Start, n);
 
 	if (B.LogOrDebug()) {
 		H = CollectHistogram(Start, n);
-		DrawHistogram(B, H, "After");
+		DrawHistogram(B, H, "_d");
 	}
 }
 
@@ -127,12 +136,19 @@ static int DoXorShrink (u8* Bytes, int Shrink, int n) {
 static int DoModToBit (BookHitter& P, u8* Start, int Mod, int n) {
 	auto Data = P.Out();
 	u8* Write = Start;
-	u32 Cap = 256 - (256 % Mod);
-	if (P.App->IsSudo()) Cap = -1;
+	auto& App = *P.App;
+	
+	u32 H = App.Highest;
+	u32 Cap = H - (H % Mod);
+	if (App.IsSudo()) Cap = -1;
+	u64 V2 = App.StablePRndSeed();
+
 	FOR_ (i, n) {
 		u32 V = Data[i]; 
-		if (V > Cap)
-			V = (u32)Random64();
+		if (V > Cap) {
+			V2 = uint64_hash(V2);
+			V = (u32)V2;
+		}
 		V = (V % Mod) * (256/Mod); // no idea why im multiplying.
 		*Write++ = (V % 2)-1;
 	}
@@ -142,17 +158,17 @@ static int DoModToBit (BookHitter& P, u8* Start, int Mod, int n) {
 
 
 static void ExtractRandomness (BookHitter& B, int Mod, bool Debias) {
-	int n = B.Space();
-	n = std::min(n, B.Time.Measurements);
+	B.App->Stats = {};
+
+	int n = std::min(B.Space(), B.Time.Measurements);
 	u8* Start = B.Extracted();
 	
 	n = DoModToBit			(B, Start, Mod, n);
 	n = DoXorShrink			(Start, 16, n);
 	if (Debias)
-		Do_Debias			(B, Start, n);
+		Do_HistogramDebias	(B, Start, n);
 	n = DoBitsToBytes		(Start, n);
 
-	B.App->Stats = {};
 	B.App->Stats.Length = n;
 }
 
