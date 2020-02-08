@@ -48,8 +48,12 @@ static void WriteFile (u8* Data, int N, string Name) {
 static void HTMLImg(std::ofstream& ofs, ref(GenApproach) V) {
 	GenApproach& R = *V;
 	ofs << "<td>";
-	if (R.Stats.Length and !R.Stats.Type)
-		ofs << "<img src='" + R.FileName() + "'/><br/>";
+	if (R.Stats.Length and !R.Stats.Type) {
+		ofs << "<div class='img_ontop'>\n";
+		ofs << "<img class='main'  src='"+R.FileName()+"' />\n";
+		ofs << "<img class='histo' src='"+R.FileName("h")+"' />\n";
+		ofs << "</div><br/>\n";
+	}
 
 	ofs << R.Name();
 	ofs << ((R.Fails) ? " ❌" : "");
@@ -82,7 +86,7 @@ void BookHitter::CreateHTMLRandom(ApproachVec& V, string FileName, string Title)
 	ofs << Title;
 	ofs << R"(</title>
 	<style>
-
+/*CSS*/
 body {
 	background: black;
 	color: white;
@@ -90,6 +94,29 @@ body {
 img {
 	height: 128px;
 	width:  128px;
+}
+.img_ontop {
+	position: relative;
+	top: 0;
+	left: 0;
+}
+.main {
+	position: relative;
+	top: 0;
+	left: 0;
+}
+.histo {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	height: 32px;
+	width:  32px;
+	border: 1px gray solid;
+}
+.histo:hover {
+	height: 128px;
+	width:  128px;
+	transition: 0.25s;
 }
 	</style>
 </head>

@@ -24,7 +24,7 @@ void RandTest::add_byte (int oc) {
 			inmont++;
 	}
 
-	for (int bean = 0; bean < 8; bean++) {
+	for(int bean = 0; bean < 8; bean++) {
 		int c = oc;
 		if (AsBits) {
 			c = !!(c & 0x80);

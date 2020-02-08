@@ -7,14 +7,15 @@
 //	  or use Xcode project
 //  
 
+
 //  TODO:
-//  * Remove 256/mod?
-	//  * TimeGen always 0?
-		// * Try mod 16? Or just view the numbers
-//  * Sliding window debiaser... dump histogram debiaser?
+//  * when we find a band... feed it back somehow.
+	//  * histogram debiaser missing certain issues.
+//  * Mean debiaser
+//  * why are loop_1234 output failing if they look nice?
 //  * Use lasting statistical-mean in the stablity sorter! 
 //  * Save the expected score? So if it gets worse suddenly, we switch lists
-
+// 
 
 
 #include "tmp_api.h"

@@ -55,3 +55,9 @@ float HistoProb(int N, int X) {
 	return P2;
 }
 
+
+static ByteArray CopyBytes (u8* Bytes, int n) {
+	ByteArray Result(n);
+	memcpy(&Result[0], Bytes, n);
+	return Result;
+}

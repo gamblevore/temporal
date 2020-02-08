@@ -8,7 +8,7 @@
 #define sizecheck(a,b)		if (sizeof(a)!=b) {return -100;} // sizecheck
 #define Time_(R)			while (Data < DataEnd) { u32 Start = Time32(); for_(R)
 #define TimeEnd ; u32 Finish = Time32(); *Data++ = TimeDiff(Start,Finish);}
-#define Gen(name) static u64 name##Generator (u32* Data, u32* DataEnd, u32 Input, int Reps)
+#define Gen(name) static u64 name##Generator (uSample* Data, uSample* DataEnd, u32 Input, int Reps)
 #define New(x)				std::make_shared<x>()
 #define New2(x,a)			std::make_shared<x>(a)
 #define Now()				std::chrono::high_resolution_clock::now()

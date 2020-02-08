@@ -81,7 +81,7 @@ bool BookHitter::LoadListsSub(string Path) {
 
 
 /*
-function LoadLists {
+function LoadListsSub {
 // Speedie... smaller and faster
 	.CPU_Modes = []
 	|| Data = ListsFile.ReadFile(16*1024)

@@ -1,17 +1,8 @@
 
 extern "C" { // A simple C API!
 
-static const char* WelcomeMsg = R"(Reesurrch iN2 teMpOwAls!!
 
-Gennewaits pngs 4 u 2 chekk iFf dA randOmNesS "seems gud".
-
-Uses da ~RAndoMnEss~ in "hoW loNg" da instruction taykes, 4 fizzicalie bassed raNdoMness.
-
-No idea if dis RanDmoNess iz "gud"? Seems ~eggsiiting~! >:3
-)";
-
-
-BookHitter* tr_create(bool Log) {
+BookHitter* bh_create(bool Log) {
 	auto G = new BookHitter;
 	auto& F = *G;
 	require (G);
@@ -30,24 +21,23 @@ BookHitter* tr_create(bool Log) {
 	return G;
 }
 
-void tr_logfiles(BookHitter* f) {
-	for (auto S : FilesToOpenLater) {
+void bh_logfiles(BookHitter* f) {
+	for (auto S : FilesToOpenLater)
 		OpenFile(S);
-	}
 }
 
-void tr_free (BookHitter* f) {
+void bh_free (BookHitter* f) {
 	delete(f);
 }
 
 
-void tr_conf (BookHitter* f, int Channel, int* RepList) {
+void bh_conf (BookHitter* f, int Channel, int* RepList) {
 	f->UserChannel = Channel;
 	f->CreateReps(RepList);
 }
 
 
-int tr_hitbooks (BookHitter* f, bh_output* Out) {
+int bh_hitbooks (BookHitter* f, bh_output* Out) {
 	Out->GenerateTime = 0; Out->WorstScore = 0; Out->ProcessTime = 0;
 	auto &F = *f;
 	if (Out->Data) memset(Out->Data, 0, Out->N);
@@ -63,40 +53,55 @@ int tr_hitbooks (BookHitter* f, bh_output* Out) {
 }
 
 
-static const char* RestoreDir;
+
+static string RestoreDir;
 static void CleanupMain () {
-	IgnoredError = chdir(RestoreDir);
+	IgnoredError = chdir(RestoreDir.c_str());
 }
+
+
+static const char* WelcomeMsg = R"(Reesurrch iN2 teMpOwAls!!
+
+Gennewaits pngs 4 u 2 chekk iFf dA randOmNesS "seems gud".
+
+Uses da ~RAndoMnEss~ in "hoW loNg" da instruction taykes, 4 fizzicalie bassed raNdoMness.
+
+No idea if dis RanDmoNess iz "gud"? Seems ~eggsiiting~! >:3
+)";
 
 
 int main (int argc, const char* argv[]) {
 	sizecheck(u64, 8);  sizecheck(u32, 4);  sizecheck(u16, 2);  sizecheck(u8, 1);
 	
-	PrintProbabilities();
-
 	RestoreDir = getcwd(0, 0);
 	atexit(CleanupMain);
+
 	puts(WelcomeMsg);
+
+	PrintProbabilities();
 	
 	bh_output TROut = {0, 1};
-	BookHitter& F = *tr_create(true);
-	int Err = tr_hitbooks(&F, &TROut);
+	BookHitter& F = *bh_create(1);
+	F.DebugProcessFile("/Users/theodore/Speedie/theories/temporal_research/steve_output/debias_me.png");
+
+	int Err = bh_hitbooks(&F, &TROut);
 
 	u8 DataBuff[4096];
 	TROut = {DataBuff, sizeof(DataBuff)};
 	ApproachVec V;
 	
 	for_(5) {
-		Err = tr_hitbooks(&F, &TROut);
+		Err = bh_hitbooks(&F, &TROut);
 		if (Err) break;
 		WriteImg(DataBuff, TROut.N, F.CollectInto(V, i+1));
 	}
 		
 	if (F.App)
-		F.CreateHTMLRandom(V,  F.App->NameSub() + ".html",  "Randomness Test");
+		F.CreateHTMLRandom(V,  "steve.html",  "Randomness Test");
 
-	tr_logfiles(&F);
-	tr_free(&F);
+	bh_logfiles(&F);
+	bh_free(&F);
+	printf("\n");
 	return Err;
 }
 

@@ -23,10 +23,12 @@ static inline u32 Time32 () {
 
 
 static int TimeDiff (s64 A, s64 B) {
-	auto D = B - A;
+	s64 D = B - A;
 	if (D < 0) { // wrap around
 		D = (B - 0x7fffFFFF) - (A - 0x7fffFFFF);
 	}
+	if (D >= uSampleMax) // problem. now what? just... set to max?
+		D = (D % (uSampleMax/2)) + (uSampleMax/2);
 	return (int)D;
 }
 
@@ -148,7 +150,8 @@ u64 uint64_hash (u64 x) {
 	x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9ULL;
 	x = (x ^ (x >> 27)) * 0x94d049bb133111ebULL;
 	x = x ^ (x >> 31);
-	return x ^ 1;
+	if (!x) return 1;
+	return x;
 }
 
 
@@ -182,20 +185,15 @@ NamedGen* NextGenerator(NamedGen* G) {
 }
 
 
-static void CollectStats (u32* Results, int Count, BookHitter& S, bool NoMax) {
+static void CollectStats (uSample* Results, int Count, BookHitter& S, bool NoMax) {
 	S.Time.Measurements += Count;
 	u32 Lowest = -1;
-	u32 Highest = 0;
-	for_ (Count) {
-		Lowest = std::min(Lowest, Results[i]);
-		Highest = std::max(Highest, Results[i]);
-	}
+	for_ (Count)
+		Lowest = std::min(Lowest, (u32)Results[i]);
 
 	u32 MaxTime = (NoMax) ? -1 : (Lowest + 2) * 5;
-	Highest = std::min(Highest, MaxTime);
-	S.Time.Highest = Highest - Lowest;
 	
-	u32* Write = Results;
+	uSample* Write = Results;
 	for_ (Count) {
 		u32 V = *Results++;
 		if (V <= MaxTime)
@@ -204,8 +202,6 @@ static void CollectStats (u32* Results, int Count, BookHitter& S, bool NoMax) {
 	
 	S.Time.Spikes = Count - (Results - Write);
 	S.Time.Measurements -= S.Time.Spikes;
-	while (Write < Results)
-		*Write++ = -1;
 } 
 
 
@@ -227,10 +223,10 @@ static void* GenerateWrapper (void* arg) {
 	}
 	
 
-	GenApproach& A = *P.App;	
-	auto Out       = P.Out();
-	u32* OutEnd    = Out + P.Space();
-	u32* WarmUp    = Out + 2048;
+	GenApproach& A     = *P.App;	
+	auto Out           = P.Out();
+	uSample* OutEnd    = Out + P.Space();
+	uSample* WarmUp    = Out + 2048;
 	
 	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
@@ -262,8 +258,10 @@ static void FindHighest (BookHitter& P) {
 	auto Data = P.Out();
 	int n = P.Time.Measurements;
 	u32 H = 0;
-	for_(n)
-		H = std::max(*Data++, H);
+	for_(n) {
+		u32 T = *Data++;
+		H = std::max(T, H);
+	}
 	if (!H) debugger;
 	P.App->Highest = H;
 }

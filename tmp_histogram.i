@@ -130,11 +130,11 @@ struct Histogram {
 			Lim = Expected->Values[x] + Interp(Betweenness(x, 1, 11), 0.025, 0.5);
 		Histo TrueAndFalse = (*this)[x];
 		Chances Result;
-		for (int b = 0;  b < 2;  b++) {
-			float Occur = TrueAndFalse[b];
+		for_(2) {
+			float Occur = TrueAndFalse[i];
 			float Extra = std::max(Occur - Lim, 0.0f);
 			float Chance = Occur > (1.0/2048.0) ? Extra/Occur : 0; 
-			Result.Shuff[b].Init(Chance);
+			Result.Shuff[i].Init(Chance);
 		}
 		return Result;
 	}
@@ -153,13 +153,11 @@ static void HistogramVerify (Histogram& H) {
 
 
 static Histogram CollectHistogram (u8* Start, int n) {
-	Histogram H = n;
+	Histogram H(n);
 	int Length = 0;
 	bool Prev = Start[0];
-	for (int i = 0; i < n; i++) {
-		u8 c = Start[i];
-		if (c and c!=255) debugger;
-		bool b = c;
+	for_(n) {
+		bool b = Start[i];
 		H[0][b]++;							// Collect true-false separately.
 		if (b != Prev) {
 			H.Add(Length, Prev);
@@ -177,7 +175,7 @@ static Histogram CollectHistogram (u8* Start, int n) {
 [[maybe_unused]] static void BitsCollectHistogram (Histogram& H, u64 Start, int n) {
 	int Length = 0;
 	bool Prev = Start&1;
-	for (int i = 0; i < n; i++) {
+	for_(n) {
 		bool b = Start&(1<<i);
 		H[0][b]++; // collect true-false separately.
 		if (b != Prev) {
@@ -188,7 +186,6 @@ static Histogram CollectHistogram (u8* Start, int n) {
 		Length++;
 	}
 	H.Add(Length, Prev);
-	// can't verify if we are using a running-total. 
 }
 
 

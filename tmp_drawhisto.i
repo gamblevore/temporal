@@ -26,7 +26,9 @@ static float HistogramHighest (Histogram& H) {
 static void DrawHistogram (BookHitter& B, Histogram& H, string ExtraName) {
 	int BarWidth = 10; // px
 	int BarGap = 2;
-	int TotalWidth = (BarWidth * BarCount*2) + (BarGap*(BarCount-1));
+	int MyBarCount = 6;   MyBarCount = std::min(MyBarCount, BarCount);
+	
+	int TotalWidth = (BarWidth * MyBarCount*2) + (BarGap*(MyBarCount-1));
 	int TotalHeight = TotalWidth; // why not.
 	int Size = TotalHeight*TotalWidth;
 	ByteArray Data(Size, (u8)0);
@@ -35,7 +37,7 @@ static void DrawHistogram (BookHitter& B, Histogram& H, string ExtraName) {
 	float Scale = (float)TotalHeight / HistogramHighest(H);
 	int x = 0;
 	
-	FOR_(b, BarCount) {
+	FOR_(b, MyBarCount) {
 		float* Values = H[b].Value;
 		DrawRect(Start, TotalWidth, TotalHeight, x, BarWidth, 0, *Values++*Scale, 128);
 		x += BarWidth;

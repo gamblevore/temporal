@@ -12,7 +12,6 @@ struct NamedGen {
 struct TimeStats {
 	float		Generation;
 	float		Processing;
-	u32			Highest;
 	int			Measurements;
 	u16			Spikes;
 	u16         Error;
@@ -91,6 +90,9 @@ struct GenApproach {
 	string FileName(string s="") {
 		return "time_imgs/" + Name() + s + ".png";
 	}
+	static string FileName_(string Name, string s="") {
+		return "time_imgs/" + Name + s + ".png";
+	}
 	static std::shared_ptr<GenApproach> neww() {
 		auto M = New(GenApproach);
 		*M = {};
@@ -150,7 +152,7 @@ struct BookHitter {
 	GenApproach*	App;
 	NamedGen*		LastGen;
 	pthread_t		GeneratorThread;
-	UintVec			Samples;
+	SampleVec		Samples;
 	ByteArray		Buff;
 	IntVec			RepList;
 	ApproachMap		Map;
@@ -169,6 +171,7 @@ struct BookHitter {
 	void CreateHTMLRandomOne(GenApproach& V, string Name);
 	void CreateHTMLRandom(ApproachVec& V, string Name, string Title);
 	void AddToStabilityRank();
+	void DebugProcessFile(string Name);
 	void FindMinMax();
 	void SaveLists();
 	bool LoadLists();
@@ -205,7 +208,7 @@ struct BookHitter {
 		LastGen = 0;
 		LastReps = 0;
 	}
-	u32* Out() {
+	uSample* Out() {
 		return &(Samples[0]);
 	}
 	u8* Extracted() {

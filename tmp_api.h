@@ -10,8 +10,8 @@ extern "C" {
 		float	WorstScore;
 	};
 
-	BookHitter*	tr_create	(bool Log);
-	void		tr_free		(BookHitter* f);
-	void		tr_conf		(BookHitter* f, int Channel, int* Reps);
-	int			tr_hitbooks (BookHitter* f, bh_output* Out);
+	BookHitter*	bh_create	(bool Log);
+	void		bh_free		(BookHitter* f);
+	void		bh_conf		(BookHitter* f, int Channel, int* Reps);
+	int			bh_hitbooks (BookHitter* f, bh_output* Out);
 }

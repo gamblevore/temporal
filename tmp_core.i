@@ -22,12 +22,20 @@ void BookHitter::FindMinMax() {
 }
 
 
-static float ExtractAndDetect (BookHitter& B, int Mod) {
+static float ExtractAndDetect (BookHitter& B, int Mod, bool Debias, bool Log) {
 	auto& App = *B.App;
-	ExtractRandomness(B, Mod, false);
-	B.LogApproach();
-	ExtractRandomness(B, Mod, !App.IsSudo());	
-	B.LogApproach("_d");
+	if (Log or !Debias) {
+		ExtractRandomness(B, Mod, false, Log);
+		if (Log)
+			B.LogApproach();
+	}
+		
+	if (Debias) {
+		ExtractRandomness(B, Mod, true, Log);	
+		if (Log)
+			B.LogApproach("p");
+	}
+	
 	DetectRandomness( B );
 	B.FindMinMax();
 	return App.Stats.Worst;
@@ -47,23 +55,33 @@ int BookHitter::UseApproach (bh_output& Out) {
 	auto  t_Start = Now();
 	int   BestMod = 0;
 	float BestScore = 1000000.0;
-	bool  IsFinal = false;
 	
 	for (auto Mod : ModList) {
-		float Score = ExtractAndDetect(*this, Mod);
-		IsFinal = (Score < BestScore);
-		if (IsFinal) {
+		float Score = ExtractAndDetect(*this, Mod, false, false);
+		if (Score < BestScore) {
 			BestMod = Mod;
 			BestScore = Score;
 		}
 	}
 	
-	if (LogOrDebug() or IsFinal)
-		ExtractAndDetect(*this, BestMod);
+	ExtractAndDetect(*this, BestMod, false, true); // should be true,true
 
 	App->EndExtract();
 
 	return FinishApproach(*this, Out, ChronoLength(t_Start));
+}
+
+
+void BookHitter::DebugProcessFile(string Name) {
+	bh_output Out = {};
+	int x=0; int y=0; int comp=0;	
+    u8* Result = stbi_load(Name.c_str(), &x, &y, &comp, 1);
+    int n = DoBytesToBits(Result, x*y, Extracted());
+	stbi_image_free(Result);
+
+	Do_HistogramDebias	(*this, Extracted(), n, Log);
+	
+	UseApproach(Out);
 }
 
 
