@@ -50,8 +50,8 @@ static void HTMLImg(std::ofstream& ofs, ref(GenApproach) V) {
 	ofs << "<td>";
 	if (R.Stats.Length and !R.Stats.Type) {
 		ofs << "<div class='img_ontop'>\n";
-		ofs << "<img class='main'  src='"+R.FileName()+"' />\n";
-		ofs << "<img class='histo' src='"+R.FileName("h")+"' />\n";
+		ofs << "<img class='main'  src='" + R.FileName()+"' />\n";
+		ofs << "<img class='histo' src='" + R.FileName("h") + "' />\n";
 		ofs << "</div><br/>\n";
 	}
 
@@ -64,7 +64,6 @@ static void HTMLImg(std::ofstream& ofs, ref(GenApproach) V) {
 		ofs << "<br/>" + ScoreNames[i].substr(0,4) + " ";
 		ofs << std::fixed << std::setprecision(3) << R[i];
 		ofs << (((1<<i) & F) ? " ❌" : "");
-
 		if (i == W)  ofs << "</b>";
 	}
 	
@@ -86,7 +85,6 @@ void BookHitter::CreateHTMLRandom(ApproachVec& V, string FileName, string Title)
 	ofs << Title;
 	ofs << R"(</title>
 	<style>
-/*CSS*/
 body {
 	background: black;
 	color: white;
@@ -95,6 +93,7 @@ img {
 	height: 128px;
 	width:  128px;
 }
+/*CSS*/
 .img_ontop {
 	position: relative;
 	top: 0;

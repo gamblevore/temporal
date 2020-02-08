@@ -36,7 +36,7 @@ static float ExtractAndDetect (BookHitter& B, int Mod, bool Debias, bool Log) {
 			B.LogApproach("p");
 	}
 	
-	DetectRandomness( B );
+	B.DetectRandomness();
 	B.FindMinMax();
 	return App.Stats.Worst;
 }
@@ -164,7 +164,7 @@ void BookHitter::DebugRandoBuild(RandomBuildup& B, int N) {
 	WriteFile(Extracted(),	N,  App->Name() + ".raw");
 	App->Stats = {};
 	App->Stats.Length = B.Avail;
-	DetectRandomness( *this );
+	DetectRandomness();
 }
 
 

@@ -166,6 +166,7 @@ struct BookHitter {
 	u16				Log:1;
 	short			UserChannel;
 
+	void DetectRandomness ();
 	void DebugRandoBuild(RandomBuildup& B, int N);
 	void CreateDirs();
 	void CreateHTMLRandomOne(GenApproach& V, string Name);

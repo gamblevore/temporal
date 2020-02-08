@@ -87,15 +87,18 @@ void RandTest::end(GenApproach& App) {
 }
 
 
-static void DetectRandomness (BookHitter& P) {
-	u8* Start = P.Extracted();
+static void DetectRandomness_ (GenApproach& App, u8* Start, int n) {
 	bool binary = false;
 	RandTest RT = {};  RT.AsBits = binary;
 
-	int n = P.App->Stats.Length; 
 	for_ (n)
 		RT.add_byte(*Start++);
 	
-	RT.end(*P.App);
+	RT.end(App);
+}
+
+
+void BookHitter::DetectRandomness () {
+	DetectRandomness_(*(this->App), Extracted(), App->Stats.Length); 
 }
 

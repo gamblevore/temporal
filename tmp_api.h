@@ -4,7 +4,7 @@ extern "C" {
 	 
 	struct bh_output {
 		void*	Data;
-		int		N;
+		int		DataLength;
 		float	GenerateTime;
 		float	ProcessTime;
 		float	WorstScore;

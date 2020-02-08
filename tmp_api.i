@@ -37,12 +37,19 @@ void bh_conf (BookHitter* f, int Channel, int* RepList) {
 }
 
 
+void bh_detect (BookHitter* f, bh_output* Out) {
+	GenApproach App = {};
+	Out->GenerateTime = 0; Out->WorstScore = 0; Out->ProcessTime = 0;
+	DetectRandomness_(App, (u8*)Out->Data, Out->DataLength);
+}
+
+
 int bh_hitbooks (BookHitter* f, bh_output* Out) {
 	Out->GenerateTime = 0; Out->WorstScore = 0; Out->ProcessTime = 0;
 	auto &F = *f;
-	if (Out->Data) memset(Out->Data, 0, Out->N);
+	if (Out->Data) memset(Out->Data, 0, Out->DataLength);
 	
-	RandomBuildup B = {}; B.Remaining=Out->N; B.Data = (u8*)Out->Data;
+	RandomBuildup B = {}; B.Remaining=Out->DataLength; B.Data = (u8*)Out->Data;
 	while (F.RandomnessALittle(B, *Out))
 		if (F.RandomnessBuild(B, *Out))
 			return 0;
@@ -82,7 +89,7 @@ int main (int argc, const char* argv[]) {
 	
 	bh_output TROut = {0, 1};
 	BookHitter& F = *bh_create(1);
-	F.DebugProcessFile("/Users/theodore/Speedie/theories/temporal_research/steve_output/debias_me.png");
+//	F.DebugProcessFile("/Users/theodore/Speedie/theories/temporal_research/steve_output/debias_me.png");
 
 	int Err = bh_hitbooks(&F, &TROut);
 
@@ -93,7 +100,7 @@ int main (int argc, const char* argv[]) {
 	for_(5) {
 		Err = bh_hitbooks(&F, &TROut);
 		if (Err) break;
-		WriteImg(DataBuff, TROut.N, F.CollectInto(V, i+1));
+		WriteImg(DataBuff, sizeof(DataBuff), F.CollectInto(V, i+1));
 	}
 		
 	if (F.App)
