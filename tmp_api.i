@@ -11,7 +11,7 @@ BookHitter* bh_create(bool Log) {
 	F.Log = Log;
 
 	try {
-		F.Allocate(512);
+		F.Allocate(1024);
 		F.CreateReps(0);
 		if (!F.Log)
 			F.LoadLists();

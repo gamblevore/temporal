@@ -1,13 +1,13 @@
 
 
-static void DebiasSectionsOfLength (Histogram& H, u8* Start, int n, int x, GenApproach& App) {
+static void DebiasSectionsOfLength (Histogram& H, u8* Start, int n, int x, GenApproach* App) {
 	auto TF = H.FlipBits(x); // We won't add missing parts. it's just to break up computery patterns.
 	if (TF.NoNeed())
 		return;
 		
-	u64 Rand = App.StablePRndSeed(x);		
+	u64 Rand = Seed(App, x);		
 	
-	bool Active = !App.IsSudo();
+	bool Active = !App->IsSudo();
 	bool Prev = Start[0];
 	auto End = Start + n;
 	auto Section = Start;
@@ -16,19 +16,26 @@ static void DebiasSectionsOfLength (Histogram& H, u8* Start, int n, int x, GenAp
 	for (u8* Curr = Start; Curr < End; Curr++ ) {
 		if (*Curr != Prev) {
 			int Length = (int)(Curr - Section);
-			if (Length == x and TF.FlipThisBit(Prev)) {
-			// don't alter histogram? assume it's mostly OK? just see how well it does.
-				Rand = uint64_hash(Rand);
-				BitsRandomised += Length;
-				if (Active) for_(Length)
-					Curr[i] = ((Rand>>i) & 1) - 1;
+			if (Length == x or (Length>16 and x==17)) {
+				if (TF.FlipThisBit(Prev)) {
+				// don't alter histogram? assume it's mostly OK? just see how well it does.
+					BitsRandomised += Length;
+					if (Active) while (Length > 0) {
+						Rand = uint64_hash(Rand);
+						int i = std::min(64, Length);
+						Length-=i;
+						for (i--; i >= 0; i--) {
+							Curr[i] = ((Rand>>i) & 1) - 1;
+						}
+					}
+				}
 			}
 			Prev = !Prev;
 			Section = Curr;
 		}
 	}
 	
-	App.Stats.BitsRandomised += BitsRandomised;
+	App->Stats.BitsRandomised += BitsRandomised;
 }
 
 
@@ -57,19 +64,17 @@ static bool pdb (u8* Start, int i, int n, int Offness) {
 }
 
 
-static void PerfectBitDebias (u8* Start, int n, GenApproach& App) {
+static void PerfectBitDebias (u8* Start, int n, GenApproach* App) {
 	auto TotalBits = BitCount(Start, n)>>3;
 	int Offness = TotalBits - (n/2);
 	int RandBitsNeeded = Log2i(n - 1);
-	bool Active = !App.IsSudo();
+	bool Active = !App->IsSudo();
 
-	App.Stats.BitsRandomised += abs(Offness);
-	u64 V2 = App.StablePRndSeed(Offness);
-	if (!V2) debugger;
+	App->Stats.BitsRandomised += abs(Offness);
+	u64 V2 = Seed(App, Offness);		
 	
 	for (int C = 0; Offness and C < 64*1024; C++ ) {
 		u64 Rand = V2 = uint64_hash(V2);
-		if (!V2) debugger;
 		for (int r = 64; Offness and r > RandBitsNeeded; r -= RandBitsNeeded) {
 			u64 i = (1<<RandBitsNeeded) - 1;
 			i &= Rand;
@@ -81,62 +86,79 @@ static void PerfectBitDebias (u8* Start, int n, GenApproach& App) {
 }
 
 
-[[maybe_unused]] static void DebugPrintBuff(BookHitter& B) {
-	for_(64*1024) {
-		printf("%i, ", B.Buff[i]);
+static void DebugPrintBuff(u8* Addr, int n) {
+	for_(n) {
+		printf("%i, ", Addr[i]);
 	}
 	printf("\n");
 }
 
 
 static void Do_HistogramDebias (BookHitter& B, u8* Start, int n, bool Log) {
-	if (n==9) DebugPrintBuff(B); // stop strip
+	if (n==9) DebugPrintBuff(Start, n); // stop strip
 	if (Log) {
 		Histogram H2 = CollectHistogram(Start, n);
-		DrawHistogram(B, H2, "");
+		DrawHistogram(B, H2, n, "");
 	}
 	
 	Histogram H = CollectHistogram(Start, n);
 	
 	for (int i = BarCount - 1; i >= 1; i--)
-		DebiasSectionsOfLength(H, Start, n, i, *B.App);
-	PerfectBitDebias(Start, n, *B.App);
+		DebiasSectionsOfLength(H, Start, n, i, B.App);
+	PerfectBitDebias(Start, n, B.App);
 	
 	if (Log) {
 		Histogram H2 = CollectHistogram(Start, n);
-		DrawHistogram(B, H2, "p");
+		DrawHistogram(B, H2, n, "p");
 	}
+}
+
+
+static int Do_Vonn (u8* Start, int n) {
+	u8* Write = Start;
+	u8* Read = Start;
+	for_(n>>1) {
+		u8 A = *Read++;
+		u8 B = *Read++;
+		if (A != B) {
+			*Write++ = A;
+		} 
+	}
+	return (int)(Write - Start);
 }
 
 
 static int DoBytesToBits (u8* Bytes, int n, u8* Bits) {
 	for_(n) {
 		u32 c = Bytes[i];
-		FOR_(oof, 8) {
+		FOR_(oof, 8)
 			*Bits++ = ((c>>oof)&1)*255;
-		}
 	}
 	
 	return n*8;
 }
 
-static int DoBitsToBytes (u8* Bits, int n) {
-	auto Cpy = CopyBytes(Bits, n);
+static int DoBitsToBytes (BookHitter& B, u8* WorkSpace, int n) {
+#if DEBUG
+	auto Orig = CopyBytes(WorkSpace, n);
+#endif
+
 	auto nSmall = n / 8;
-	
 	for_(nSmall) {
 		int j = i<<3;
-		int oof = (Bits[j] & 0x01) | (Bits[j+1] & 0x02) | (Bits[j+2] & 0x04) | (Bits[j+3] & 0x08) | (Bits[j+4] & 0x10) | (Bits[j+5] & 0x20) | (Bits[j+6] & 0x40) | (Bits[j+7] & 0x80);
-		Bits[i] = oof;
+		int oof = (WorkSpace[j] & 0x01) | (WorkSpace[j+1] & 0x02) | (WorkSpace[j+2] & 0x04) | (WorkSpace[j+3] & 0x08) | (WorkSpace[j+4] & 0x10) | (WorkSpace[j+5] & 0x20) | (WorkSpace[j+6] & 0x40) | (WorkSpace[j+7] & 0x80);
+		WorkSpace[i] = oof;
 	}
 
 	// need to test it works...
-	ByteArray Bits2(n);
-	DoBytesToBits(&Bits[0], nSmall, &Bits2[0]);
-	for_(n)
-		if (Bits2[i] != Cpy[i])
+#if DEBUG
+	ByteArray RoundTrip(n);
+	DoBytesToBits(&WorkSpace[0], nSmall, &RoundTrip[0]);
+	for_(nSmall*8)
+		if (RoundTrip[i] != Orig[i])
 			debugger;
-
+#endif
+	
 	return nSmall;
 }
 
@@ -188,10 +210,15 @@ static void ExtractRandomness (BookHitter& B, int Mod, bool Debias, bool Log) {
 	
 	n = DoModToBit			(B, Start, Mod, n);
 	n = DoXorShrink			(Start, 16, n);
+	
+	if (!B.App->IsSudo()) {
+		n = Do_Vonn				(Start, n);
+		if (n < 128) return;
+	}
+
 	if (Debias)
 		Do_HistogramDebias	(B, Start, n, Log);
-	n = DoBitsToBytes		(Start, n);
-
+	n = DoBitsToBytes		(B, Start, n);
 	B.App->Stats.Length = n;
 }
 

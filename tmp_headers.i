@@ -5,6 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -18,6 +19,9 @@
 #include <map>
 
 
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBIW_WINDOWS_UTF8
@@ -36,3 +40,4 @@
 #define STBI_ASSERT(x)
 #include "stb_image.h"
 
+#pragma GCC diagnostic pop

@@ -64,7 +64,7 @@ int BookHitter::UseApproach (bh_output& Out) {
 		}
 	}
 	
-	ExtractAndDetect(*this, BestMod, false, true); // should be true,true
+	ExtractAndDetect(*this, BestMod, true, true);
 
 	App->EndExtract();
 
@@ -73,15 +73,20 @@ int BookHitter::UseApproach (bh_output& Out) {
 
 
 void BookHitter::DebugProcessFile(string Name) {
-	bh_output Out = {};
-	int x=0; int y=0; int comp=0;	
+	int x = 0; int y = 0; int comp = 0;
+	
     u8* Result = stbi_load(Name.c_str(), &x, &y, &comp, 1);
-    int n = DoBytesToBits(Result, x*y, Extracted());
+    auto Start = Extracted();
+    int n = DoBytesToBits(Result, x*y, Start);
 	stbi_image_free(Result);
 
-	Do_HistogramDebias	(*this, Extracted(), n, Log);
-	
-	UseApproach(Out);
+	GenApproach FakeApp = {};
+	App = &FakeApp; 
+	Do_HistogramDebias	(*this, Start, n, Log);
+	App->Stats.Length = DoBitsToBytes(*this, Start, n);
+	DetectRandomness();
+	LogApproach("p");
+	App = 0;
 }
 
 
@@ -120,8 +125,10 @@ void BookHitter::CreateApproaches() {
 			printf("%s ", App->Name().c_str());
 		Map[App->Name()] = App;
 		Prev = App.get();
-		if (App->IsSudo()) // there's really only 1 sudo
+		if (App->IsSudo()) { // there's really only 1 sudo
+			App->Reps = 1;
 			break;
+		}
 	}
 
 	if (LogOrDebug())

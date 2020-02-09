@@ -4,26 +4,34 @@ static void DrawRect(u8* Image, int ImageWidth, int ImageHeight, int RectX, int 
 	Image += RectY*ImageWidth;
 	int RectXEnd = std::min(RectX + RectWidth,  ImageWidth );
 	int RectYEnd = std::min(RectY + RectHeight, ImageHeight);
-	while (RectY < RectYEnd) {
+	for (int y = RectY; y < RectYEnd; y++)
 		for (int x = RectX; x < RectXEnd; x++)
-			Image[(ImageHeight-RectY)*ImageWidth + x] = Value;
-		RectY++;
+			Image[(ImageHeight-y)*ImageWidth + x] = Value;
+
+	if (RectY+RectHeight > ImageHeight) { // overflow...
+		for (int x = RectX; x < RectXEnd; x++) {
+			Image[(0)*ImageWidth + x] = ((x+1) & 1)*Value;
+			Image[(1)*ImageWidth + x] = ((x+0) & 1)*Value;
+		}
 	}
 }
 
 
-static float HistogramHighest (Histogram& H) {
-	int Highest = 0;
-	for_(BarCount) {
-		Highest = std::max(Highest, (int)H[i][0]);
-		Highest = std::max(Highest, (int)H[i][1]);
+static float HScale(float Value, float Height, float Expected) {
+	Expected = std::round(Expected);
+	float Answer = 1.0;
+	if (!Expected and !Value) {
+		;
+	} else if (!Expected and Value) {
+		Answer = Value;
+	} else {
+		Answer = Value/Expected;
 	}
-	float Hi = Highest;
-	return std::min(Hi*1.1, 64.0*1024.0);
+	return (Height * Answer) / 1.5; 
 }
 
 
-static void DrawHistogram (BookHitter& B, Histogram& H, string ExtraName) {
+static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraName) {
 	int BarWidth = 10; // px
 	int BarGap = 2;
 	int MyBarCount = 6;   MyBarCount = std::min(MyBarCount, BarCount);
@@ -34,19 +42,24 @@ static void DrawHistogram (BookHitter& B, Histogram& H, string ExtraName) {
 	ByteArray Data(Size, (u8)0);
 	u8* Start = &Data[0];
 
-	float Scale = (float)TotalHeight / HistogramHighest(H);
+	float Scale = (float)TotalHeight;
 	int x = 0;
+//	float* Expected = H.Expected->Values;
 	
 	FOR_(b, MyBarCount) {
 		float* Values = H[b].Value;
-		DrawRect(Start, TotalWidth, TotalHeight, x, BarWidth, 0, *Values++*Scale, 128);
+		float Exp = H.Expected->Values[b];
+		if (!b) {
+			Exp = N/2.0;
+		}
+		DrawRect(Start, TotalWidth, TotalHeight, x, BarWidth, 0, HScale(*Values++, Scale, Exp), 128);
 		x += BarWidth;
-		DrawRect(Start, TotalWidth, TotalHeight, x, BarWidth, 0, *Values++*Scale, 255);
+		DrawRect(Start, TotalWidth, TotalHeight, x, BarWidth, 0, HScale(*Values++, Scale, Exp), 255);
 		x += BarWidth;
 		x += BarGap;
 	}
 	
 	B.CreateDirs();
-	WriteImg(Start, Size, B.App->FileName(ExtraName + "h"));
+	WriteImg(Start, Size, B.FileName(ExtraName + "h"));
 }
 

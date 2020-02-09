@@ -62,7 +62,7 @@ struct GenApproach {
 		return (&Stats.Entropy)[i];
 	}
 	bool IsSudo() {
-		return Gen->GenType == kSudo;
+		return Gen and Gen->GenType == kSudo;
 	}
 	u64 StablePRndSeed(u64 i = 0) { // Stable-pRnd that changes between runs.
 		return (UseCount + 1 + i) * (100 + Reps);
@@ -83,15 +83,22 @@ struct GenApproach {
 		return name;
 	}
 	string Name() {
-		if (NumForName) return string("loop_") + to_string(NumForName);
-		if (Stats.Type) return MaxNames[Stats.Type];
-		return NameSub();
+		return Name_(this);
 	}
 	string FileName(string s="") {
-		return "time_imgs/" + Name() + s + ".png";
+		return FileName_(this, s);
+	}
+	static string Name_(GenApproach* App) {
+		if (!App or !App->Gen) return "unknown_";
+		if (App->NumForName) return string("loop_") + to_string(App->NumForName);
+		if (App->Stats.Type) return MaxNames[App->Stats.Type];
+		return App->NameSub();
 	}
 	static string FileName_(string Name, string s="") {
 		return "time_imgs/" + Name + s + ".png";
+	}
+	static string FileName_(GenApproach* App, string s="") {
+		return FileName_(Name_(App), s);
 	}
 	static std::shared_ptr<GenApproach> neww() {
 		auto M = New(GenApproach);
@@ -99,6 +106,13 @@ struct GenApproach {
 		return M;
 	}
 };
+
+
+u64 Seed(GenApproach* A, u64 x) {
+	if (!A)
+		return (x*10000 + 123)^90128381273176487ull;
+	return A->StablePRndSeed(x);
+}
 
 
 struct RandTest {
@@ -185,6 +199,9 @@ struct BookHitter {
 	bool StabilityCollector(int N);
 	void SortByBestApproach();
 	void LogApproach(const char* name);
+	string FileName(string s="") {
+		return GenApproach::FileName_(App, s);
+	}
 	bool LogOrDebug() {
 		#ifdef DEBUG
 			return true;
@@ -194,7 +211,7 @@ struct BookHitter {
 	ref(GenApproach) ViewChannel(int Attempt) {
 		int i = UserChannel;
 		if (i < 0)
-			return (*this)["PSEUDO"];
+			return (*this)["Pseudo"];
 		if (!i) i = Attempt;
 		return (CurrSorted())[i % CurrSorted().size()];
 	}

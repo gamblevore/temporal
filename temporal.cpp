@@ -9,12 +9,15 @@
 
 
 //  TODO:
-//  * when we find a band... feed it back somehow.
-	//  * histogram debiaser missing certain issues.
-//  * Mean debiaser
+//  * histo should delete bits... not replace with randomness...
+//  * test if this line is needed in timediff 	if (D < 0): D = (B - 0x7fffFFFF) - (A - 0x7fffFFFF);
 //  * why are loop_1234 output failing if they look nice?
 //  * Use lasting statistical-mean in the stablity sorter! 
 //  * Save the expected score? So if it gets worse suddenly, we switch lists
+
+// OPTS:
+//  * histogram debiaser should use sliding window...
+//      * This just gives more data, so we can dump von-neuman which is costing us 4x data.
 // 
 
 

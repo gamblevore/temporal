@@ -1,7 +1,4 @@
 
-const string rawdir = "/tmp/steve_raw/";
-
-
 
 void OpenFile(string Path) {
 #if __linux__
@@ -168,7 +165,6 @@ void BookHitter::CreateDirs() {
 	}
 	CreatedDirs = true;
 	int UnixMode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH; // oof unix.
-	IgnoredError = mkdir(rawdir.c_str(),  UnixMode);
 	IgnoredError = mkdir("steve_output",  UnixMode);
 	IgnoredError = chdir("steve_output");
 	IgnoredError = mkdir("time_imgs",	  UnixMode);

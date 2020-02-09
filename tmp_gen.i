@@ -27,8 +27,6 @@ static int TimeDiff (s64 A, s64 B) {
 	if (D < 0) { // wrap around
 		D = (B - 0x7fffFFFF) - (A - 0x7fffFFFF);
 	}
-	if (D >= uSampleMax) // problem. now what? just... set to max?
-		D = (D % (uSampleMax/2)) + (uSampleMax/2);
 	return (int)D;
 }
 
@@ -170,7 +168,7 @@ NamedGen GenList[] = {
 	{MemoryGenerator,		"memory",	10			},
 	{TimeGenerator,			"time",		10			},
 //	{CameraGenerator,		"Camera",	10		 	},
-	{SudoGenerator,			"PSEUDO",	10,		1 	},
+	{SudoGenerator,			"Pseudo",	10,		1 	},
 	{},
 };
 

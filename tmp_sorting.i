@@ -40,7 +40,7 @@ bool BookHitter::StabilityCollector(int N) {
 	bh_output Out;
 
 	for_ (N) {
-		if (Log) printf( "\n:: Stability %i/%i :: \n", i+1, N );
+		if (Log) printf( "\n\n:: Stability %i/%i :: \n", i+1, N );
 		for (auto App : Approaches) { 
 			if (!NextApproachOK(*App)) return false;
 			UseApproach(Out);
