@@ -1,41 +1,56 @@
 
 
-static void DebiasSectionsOfLength (Histogram& H, u8* Start, int n, int x, GenApproach* App) {
+static void DebugPrintBuff(u8* Addr, int n) {
+	for_(n)
+		printf("%i, ", Addr[i]);
+	printf("\n");
+}
+
+
+static bool CanUseLength(int FoundLength, int SearchLength) {
+	if (FoundLength == SearchLength) return true;
+	if (FoundLength >= 15 and SearchLength == BarCount-1) return true;
+	// actually... we should lower BarCount down to... 16 
+	return false;
+}
+
+static int DebiasSectionsOfLength (Histogram& H, u8* Start, int n, int x, GenApproach* App) {
 	auto TF = H.FlipBits(x); // We won't add missing parts. it's just to break up computery patterns.
 	if (TF.NoNeed())
-		return;
+		return n;
 		
-	u64 Rand = Seed(App, x);		
-	
 	bool Active = !App->IsSudo();
 	bool Prev = Start[0];
 	auto End = Start + n;
 	auto Section = Start;
 	u32  BitsRandomised = 0;
+	u8*  Write = Start;
+	u8*  LastRead = Start;
 	
 	for (u8* Curr = Start; Curr < End; Curr++ ) {
-		if (*Curr != Prev) {
-			int Length = (int)(Curr - Section);
-			if (Length == x or (Length>16 and x==17)) {
-				if (TF.FlipThisBit(Prev)) {
-				// don't alter histogram? assume it's mostly OK? just see how well it does.
-					BitsRandomised += Length;
-					if (Active) while (Length > 0) {
-						Rand = uint64_hash(Rand);
-						int i = std::min(64, Length);
-						Length-=i;
-						for (i--; i >= 0; i--) {
-							Curr[i] = ((Rand>>i) & 1) - 1;
-						}
-					}
-				}
-			}
-			Prev = !Prev;
-			Section = Curr;
-		}
+		u8 C = *Curr;
+		if (C == Prev)
+			continue;
+			
+		int Length = (int)(Curr - Section);
+		Prev = C;
+		Section = Curr;
+
+		if (!CanUseLength(Length, x) or !TF.FlipThisBit(Prev)) continue;
+		// don't alter histogram? assume it's mostly OK? just see how well it does.
+		BitsRandomised += Length;
+		if (Active) continue;
+		for_(Length)
+			*Write++ = LastRead[i];
+		LastRead = Curr;
 	}
 	
+	int Length = (int)(End - LastRead);
+	for_(Length) 
+		*Write++ = LastRead[i];
+	
 	App->Stats.BitsRandomised += BitsRandomised;
+	return (int)(Write - Start);
 }
 
 
@@ -86,14 +101,6 @@ static void PerfectBitDebias (u8* Start, int n, GenApproach* App) {
 }
 
 
-static void DebugPrintBuff(u8* Addr, int n) {
-	for_(n) {
-		printf("%i, ", Addr[i]);
-	}
-	printf("\n");
-}
-
-
 static void Do_HistogramDebias (BookHitter& B, u8* Start, int n, bool Log) {
 	if (n==9) DebugPrintBuff(Start, n); // stop strip
 	if (Log) {
@@ -104,7 +111,7 @@ static void Do_HistogramDebias (BookHitter& B, u8* Start, int n, bool Log) {
 	Histogram H = CollectHistogram(Start, n);
 	
 	for (int i = BarCount - 1; i >= 1; i--)
-		DebiasSectionsOfLength(H, Start, n, i, B.App);
+		n = DebiasSectionsOfLength(H, Start, n, i, B.App);
 	PerfectBitDebias(Start, n, B.App);
 	
 	if (Log) {
@@ -114,16 +121,24 @@ static void Do_HistogramDebias (BookHitter& B, u8* Start, int n, bool Log) {
 }
 
 
-static int Do_Vonn (u8* Start, int n) {
-	u8* Write = Start;
-	u8* Read = Start;
-	for_(n>>1) {
+static u8* VonSub(u8* Read, u8* Write, int n) {
+	u8* WriteEnd = Write + n/2;
+	for_(n) {
 		u8 A = *Read++;
-		u8 B = *Read++;
-		if (A != B) {
+		if (A != *Read++)
 			*Write++ = A;
-		} 
 	}
+	while (Write<WriteEnd) {
+		*Write++ = 0;
+	}
+	return Write;
+}
+
+
+static int Do_Vonn (u8* Start, int n) {
+	n>>=1;
+	u8* Write = VonSub(Start,   Start, n);
+	Write = VonSub(Start, Write, n-1);
 	return (int)(Write - Start);
 }
 
@@ -205,14 +220,14 @@ static int DoModToBit (BookHitter& P, u8* Start, int Mod, int n) {
 static void ExtractRandomness (BookHitter& B, int Mod, bool Debias, bool Log) {
 	B.App->Stats = {};
 
-	int n = std::min(B.Space(), B.Time.Measurements);
+	int n = B.Space();
 	u8* Start = B.Extracted();
 	
 	n = DoModToBit			(B, Start, Mod, n);
 	n = DoXorShrink			(Start, 16, n);
 	
 	if (!B.App->IsSudo()) {
-		n = Do_Vonn				(Start, n);
+		n = Do_Vonn			(Start, n);
 		if (n < 128) return;
 	}
 

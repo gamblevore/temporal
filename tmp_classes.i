@@ -12,7 +12,6 @@ struct NamedGen {
 struct TimeStats {
 	float		Generation;
 	float		Processing;
-	int			Measurements;
 	u16			Spikes;
 	u16         Error;
 };

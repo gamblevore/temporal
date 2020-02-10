@@ -24,9 +24,6 @@ static inline u32 Time32 () {
 
 static int TimeDiff (s64 A, s64 B) {
 	s64 D = B - A;
-	if (D < 0) { // wrap around
-		D = (B - 0x7fffFFFF) - (A - 0x7fffFFFF);
-	}
 	return (int)D;
 }
 
@@ -184,7 +181,6 @@ NamedGen* NextGenerator(NamedGen* G) {
 
 
 static void CollectStats (uSample* Results, int Count, BookHitter& S, bool NoMax) {
-	S.Time.Measurements += Count;
 	u32 Lowest = -1;
 	for_ (Count)
 		Lowest = std::min(Lowest, (u32)Results[i]);
@@ -192,19 +188,19 @@ static void CollectStats (uSample* Results, int Count, BookHitter& S, bool NoMax
 	u32 MaxTime = (NoMax) ? -1 : (Lowest + 2) * 5;
 	
 	uSample* Write = Results;
+	u32 Spikes = 0;
 	for_ (Count) {
 		u32 V = *Results++;
-		if (V <= MaxTime)
-			*Write++ = V - Lowest;
+		*Write++ = V - Lowest;
+		Spikes += (V > MaxTime);
 	}
-	
-	S.Time.Spikes = Count - (Results - Write);
-	S.Time.Measurements -= S.Time.Spikes;
+
+	S.Time.Spikes = Spikes;
 } 
 
 
 static void* GenerateWrapper (void* arg) {
-	BookHitter& P = *((BookHitter*)arg);
+	BookHitter& B = *((BookHitter*)arg);
 	static int FIFOError = 0;
 	static sched_param sch = {};
 	if (!FIFOError) {
@@ -212,7 +208,7 @@ static void* GenerateWrapper (void* arg) {
 		if (!Priority)
 		    sch.sched_priority = sched_get_priority_max(SCHED_FIFO); // higher priority = better signals.
 		while (sch.sched_priority >= 0) {
-			FIFOError = pthread_setschedparam(P.GeneratorThread, SCHED_FIFO, &sch);
+			FIFOError = pthread_setschedparam(B.GeneratorThread, SCHED_FIFO, &sch);
 			if (!FIFOError) break;
 			sch.sched_priority--;
 		};
@@ -221,30 +217,30 @@ static void* GenerateWrapper (void* arg) {
 	}
 	
 
-	GenApproach& A     = *P.App;	
-	auto Out           = P.Out();
-	uSample* OutEnd    = Out + P.Space();
+	GenApproach& A     = *B.App;	
+	auto Out           = B.Out();
+	uSample* OutEnd    = Out + B.Space();
 	uSample* WarmUp    = Out + 2048;
 	
 	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
-	CollectStats(Out,  P.Space(),  P,  A.IsSudo() or !A.AllowSpikes);	
+	CollectStats(Out,  B.Space(),  B,  A.IsSudo() or !A.AllowSpikes);	
 	
 	return 0;
 }
 
 
-static bool AllDivisible (BookHitter& P, const int oof) {
+static bool AllDivisible (BookHitter& B, const int oof) {
 	int Divisible = 0;
-	auto Data = P.Out();
-	int n = P.Time.Measurements;
+	auto Data = B.Out();
+	int n = B.Space();
 	for_(n)
 		Divisible += ((*Data++) % oof == 0);
 	
 	int AtLeastThisManyNeeded = n - (n / 128); // 99%
 	require (Divisible >= AtLeastThisManyNeeded);
 	
-	Data = P.Out();
+	Data = B.Out();
 	auto Write = Data;
 	for_(n)
 		*Write++ = *Data++ / oof;
@@ -252,16 +248,14 @@ static bool AllDivisible (BookHitter& P, const int oof) {
 }
 
 
-static void FindHighest (BookHitter& P) {
-	auto Data = P.Out();
-	int n = P.Time.Measurements;
+static void FindHighest (BookHitter& B) {
+	auto Data = B.Out();
+	int n = B.Space();
 	u32 H = 0;
-	for_(n) {
-		u32 T = *Data++;
-		H = std::max(T, H);
-	}
+	for_(n)
+		H = std::max(*Data++, H);
 	if (!H) debugger;
-	P.App->Highest = H;
+	B.App->Highest = H;
 }
 
 static void Divide_Pre (BookHitter& P) {
@@ -270,10 +264,10 @@ static void Divide_Pre (BookHitter& P) {
 }
 
 
-static void BitShift_Pre (BookHitter& P) {
+static void BitShift_Pre (BookHitter& B) {
 	u32 Bits = 0;
-	auto Data = P.Out();
-	int n = P.Time.Measurements;
+	auto Data = B.Out();
+	int n = B.Space();
 	for_(n)
 		Bits |= *Data++;
 	
@@ -285,7 +279,7 @@ static void BitShift_Pre (BookHitter& P) {
 	
 	if (!Count) return;
 	
-	Data = P.Out();
+	Data = B.Out();
 	for_(n) {
 		auto V = *Data;
 		*Data++ = V >> Count;
