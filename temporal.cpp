@@ -9,16 +9,17 @@
 
 
 //  TODO:
-//  * chis 0.778 for pseudo??? wat?
-//  * lower barcount to 16. Cos we don't allow bits of 15 and up! 50% chance to happen once in 64KB!
-//  * why are loop_1234 output failing if they look nice?
+//  * Histogram... use it.
 //  * Use lasting statistical-mean in the stablity sorter! 
 //  * Save the expected score? So if it gets worse suddenly, we switch lists
 
-// OPTS:
+//  ADD:
+//  * Allow "Hash-mode"... assumes retro-causality. "Try 100 diferent realities... choose the best".
+//		* smaller space-reps needed!
+
+//  OPTS:
 //  * histogram debiaser should use sliding window...
-//      * This just gives more data, so we can dump von-neuman which is costing us 4x data.
-// 
+//      * This just gives more data, then dump von-neuman. It costs us 4x data.
 
 
 #include "tmp_api.h"

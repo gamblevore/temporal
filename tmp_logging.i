@@ -42,20 +42,21 @@ static void WriteFile (u8* Data, int N, string Name) {
 }
 
 
-static void HTMLImg(std::ofstream& ofs, ref(GenApproach) V) {
+static void HTMLImg(std::ofstream& ofs, GenApproach* V) {
 	GenApproach& R = *V;
 	ofs << "<td>";
 	if (R.Stats.Length and !R.Stats.Type) {
 		ofs << "<div class='img_ontop'>\n";
+		ofs << "<img class='debiased' src='" + R.FileName("p") + "' />\n";
 		ofs << "<img class='main'  src='" + R.FileName()+"' />\n";
 		ofs << "<img class='histo' src='" + R.FileName("h") + "' />\n";
 		ofs << "</div><br/>\n";
 	}
 
 	ofs << R.Name();
-	ofs << ((R.Fails) ? " ❌" : "");
 	int W = R.Stats.WorstIndex - 1;
 	int F = R.Stats.FailedIndexes;
+	ofs << ((F) ? " ❌" : "");
 	for_ (5) {
 		if (i == W)  ofs << "<b>";
 		ofs << "<br/>" + ScoreNames[i].substr(0,4) + " ";
@@ -69,14 +70,32 @@ static void HTMLImg(std::ofstream& ofs, ref(GenApproach) V) {
 }
 
 
-void BookHitter::CreateHTMLRandom(ApproachVec& V, string FileName, string Title) {
-	printf(":: %li Randomness variations!  :: \n", V.size());
+struct HTML_Random {
+	string			FileName;
+	string			Title;
+	std::ofstream	ofs;
+	string			Path;
+	int				Varations;
+	bool			Started;
+	BookHitter*		B;
 
-	string Path = string(getcwd(0, 0)) + string("/") + FileName;
-	std::ofstream ofs;
-	ofs.open (Path);
+
+	HTML_Random(string fn, string t, BookHitter* b) {
+		FileName = fn;
+		Title = t;
+		Varations = 0;
+		Started = false;
+		ofs = {};
+		B = b;
+	}
 	
-	ofs << R"(<html>
+	
+	void Start() {
+		if (Started) return; Started = true;
+		string Path = string(getcwd(0, 0)) + string("/") + FileName;
+		ofs.open (Path);
+	
+		ofs << R"(<html>
 <head>
 	<title>)";
 	ofs << Title;
@@ -87,31 +106,42 @@ body {
 	color: white;
 }
 img {
-	height: 128px;
-	width:  128px;
+	height:	128px;
+	width:	128px;
+	border:	0px;
 }
 /*CSS*/
 .img_ontop {
 	position: relative;
-	top: 0;
-	left: 0;
+	height:	128px;
+	width:	128px;
+	top:	0;
+	left:	0;
 }
 .main {
-	position: relative;
-	top: 0;
-	left: 0;
+	position: absolute;
+	top:	0;
+	left:	0;
 }
 .histo {
 	position: absolute;
-	bottom: 0px;
-	right: 0px;
-	height: 32px;
-	width:  32px;
-	border: 1px gray solid;
+	bottom:	0px;
+	right:	0px;
+	height:	32px;
+	width:	32px;
+}
+.debiased {
+	position: absolute;
+	top:	0;
+	left:	0;
+}
+.main:hover {
+	opacity: 0.0;
+	transition: 0.25s;
 }
 .histo:hover {
 	height: 128px;
-	width:  128px;
+	width:	128px;
 	transition: 0.25s;
 }
 	</style>
@@ -121,41 +151,74 @@ img {
 <tr>
 )";
 
-	const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr>\n"; 
-	auto t = std::time(nullptr);
-	auto tm = *std::localtime(&t);
-	
-	ofs << "<p>Created on: ";
-	ofs << std::put_time(&tm, "%d %b %y, %H:%M:%S");
-	ofs << Row;
+		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr>\n"; 
+		auto t = std::time(nullptr);
+		auto tm = *std::localtime(&t);
+		
+		ofs << "<p>Created on: ";
+		ofs << std::put_time(&tm, "%d %b %y, %H:%M:%S");
+		ofs << Row;
 
-	HTMLImg(ofs, MinMaxes[0]);
-	HTMLImg(ofs, MinMaxes[1]);
-	ofs << Row;
+		HTMLImg(ofs, B->MinMaxes[0].get());
+		HTMLImg(ofs, B->MinMaxes[1].get());
+		ofs << Row;
+		
+		HTMLImg(ofs, B->MinMaxes[2].get());
+		HTMLImg(ofs, B->MinMaxes[3].get());
+		ofs << Row;
+	}
+
+
+	void WriteOne(bh_output* Data, GenApproach* App, int i) {
+		if (Data) {
+			App->NumForName = i+1;
+			WriteImg((u8*)(Data->Data),  Data->DataLength,  App->FileName());
+		}
+		
+		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr>\n"; 
+		if (!App->Stats.Length) return;
+		if (i++ % 8 == 0) ofs << Row;
+		HTMLImg(ofs, App);
+	}
 	
-	HTMLImg(ofs, MinMaxes[2]);
-	HTMLImg(ofs, MinMaxes[3]);
-	ofs << Row;
+
+	void Finish() {
+		printf(":: %i Randomness variations!  :: \n", Varations);
+		
+		ofs << R"(
+	</tr>
+	</table>
+	</body>
+	</html>)";
+		
+		ofs.close();
+		if (B->LogOrDebug())
+			FilesToOpenLater.push_back(Path);
+		  else
+			printf("Debug Steve output at: %s\n", Path.c_str());
+	}
+};
+
+
+ref(HTML_Random) BookHitter::HTML(string fn, string t) {
+//	WriteImg(DataBuff, sizeof(DataBuff), F.CollectInto(V, i+1));
+
+	auto Result = New4(HTML_Random, fn, t, this);
+	Result->Start();
+	return Result;
+}	
+
+
+void BookHitter::CreateHTMLRandom(ApproachVec& V, string FileName, string Title) {
+	printf(":: %li Randomness variations!  :: \n", V.size());
+	auto html = HTML(FileName, Title);
 
 	int i = 0;
 	for (auto R : V) {
-		if (!R->Stats.Length) continue;
-		if (i++ % 8 == 0) ofs << Row;
-		HTMLImg(ofs, R);
+		html->WriteOne(0, R.get(), i);
 	}
 	
-	ofs << R"(
-</tr>
-</table>
-</body>
-</html>)";
-	
-	ofs.close();
-	
-	if (LogOrDebug())
-		FilesToOpenLater.push_back(Path);
-	  else
-	    printf("Debug Steve output at: %s\n", Path.c_str());
+	html->Finish();
 }
 
 

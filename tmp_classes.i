@@ -47,11 +47,9 @@ struct GenApproach {
 	u16			Reps;
 	u16			StableRank;
 	u16			UseCount;
-	u8			Debias			: 1;
 	u8			PhysicalSystem	: 1; // non-power of 2 more physical system to creating numbers
 	u8			UseMidPoint 	: 1; // just use the midpoint... Find a point where half above and half-below.
 	u8			NumForName		: 7;
-	u8			AllowSpikes		: 1;
 	
 
 	void EndExtract() {
@@ -75,10 +73,8 @@ struct GenApproach {
 	string NameSub() {
 		string name = string(Gen->Name);
 		if (!IsSudo())          name += to_string(Reps);
-		if (Debias)				name += "v";
 		if (PhysicalSystem)		name += "b";
 		if (UseMidPoint)		name += "p";
-		if (AllowSpikes)		name += "s";
 		return name;
 	}
 	string Name() {
@@ -88,9 +84,9 @@ struct GenApproach {
 		return FileName_(this, s);
 	}
 	static string Name_(GenApproach* App) {
+		if (App->NumForName)   return string("loop_") + to_string(App->NumForName);
+		if (App->Stats.Type)   return MaxNames[App->Stats.Type];
 		if (!App or !App->Gen) return "unknown_";
-		if (App->NumForName) return string("loop_") + to_string(App->NumForName);
-		if (App->Stats.Type) return MaxNames[App->Stats.Type];
 		return App->NameSub();
 	}
 	static string FileName_(string Name, string s="") {
@@ -145,7 +141,7 @@ struct RandomBuildup {
 		return std::max(Chan->Stats.Worst, 0.0f);
 	}
 	
-	float RandomnessAdd() {
+	float RandomnessAdded() {
 		float W = Worst();
 		if (W >= 0.9) { // just a heuristic... seems OK.
 						// sometimes monte-carlo wierdly fails even though it looks good. thats why.
@@ -182,19 +178,19 @@ struct BookHitter {
 	void DetectRandomness ();
 	void DebugRandoBuild(RandomBuildup& B, int N);
 	void CreateDirs();
-	void CreateHTMLRandomOne(GenApproach& V, string Name);
 	void CreateHTMLRandom(ApproachVec& V, string Name, string Title);
 	void AddToStabilityRank();
 	void DebugProcessFile(string Name);
 	void FindMinMax();
 	void SaveLists();
 	bool LoadLists();
+	ref(HTML_Random) HTML(string s, string n);	
 	bool LoadListsSub(string Path);
 	void CreateApproaches();
 	int  UseApproach (bh_output& Out);
 	bool NextApproachOK(GenApproach& App);
-	bool RandomnessBuild (RandomBuildup& B, bh_output& Out);
-	bool RandomnessALittle (RandomBuildup& B, bh_output& Out);
+	bool AssembleRandoms (RandomBuildup& B, bh_output& Out);
+	bool CollectPieceOfRandom (RandomBuildup& B, bh_output& Out);
 	bool StabilityCollector(int N);
 	void SortByBestApproach();
 	void LogApproach(const char* name);
@@ -240,19 +236,14 @@ struct BookHitter {
 		M->Stats.Type = Type;
 		MinMaxes.push_back(M);
 	}
-	string CollectInto(ApproachVec& V, int i) {
+	string CollectInto(int i) {
 		auto M = New(GenApproach);
 		*M = *App;
 		M->NumForName = i;
-		V.push_back(M);
 		return M->FileName();
 	}
-	void Allocate(int W) {
-		if (1<<(Log2i(W)-1)!=W) {
-			puts("Need a power of 2 for allocate.");
-			exit(-1);
-		}
-		Samples.resize(4 * W * W);
+	void Allocate(int N) {
+		Samples.resize(1<<N);
 		Buff.resize(Samples.size());
 	}
 	void CreateReps(int* Reps) {

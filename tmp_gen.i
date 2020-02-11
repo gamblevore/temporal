@@ -123,24 +123,6 @@ Gen(Memory) {
 }
 
 
-Gen(Sudo) { // just to test our numerical strength.
-	static int Oof = 1001;
-	int x = Oof;
-
-	while (Data < DataEnd) {
-		x ^= x >> 16;
-		x *= UINT32_C(0x43021123);
-		x ^= x >> 15 ^ x >> 30;
-		x *= UINT32_C(0x1d69e2a5);
-		x ^= x >> 16;
-		*Data++ = x;
-	}
-
-	Oof = x;
-	return 0;
-}
-
-
 u64 uint64_hash (u64 x) {
 	x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9ULL;
 	x = (x ^ (x >> 27)) * 0x94d049bb133111ebULL;
@@ -155,6 +137,21 @@ u64 Random64 () {
 	Start = uint64_hash(Start);
 	return Start;
 }
+
+
+Gen(Sudo) { // just to test our numerical strength.
+	static u64 Oof = 9709823597812817ULL;
+	u64 x = Oof;
+
+	while (Data < DataEnd) {
+		x = uint64_hash(x);
+		*Data++ = (u32)x;
+	}
+
+	Oof = x;
+	return 0;
+}
+
 
 
 NamedGen GenList[] = {
@@ -224,7 +221,7 @@ static void* GenerateWrapper (void* arg) {
 	
 	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
-	CollectStats(Out,  B.Space(),  B,  A.IsSudo() or !A.AllowSpikes);	
+	CollectStats(Out,  B.Space(),  B,  A.IsSudo());	
 	
 	return 0;
 }

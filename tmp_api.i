@@ -11,7 +11,7 @@ BookHitter* bh_create(bool Log) {
 	F.Log = Log;
 
 	try {
-		F.Allocate(1024);
+		F.Allocate(22);
 		F.CreateReps(0);
 		if (!F.Log)
 			F.LoadLists();
@@ -50,8 +50,8 @@ int bh_hitbooks (BookHitter* f, bh_output* Out) {
 	if (Out->Data) memset(Out->Data, 0, Out->DataLength);
 	
 	RandomBuildup B = {}; B.Remaining=Out->DataLength; B.Data = (u8*)Out->Data;
-	while (F.RandomnessALittle(B, *Out))
-		if (F.RandomnessBuild(B, *Out))
+	while (F.CollectPieceOfRandom(B, *Out))
+		if (F.AssembleRandoms(B, *Out))
 			return 0;
 
 	F.ResetApproach();
@@ -84,30 +84,28 @@ int main (int argc, const char* argv[]) {
 	atexit(CleanupMain);
 
 	puts(WelcomeMsg);
-
 	PrintProbabilities();
 	
 	bh_output TROut = {0, 1};
 	BookHitter& F = *bh_create(1);
-//	F.DebugProcessFile("/Users/theodore/Speedie/theories/temporal_research/steve_output/debias_me.png");
 
 	int Err = bh_hitbooks(&F, &TROut);
 
 	u8 DataBuff[4096];
 	TROut = {DataBuff, sizeof(DataBuff)};
-	ApproachVec V;
+	
+	auto html = F.HTML("steve.html",  "Randomness Test");
 	
 	for_(5) {
 		Err = bh_hitbooks(&F, &TROut);
 		if (Err) break;
-		WriteImg(DataBuff, sizeof(DataBuff), F.CollectInto(V, i+1));
+		html->WriteOne(&TROut, F.App, i+1);
 	}
-		
-	if (F.App)
-		F.CreateHTMLRandom(V,  "steve.html",  "Randomness Test");
-
+	
+	html->Finish();
 	bh_logfiles(&F);
 	bh_free(&F);
+
 	printf("\n");
 	return Err;
 }

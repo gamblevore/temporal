@@ -10,7 +10,7 @@ typedef u32					uSample;
 #define uSampleMax			(1ull<<(sizeof(uSample)*8))
 
 
-struct RandoStats;		struct GenApproach;		struct BookHitter;		struct NamedGen; 
+struct RandoStats;		struct GenApproach;		struct BookHitter;		struct NamedGen; 		struct HTML_Random;
 using   std::ofstream;  using std::string;		using std::to_string;	using std::shared_ptr;
 #define ref(x) std::shared_ptr<x>
 typedef std::vector<u8>		   				ByteArray;

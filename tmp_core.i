@@ -82,7 +82,7 @@ void BookHitter::DebugProcessFile(string Name) {
 
 	GenApproach FakeApp = {};
 	App = &FakeApp; 
-	Do_HistogramDebias	(*this, Start, n, Log);
+	Do_Histo	(*this, Start, n, Log);
 	App->Stats.Length = DoBitsToBytes(*this, Start, n);
 	DetectRandomness();
 	LogApproach("p");
@@ -150,7 +150,7 @@ static u8* XorCopy(u8* Src, u8* Dest, int N) {
 }
 
 
-bool BookHitter::RandomnessALittle (RandomBuildup& B, bh_output& Out) {
+bool BookHitter::CollectPieceOfRandom (RandomBuildup& B, bh_output& Out) {
 	require (B.Attempt <= 31);
 	require (LastGen or StabilityCollector( StabilityCount )); 
 	B.Chan = ViewChannel(B.Attempt/4).get();
@@ -176,10 +176,10 @@ void BookHitter::DebugRandoBuild(RandomBuildup& B, int N) {
 
 
 static int OntopCount;
-bool BookHitter::RandomnessBuild (RandomBuildup& B, bh_output& Out) {
+bool BookHitter::AssembleRandoms (RandomBuildup& B, bh_output& Out) {
 	int N = std::min(B.Avail, B.Remaining);
 	u8* Data = XorCopy(Extracted(), B.Data, N);
-	float MoreRando = B.RandomnessAdd(); 
+	float MoreRando = B.RandomnessAdded(); 
 	B.Score += MoreRando;
 	++B.Attempt;
 

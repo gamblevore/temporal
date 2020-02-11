@@ -72,42 +72,30 @@ struct Histo {
 
 
 #define BarCount 18
-struct HistogramConf {
-	float		Values[BarCount];
-	int			NMax;
-	
-	HistogramConf (int n) {
-		NMax = n;
-		for_(BarCount)
-			Values[i] = HistoProb(n, i);
-	}
-};
 
-
-ref(HistogramConf) OldHisto;
 struct Histogram {
 	Histo				Slot[BarCount];
+	float				Expected[BarCount];
 	int					LostBits;
-	ref(HistogramConf)	Expected;
+	int					NMax;
+	int					HalfIndex;
 	
 	Histogram (int n) {
+		HalfIndex = 0;
 		LostBits = 0;
-		SetConf(n);
+		NMax = n;
+		for (int i = BarCount - 1; i >= 1; i--) {
+			Expected[i] = HistoProb(n, i);
+			if (Expected[i] < 0.5)
+				HalfIndex = i;
+		}
+		Expected[0] = ((float)n)*0.5f;
 	}
 
 	Histo& operator[] (int i) {
 		return (Slot)[i];
 	}
-	
-	void SetConf(int n) {
-		if (OldHisto and OldHisto->NMax == n) {
-			Expected = OldHisto;
-		} else {
-			Expected = New2(HistogramConf, n);
-			OldHisto = Expected;
-		}
-	}
-	
+		
 	void Add(int Length, bool Prev) {
 		if (Length >= BarCount) {
 			int LengthMax = BarCount - 1;
@@ -126,8 +114,8 @@ struct Histogram {
 	Chances FlipBits(int x) {
   // If we have 10 too many, within 100, we will eliminate 1/10. in any random order
 		float Lim = 0;
-		if (x < BarCount-1)
-			Lim = Expected->Values[x] + Interp(Betweenness(x, 1, 11), 0.025, 0.5);
+		if (x < HalfIndex)
+			Lim = Expected[x] + Interp(Betweenness(x, 1, 11), 0.025, 0.5);
 		Histo TrueAndFalse = (*this)[x];
 		Chances Result;
 		for_(2) {
@@ -143,12 +131,12 @@ struct Histogram {
 
 static void HistogramVerify (Histogram& H) {
 	// Verify histogram
-	test(H[0][0] + H[0][1] == H.Expected->NMax);
+	test(H[0][0] + H[0][1] == H.NMax);
 	int Total = H.LostBits;
 	for (int i = 1; i < BarCount; i++)
 		Total += (H[i][0] + H[i][1])*i;
 
-	test(Total == H.Expected->NMax);
+	test(Total == H.NMax);
 }
 
 
@@ -192,10 +180,11 @@ static Histogram CollectHistogram (u8* Start, int n) {
 static void PrintProbabilities() {
 	printf("\n\nProbability Calculation\n\n");
 	int N = 64*1024;
-	for (int X = 1; X < BarCount; X++) {
+	int XEnd = 19;
+	for (int X = 1; X < XEnd; X++) {
 		float P = HistoProb(N, X);
 		if (!P) break;
-		if (X!=BarCount-1 and X>1)
+		if (X!=XEnd-1 and X>1)
 			printf(",  ");
 		printf("%i: ", X);
 		printf("%.3f%%", P*100);

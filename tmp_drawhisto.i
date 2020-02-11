@@ -48,10 +48,7 @@ static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraNam
 	
 	FOR_(b, MyBarCount) {
 		float* Values = H[b].Value;
-		float Exp = H.Expected->Values[b];
-		if (!b) {
-			Exp = N/2.0;
-		}
+		float Exp = H.Expected[b];
 		DrawRect(Start, TotalWidth, TotalHeight, x, BarWidth, 0, HScale(*Values++, Scale, Exp), 128);
 		x += BarWidth;
 		DrawRect(Start, TotalWidth, TotalHeight, x, BarWidth, 0, HScale(*Values++, Scale, Exp), 255);

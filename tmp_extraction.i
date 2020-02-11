@@ -14,6 +14,7 @@ static bool CanUseLength(int FoundLength, int SearchLength) {
 	return false;
 }
 
+
 static int DebiasSectionsOfLength (Histogram& H, u8* Start, int n, int x, GenApproach* App) {
 	auto TF = H.FlipBits(x); // We won't add missing parts. it's just to break up computery patterns.
 	if (TF.NoNeed())
@@ -101,44 +102,42 @@ static void PerfectBitDebias (u8* Start, int n, GenApproach* App) {
 }
 
 
-static void Do_HistogramDebias (BookHitter& B, u8* Start, int n, bool Log) {
+static int Do_Histo (BookHitter& B, u8* Start, int n, bool Log) {
 	if (n==9) DebugPrintBuff(Start, n); // stop strip
 	if (Log) {
 		Histogram H2 = CollectHistogram(Start, n);
 		DrawHistogram(B, H2, n, "");
 	}
 	
-	Histogram H = CollectHistogram(Start, n);
-	
-	for (int i = BarCount - 1; i >= 1; i--)
-		n = DebiasSectionsOfLength(H, Start, n, i, B.App);
+	if (AllowDebiaser) {
+		Histogram H = CollectHistogram(Start, n);
+		for (int i = BarCount - 1; i >= 1; i--)
+			n = DebiasSectionsOfLength(H, Start, n, i, B.App);
+	}
+
 	PerfectBitDebias(Start, n, B.App);
 	
 	if (Log) {
 		Histogram H2 = CollectHistogram(Start, n);
 		DrawHistogram(B, H2, n, "p");
 	}
+	return n;
 }
 
 
 static u8* VonSub(u8* Read, u8* Write, int n) {
-	u8* WriteEnd = Write + n/2;
 	for_(n) {
 		u8 A = *Read++;
 		if (A != *Read++)
 			*Write++ = A;
-	}
-	while (Write<WriteEnd) {
-		*Write++ = 0;
 	}
 	return Write;
 }
 
 
 static int Do_Vonn (u8* Start, int n) {
-	n>>=1;
-	u8* Write = VonSub(Start,   Start, n);
-	Write = VonSub(Start, Write, n-1);
+	n >>= 1;
+	u8* Write = VonSub(Start, Start, n);
 	return (int)(Write - Start);
 }
 
@@ -165,8 +164,8 @@ static int DoBitsToBytes (BookHitter& B, u8* WorkSpace, int n) {
 		WorkSpace[i] = oof;
 	}
 
-	// need to test it works...
 #if DEBUG
+	// need to test it works...
 	ByteArray RoundTrip(n);
 	DoBytesToBits(&WorkSpace[0], nSmall, &RoundTrip[0]);
 	for_(nSmall*8)
@@ -224,15 +223,17 @@ static void ExtractRandomness (BookHitter& B, int Mod, bool Debias, bool Log) {
 	u8* Start = B.Extracted();
 	
 	n = DoModToBit			(B, Start, Mod, n);
-	n = DoXorShrink			(Start, 16, n);
+	n = DoXorShrink			(Start, 16, n); // 16 seems good?
 	
 	if (!B.App->IsSudo()) {
 		n = Do_Vonn			(Start, n);
 		if (n < 128) return;
+	} else {
+		n = (float)n * 0.23f; // sudo is just for comparison! want fair data-size to compare with.
 	}
 
 	if (Debias)
-		Do_HistogramDebias	(B, Start, n, Log);
+		n = Do_Histo		(B, Start, n, Log);
 	n = DoBitsToBytes		(B, Start, n);
 	B.App->Stats.Length = n;
 }
