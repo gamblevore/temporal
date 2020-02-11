@@ -10,6 +10,7 @@
 
 //  TODO:
 //  * Histogram... use it.
+//  * chaotic randomness? use multiple code-paths!
 //  * Use lasting statistical-mean in the stablity sorter! 
 //  * Save the expected score? So if it gets worse suddenly, we switch lists
 

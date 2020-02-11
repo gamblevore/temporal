@@ -23,8 +23,7 @@ static int DebiasSectionsOfLength (Histogram& H, u8* Start, int n, int x, GenApp
 	bool Active = !App->IsSudo();
 	bool Prev = Start[0];
 	auto End = Start + n;
-	auto Section = Start;
-	u32  BitsRandomised = 0;
+	auto BeginPrevSection = Start;
 	u8*  Write = Start;
 	u8*  LastRead = Start;
 	
@@ -33,24 +32,24 @@ static int DebiasSectionsOfLength (Histogram& H, u8* Start, int n, int x, GenApp
 		if (C == Prev)
 			continue;
 			
-		int Length = (int)(Curr - Section);
+		int PrevLength = (int)(Curr - BeginPrevSection);
 		Prev = C;
-		Section = Curr;
 
-		if (!CanUseLength(Length, x) or !TF.FlipThisBit(Prev)) continue;
-		// don't alter histogram? assume it's mostly OK? just see how well it does.
-		BitsRandomised += Length;
-		if (Active) continue;
-		for_(Length)
-			*Write++ = LastRead[i];
-		LastRead = Curr;
+		if (CanUseLength(PrevLength, x) and TF.FlipThisBit(Prev)) {
+			App->Stats.BitsRandomised += PrevLength;
+			if (Active) {
+				while (LastRead < BeginPrevSection)
+					*Write++ = *LastRead++;
+				LastRead = Curr; // delete previous section
+			}
+		}
+		
+		BeginPrevSection = Curr;
 	}
 	
-	int Length = (int)(End - LastRead);
-	for_(Length) 
-		*Write++ = LastRead[i];
+	while (LastRead < End)
+		*Write++ = *LastRead++;
 	
-	App->Stats.BitsRandomised += BitsRandomised;
 	return (int)(Write - Start);
 }
 
