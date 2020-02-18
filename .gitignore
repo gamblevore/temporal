@@ -37,6 +37,7 @@ Thumbs.db
 ########################
 /Debug/
 /temporal_research.build/
+*.build/
 temporal
 time_imgs
 time_out
