@@ -1,113 +1,104 @@
 
-extern "C" { // A simple C API!
 
 
-BookHitter* bh_create(bool Log) {
+BookHitter* bh_create() {
 	auto G = new BookHitter;
 	auto& F = *G;
 	require (G);
 
-	F = {};
-	F.Log = Log;
+	*G = {};
 
 	try {
-		F.Allocate(22);
+		F.StopStrip(); // for debugging
+		F.Allocate(1<<(21+DEBUG_AS_NUM));
 		F.CreateReps(0);
-		if (!F.Log)
-			F.LoadLists();
+		F.LoadLists();
 	} catch (std::bad_alloc& e) {
 		std::cerr << e.what();
 	}
 	return G;
 }
 
+
+void bh_use_log(BookHitter* f, bool Active) {
+	f->Log = Active;
+	if (Active) {
+		f->CPU_Modes = {};
+		f->CreateDirs();
+	}
+}
+
+
 void bh_logfiles(BookHitter* f) {
 	for (auto S : FilesToOpenLater)
 		OpenFile(S);
 }
+
 
 void bh_free (BookHitter* f) {
 	delete(f);
 }
 
 
-void bh_conf (BookHitter* f, int Channel, int* RepList) {
+void bh_use_temporal (BookHitter* f, int Channel) {
 	f->UserChannel = Channel;
+	f->CreationMode = kModeTemporal;
+}
+
+
+void bh_use_retro (BookHitter* f, int Channel) {
+	f->UserChannel = Channel;
+	f->CreationMode = kModeRetroCausal;
+}
+
+
+void bh_use_pseudo (BookHitter* f) {
+	f->UserChannel = 0;
+	f->CreationMode = kModePseudo;
+}
+
+
+void bh_set_reps (BookHitter* f, int* RepList) {
 	f->CreateReps(RepList);
 }
 
 
-void bh_detect (BookHitter* f, bh_output* Out) {
-	GenApproach App = {};
-	Out->GenerateTime = 0; Out->WorstScore = 0; Out->ProcessTime = 0;
-	DetectRandomness_(App, (u8*)Out->Data, Out->DataLength);
-}
-
-
-int bh_hitbooks (BookHitter* f, bh_output* Out) {
-	Out->GenerateTime = 0; Out->WorstScore = 0; Out->ProcessTime = 0;
+bh_output bh_hitbooks (BookHitter* f, u8* Data, int DataLength) {
 	auto &F = *f;
-	if (Out->Data) memset(Out->Data, 0, Out->DataLength);
+	if (Data) memset(Data, 0, DataLength);
 	
-	RandomBuildup B = {}; B.Remaining=Out->DataLength; B.Data = (u8*)Out->Data;
-	while (F.CollectPieceOfRandom(B, *Out))
-		if (F.AssembleRandoms(B, *Out))
-			return 0;
+	RandomBuildup B = {Data, DataLength};
+	bh_output Result = {};
+	while (F.CollectPieceOfRandom(B, Result))
+		if (F.AssembleRandoms(B, Result))
+			return Result;
 
 	F.ResetApproach();
-	if (!f->Time.Error) f->Time.Error = -1;
-	return f->Time.Error;
+	Result.Err = f->Time.Error;
+	if (!Result.Err) Result.Err = -1;
+	return Result;
 }
 
 
-
-static string RestoreDir;
-static void CleanupMain () {
-	IgnoredError = chdir(RestoreDir.c_str());
-}
-
-
-static const char* WelcomeMsg = R"(Reesurrch iN2 teMpOwAls!!
-
-Gennewaits pngs 4 u 2 chekk iFf dA randOmNesS "seems gud".
-
-Uses da ~RAndoMnEss~ in "hoW loNg" da instruction taykes, 4 fizzicalie bassed raNdoMness.
-
-No idea if dis RanDmoNess iz "gud"? Seems ~eggsiiting~! >:3
-)";
-
-
-int main (int argc, const char* argv[]) {
-	sizecheck(u64, 8);  sizecheck(u32, 4);  sizecheck(u16, 2);  sizecheck(u8, 1);
-	
-	RestoreDir = getcwd(0, 0);
-	atexit(CleanupMain);
-
-	puts(WelcomeMsg);
-	PrintProbabilities();
-	
-	bh_output TROut = {0, 1};
-	BookHitter& F = *bh_create(1);
-
-	int Err = bh_hitbooks(&F, &TROut);
-
-	u8 DataBuff[4096];
-	TROut = {DataBuff, sizeof(DataBuff)};
-	
-	auto html = F.HTML("steve.html",  "Randomness Test");
-	
-	for_(5) {
-		Err = bh_hitbooks(&F, &TROut);
-		if (Err) break;
-		html->WriteOne(&TROut, F.App, i+1);
+uSample* bh_pre_extract(BookHitter* B, int N) {
+	try {
+		B->Allocate(N);
+		return B->Out();
+	} catch (std::bad_alloc& e) {
+		std::cerr << e.what();
 	}
+	return 0;
+}
+
+
+int bh_extract_entropy(BookHitter* B_, uSample* Samples, int N, bh_output* Out) {
+	auto B = *B_;
+	GenApproach App = {};
+	B.App = &App;
 	
-	html->Finish();
-	bh_logfiles(&F);
-	bh_free(&F);
-
-	printf("\n");
-	return Err;
+	FindSpikesAndLowest(B.Out(),  N,  B,  false);	
+	PreProcess(B);
+	
+	return B.UseApproach(Out);
 }
 
-}

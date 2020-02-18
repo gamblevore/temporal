@@ -64,6 +64,11 @@ struct GenApproach {
 	u64 StablePRndSeed(u64 i = 0) { // Stable-pRnd that changes between runs.
 		return (UseCount + 1 + i) * (100 + Reps);
 	}
+	u32 Cap(u32 Mod) {
+		if (IsSudo()) return -1;
+		u32 H = Highest;
+		return H - (H % Mod);
+	}
 
 	bool IncreaseRank (u32 i) {
 		u32 Desired = (u32)StableRank + i;
@@ -75,6 +80,7 @@ struct GenApproach {
 		if (!IsSudo())          name += to_string(Reps);
 		if (PhysicalSystem)		name += "b";
 		if (UseMidPoint)		name += "p";
+		if (NumForName)   		name += "_loop" + to_string(NumForName);
 		return name;
 	}
 	string Name() {
@@ -84,8 +90,7 @@ struct GenApproach {
 		return FileName_(this, s);
 	}
 	static string Name_(GenApproach* App) {
-		if (App->NumForName)   return string("loop_") + to_string(App->NumForName);
-		if (App->Stats.Type)   return MaxNames[App->Stats.Type];
+		if (App and App->Stats.Type)   return MaxNames[App->Stats.Type];
 		if (!App or !App->Gen) return "unknown_";
 		return App->NameSub();
 	}
@@ -131,9 +136,9 @@ struct RandTest {
 
 struct RandomBuildup {
 	u8*				Data;
+	int				Remaining;
 	GenApproach*    Chan;
 	float			Score;
-	int				Remaining;
 	int				Avail;
 	int				Attempt;
 	
@@ -162,7 +167,11 @@ struct BookHitter {
 	NamedGen*		LastGen;
 	pthread_t		GeneratorThread;
 	SampleVec		Samples;
+	IntVec			SampleHisto;
+//	ByteArray		SampleHistoGroups; // didn't seem to help.
+	IntVec			CuriosityHisto;
 	ByteArray		Buff;
+	ByteArray		BSL;
 	IntVec			RepList;
 	ApproachMap		Map;
 	ApproachVec		Approaches;
@@ -171,11 +180,12 @@ struct BookHitter {
 	ApproachVec		MinMaxes;
 	TimeStats   	Time;
 	bool			CreatedDirs;
-	u16				LastReps:15;
-	u16				Log:1;
-	short			UserChannel;
+	bool			Log;
+	u8				UserChannel;
+	u8				CreationMode;
+	u16				LastReps;
 
-	void DetectRandomness ();
+	float DetectRandomness ();
 	void DebugRandoBuild(RandomBuildup& B, int N);
 	void CreateDirs();
 	void CreateHTMLRandom(ApproachVec& V, string Name, string Title);
@@ -187,13 +197,15 @@ struct BookHitter {
 	ref(HTML_Random) HTML(string s, string n);	
 	bool LoadListsSub(string Path);
 	void CreateApproaches();
-	int  UseApproach (bh_output& Out);
+	int  UseApproach (bh_output* Out);
 	bool NextApproachOK(GenApproach& App);
 	bool AssembleRandoms (RandomBuildup& B, bh_output& Out);
 	bool CollectPieceOfRandom (RandomBuildup& B, bh_output& Out);
 	bool StabilityCollector(int N);
+	float FinalExtractAndDetect (int Mod);
 	void SortByBestApproach();
-	void LogApproach(const char* name);
+	void TryLogApproach(string name);
+	string UniqueReps(GenApproach* App, int R, int S);
 	string FileName(string s="") {
 		return GenApproach::FileName_(App, s);
 	}
@@ -211,7 +223,10 @@ struct BookHitter {
 		return (CurrSorted())[i % CurrSorted().size()];
 	}
 	ref(GenApproach) operator[] (string Name) {
-		return Map[Name];
+		auto oof = Map.find(Name);
+		if (oof != Map.end())
+			return (oof->second);
+		return 0;
 	}
 	ApproachVec& CurrSorted() {
 		return (*CPU_Modes[0]);
@@ -223,6 +238,9 @@ struct BookHitter {
 	}
 	uSample* Out() {
 		return &(Samples[0]);
+	}
+	u8* BitSections() {
+		return &BSL[0];
 	}
 	u8* Extracted() {
 		return &(Buff[0]);
@@ -236,21 +254,17 @@ struct BookHitter {
 		M->Stats.Type = Type;
 		MinMaxes.push_back(M);
 	}
-	string CollectInto(int i) {
-		auto M = New(GenApproach);
-		*M = *App;
-		M->NumForName = i;
-		return M->FileName();
-	}
 	void Allocate(int N) {
-		Samples.resize(1<<N);
-		Buff.resize(Samples.size());
+		Samples.resize(N);
+		Buff.resize(Samples.size()/8);
+		BSL.resize(Samples.size()+1);
 	}
+	void StopStrip();
 	void CreateReps(int* Reps) {
 		if (!Reps) {
 			RepList = {3, 5, 9, 10, 17, 25, 36, 88, 123, 179};
 			#if DEBUG
-				RepList = {5, 9, 17, 25};
+				RepList = {25, 5, 9, 17};
 			#endif
 		} else {
 			RepList = {};

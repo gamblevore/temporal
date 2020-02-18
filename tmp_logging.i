@@ -10,13 +10,6 @@ void OpenFile(string Path) {
 }
 
 
-static void WriteImg (u8* Data, int N, string Name) {
-	stbi_write_png_compression_level = 9;
-	int W = sqrt(N);
-	stbi_write_png(Name.c_str(), W, W, 1, Data, W);
-}
-
-
 static string ReadFile (string name, int MaxLength) {
 	struct stat sb;
 	require (stat(name.c_str(), &sb)==0);
@@ -47,8 +40,8 @@ static void HTMLImg(std::ofstream& ofs, GenApproach* V) {
 	ofs << "<td>";
 	if (R.Stats.Length and !R.Stats.Type) {
 		ofs << "<div class='img_ontop'>\n";
-		ofs << "<img class='debiased' src='" + R.FileName("p") + "' />\n";
-		ofs << "<img class='main'  src='" + R.FileName()+"' />\n";
+		ofs << "<img class='behind'  src='" + R.FileName()+"' />\n";
+		ofs << "<img class='main' src='" + R.FileName("p") + "' />\n";
 		ofs << "<img class='histo' src='" + R.FileName("h") + "' />\n";
 		ofs << "</div><br/>\n";
 	}
@@ -75,7 +68,7 @@ struct HTML_Random {
 	string			Title;
 	std::ofstream	ofs;
 	string			Path;
-	int				Varations;
+	int				Variations;
 	bool			Started;
 	BookHitter*		B;
 
@@ -83,7 +76,7 @@ struct HTML_Random {
 	HTML_Random(string fn, string t, BookHitter* b) {
 		FileName = fn;
 		Title = t;
-		Varations = 0;
+		Variations = 0;
 		Started = false;
 		ofs = {};
 		B = b;
@@ -92,7 +85,7 @@ struct HTML_Random {
 	
 	void Start() {
 		if (Started) return; Started = true;
-		string Path = string(getcwd(0, 0)) + string("/") + FileName;
+		Path = string(getcwd(0, 0)) + string("/") + FileName;
 		ofs.open (Path);
 	
 		ofs << R"(<html>
@@ -130,7 +123,7 @@ img {
 	height:	32px;
 	width:	32px;
 }
-.debiased {
+.behind {
 	position: absolute;
 	top:	0;
 	left:	0;
@@ -169,27 +162,29 @@ img {
 	}
 
 
-	void WriteOne(bh_output* Data, GenApproach* App, int i) {
+	void WriteOne(u8* Data, int Length, GenApproach* App) {
 		if (Data) {
-			App->NumForName = i+1;
-			WriteImg((u8*)(Data->Data),  Data->DataLength,  App->FileName());
+			App->NumForName = Variations+1;
+			WriteImg(Data,  Length,  App->FileName());
 		}
 		
 		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr>\n"; 
 		if (!App->Stats.Length) return;
-		if (i++ % 8 == 0) ofs << Row;
+		if (Variations % 8 == 0) ofs << Row;
 		HTMLImg(ofs, App);
+
+		Variations++;
 	}
 	
 
 	void Finish() {
-		printf(":: %i Randomness variations!  :: \n", Varations);
+		printf(":: %i Randomness variations!  :: \n", Variations);
 		
 		ofs << R"(
-	</tr>
-	</table>
-	</body>
-	</html>)";
+</tr>
+</table>
+</body>
+</html>)";
 		
 		ofs.close();
 		if (B->LogOrDebug())
@@ -201,8 +196,6 @@ img {
 
 
 ref(HTML_Random) BookHitter::HTML(string fn, string t) {
-//	WriteImg(DataBuff, sizeof(DataBuff), F.CollectInto(V, i+1));
-
 	auto Result = New4(HTML_Random, fn, t, this);
 	Result->Start();
 	return Result;
@@ -210,12 +203,10 @@ ref(HTML_Random) BookHitter::HTML(string fn, string t) {
 
 
 void BookHitter::CreateHTMLRandom(ApproachVec& V, string FileName, string Title) {
-	printf(":: %li Randomness variations!  :: \n", V.size());
 	auto html = HTML(FileName, Title);
 
-	int i = 0;
 	for (auto R : V) {
-		html->WriteOne(0, R.get(), i);
+		html->WriteOne(0, 0, R.get());
 	}
 	
 	html->Finish();
@@ -234,10 +225,11 @@ void BookHitter::CreateDirs() {
 }
 
 
-void BookHitter::LogApproach(const char* Debiased="") {
-	if (LogOrDebug()) {
-		CreateDirs();
-		int N = App->Stats.Length;
-		WriteImg(Extracted(), N, App->FileName(Debiased));
-	}
+void BookHitter::TryLogApproach(string Debiased="") {
+	if (!LogOrDebug()) return;
+	int N = App->Stats.Length;
+	if (Debiased!="")
+		WriteColorImg(Extracted(), N, App->FileName(Debiased));
+	  else
+		WriteColorImg(Extracted(), N, App->FileName());
 }

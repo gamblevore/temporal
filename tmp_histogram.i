@@ -85,7 +85,7 @@ struct Histogram {
 		LostBits = 0;
 		NMax = n;
 		for (int i = BarCount - 1; i >= 1; i--) {
-			Expected[i] = HistoProb(n, i);
+			Expected[i] = HistoProbSlot(n, i);
 			if (Expected[i] < 0.5)
 				HalfIndex = i;
 		}
@@ -96,14 +96,17 @@ struct Histogram {
 		return (Slot)[i];
 	}
 		
-	void Add(int Length, bool Prev) {
-		if (Length >= BarCount) {
-			int LengthMax = BarCount - 1;
-			LostBits += (Length - LengthMax);
-			Length = LengthMax;
+	void Add(int Length, bool B) {
+		if (Length) {
+			(*this)[0][B] += Length;							// Collect true-false separately.
+			if (Length >= BarCount) {
+				int LengthMax = BarCount - 1;
+				LostBits += (Length - LengthMax);
+				Length = LengthMax;
+			}
+			
+			(*this)[Length][B] += 1;
 		}
-		
-		(*this)[Length][Prev] += 1;
 	}
 	
 	void Reset () {
@@ -131,7 +134,9 @@ struct Histogram {
 
 static void HistogramVerify (Histogram& H) {
 	// Verify histogram
-	test(H[0][0] + H[0][1] == H.NMax);
+	int Expected = H.NMax; 
+	int Found = H[0][0] + H[0][1];
+	test(Expected == Found);
 	int Total = H.LostBits;
 	for (int i = 1; i < BarCount; i++)
 		Total += (H[i][0] + H[i][1])*i;
@@ -140,49 +145,51 @@ static void HistogramVerify (Histogram& H) {
 }
 
 
-static Histogram CollectHistogram (u8* Start, int n) {
-	Histogram H(n);
-	int Length = 0;
-	bool Prev = Start[0];
-	for_(n) {
-		bool b = Start[i];
-		H[0][b]++;							// Collect true-false separately.
-		if (b != Prev) {
-			H.Add(Length, Prev);
-			Prev = !Prev;
-			Length = 0;
-		}
-		Length++;
-	}
-	H.Add(Length, Prev);
+static Histogram CollectHistogram (BitSections X) {
+	Histogram H(X.BitLength);
+
+	for_(X.Length)
+		H.Add(X[i], i&1);
+	
 	HistogramVerify(H);
 	return H;
 }
 
 
-[[maybe_unused]] static void BitsCollectHistogram (Histogram& H, u64 Start, int n) {
-	int Length = 0;
-	bool Prev = Start&1;
-	for_(n) {
-		bool b = Start&(1<<i);
-		H[0][b]++; // collect true-false separately.
-		if (b != Prev) {
-			H.Add(Length, Prev);
-			Prev = !Prev;
-			Length = 0;
-		}
-		Length++;
-	}
-	H.Add(Length, Prev);
+static float HistoInputRandoOne(Histogram& H, int i, bool b) {
+	if (i==0) return 0;
+	float Expected = H.Expected[i];
+	float Occur = H[i][b];
+	float Diff = fabsf(Expected - Occur);
+	float Int = 0;
+	float IgnoredFr = modff(Diff, &Int);
+	float Allowed = IgnoredFr - 0.5;
+	if (Allowed > 0)
+		Diff -= Allowed; // discontinuous
+		
+	float Badness = (Diff*Diff) / Expected;
+	
+	return Badness / 1000.0;
+	return sqrt(Badness) / 500.0;
 }
 
 
-static void PrintProbabilities() {
+static float HistoInputRandomness(Histogram& H) {
+	float Result = 0;
+	for_(BarCount-1) {
+		Result += HistoInputRandoOne(H, i+1, true);
+		Result += HistoInputRandoOne(H, i+1, false);
+	}
+	return Result;
+}
+
+
+Ooof void PrintProbabilities() {
 	printf("\n\nProbability Calculation\n\n");
 	int N = 64*1024;
 	int XEnd = 19;
 	for (int X = 1; X < XEnd; X++) {
-		float P = HistoProb(N, X);
+		float P = HistoProbSlot(N, X);
 		if (!P) break;
 		if (X!=XEnd-1 and X>1)
 			printf(",  ");

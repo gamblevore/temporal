@@ -43,7 +43,7 @@ bool BookHitter::StabilityCollector(int N) {
 		if (Log) printf( "\n\n:: Stability %i/%i :: \n", i+1, N );
 		for (auto App : Approaches) { 
 			if (!NextApproachOK(*App)) return false;
-			UseApproach(Out);
+			UseApproach(&Out);
 		}
 		AddToStabilityRank();
 	}

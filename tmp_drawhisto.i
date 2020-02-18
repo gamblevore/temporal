@@ -56,7 +56,6 @@ static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraNam
 		x += BarGap;
 	}
 	
-	B.CreateDirs();
 	WriteImg(Start, Size, B.FileName(ExtraName + "h"));
 }
 

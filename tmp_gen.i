@@ -139,6 +139,90 @@ u64 Random64 () {
 }
 
 
+
+Gen(Chaotic) {
+	u32 CachedMemory[1024]; // 4KB of data.
+	const float fx0 = Input + 1;
+	const float fy0 = Input + 1;
+	ax = Input + 1;
+	ay = Input + 1;
+	float fx = 0;
+	float fy = 0;
+	u32 f = (Input == 0);
+	u64 x = Input + 1;
+	u64 y = Input + 1;
+	u32 Place = 0;
+	u32 index = 0;
+
+
+	const void* ChaosTable[] = {&&Floats, &&Time, &&Bool, &&Floats2, &&Atomic2, &&BitOps, &&Atomic, &&Memory};
+
+	Time_ (Reps) {
+		u32 Index = TimeFinish >> ((i^x)%32); 
+		goto* ChaosTable[(Index^i)%8];
+
+Floats:
+		fx = fx0;
+		fy = fy0;
+		fy = fy + 1000.5;
+		fx = fx / 2.0;
+		x = fx;
+		goto Finish;
+		
+Floats2:
+		fx = floor(fx)	 - (fx * 5000000.0);
+		fx += fy + 1.0;
+		x = fx;
+		goto Finish;
+
+Time:
+		x = x xor Time32();
+		x = x xor Time32();
+		goto Finish;
+
+Bool:
+		f = (f&1) and (x&1);
+		x = (bool)x or (bool)f;
+		x = (bool)f or (bool)x;
+		f = (bool)x and (bool)f;
+		goto Finish;
+		
+BitOps:
+		y = y + 981723981723;
+		x = x xor (x << 63);
+		x = x xor (x >> 59);
+		x = x xor (x << 5);
+		x += y;
+		goto Finish;
+
+Atomic:
+		ay = ay + 981723981723;
+		ax = ax xor (ax << 63);
+		x = ax;
+		goto Finish;
+
+Atomic2:
+		ax = ax xor (ax >> 59);
+		ax = ax xor (ax << 5);
+		ax += ay;
+		x = ax;
+		goto Finish;
+		
+Memory:
+		index = Place++ % 1024;
+		x = x xor CachedMemory[index];
+		CachedMemory[index] = (u32)x;
+		goto Finish;
+
+Finish:;
+	} TimeEnd
+	
+	return x + (int)fx;
+}
+
+
+
+
 Gen(Sudo) { // just to test our numerical strength.
 	static u64 Oof = 9709823597812817ULL;
 	u64 x = Oof;
@@ -155,14 +239,14 @@ Gen(Sudo) { // just to test our numerical strength.
 
 
 NamedGen GenList[] = {
+	{FloatSameGenerator,	"float",	10			},
+	{SudoGenerator,			"pseudo",	10,	kSudo 	},
 	{AtomicGenerator,		"atomic",	40			}, // rated at 4x slowness
 	{BoolGenerator,			"bool",		10			},
-	{FloatSameGenerator,	"float",	10			},
 	{BitOpsGenerator,		"bitops",	10			},
 	{MemoryGenerator,		"memory",	10			},
 	{TimeGenerator,			"time",		10			},
-//	{CameraGenerator,		"Camera",	10		 	},
-	{SudoGenerator,			"Pseudo",	10,		1 	},
+	{ChaoticGenerator,		"chaotic",	20			},
 	{},
 };
 
@@ -177,7 +261,7 @@ NamedGen* NextGenerator(NamedGen* G) {
 }
 
 
-static void CollectStats (uSample* Results, int Count, BookHitter& S, bool NoMax) {
+static void FindSpikesAndLowest (uSample* Results, int Count, BookHitter& S, bool NoMax) {
 	u32 Lowest = -1;
 	for_ (Count)
 		Lowest = std::min(Lowest, (u32)Results[i]);
@@ -221,92 +305,146 @@ static void* GenerateWrapper (void* arg) {
 	
 	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
-	CollectStats(Out,  B.Space(),  B,  A.IsSudo());	
+	FindSpikesAndLowest(Out,  B.Space(),  B,  A.IsSudo());	
 	
 	return 0;
 }
 
 
-static bool AllDivisible (BookHitter& B, const int oof) {
-	int Divisible = 0;
-	auto Data = B.Out();
-	int n = B.Space();
-	for_(n)
-		Divisible += ((*Data++) % oof == 0);
+
+const int HistoMax = 1024; 
+const int HistoMask = HistoMax - 1; 
+
+
+Ooof void PrintHisto (BookHitter& B) {
+	auto S = B.App->Name();
+	printf("Histogram for %s:\n", S.c_str());
+	for (auto i:B.SampleHisto)
+		printf("%i, ", i);
+	printf("0\n");
+	// So... what do we do even? We want to split the histogram... in two.
+	// or multiple groups. How we split is also interesting.
+}
+
+
+static void GroupHisto (BookHitter& B) {
+// I wanted to do some kinda mid-point split here...
+// turns out, it completely failed because the output tends to clump up in ranges.
+// We get ranges of 40-50, then ranges of 70-90, then ranges of 30-20... etc
+// meaning we'd get mostly long strings of white/black. Entirely useless. good idea though.
+// Just use the low bits for now...
+
+	int H = 0;
+	auto& HList = B.SampleHisto;
+	for_(HList.size())
+		if (HList[i]) H = i;
+	B.App->Highest = H;
+}
+
+
+static bool CanDivide (BookHitter& B, const int oof) {
+	int CantDivRemain = (B.Space() / 128);					// 1%
+	int n = (int)B.SampleHisto.size();
+	for_(n) {
+		if (!(i % oof)) continue; // indivisible
+
+		int V = B.SampleHisto[i];
+		CantDivRemain -= V;
+		if (CantDivRemain <= 0) return 0;
+	}
 	
-	int AtLeastThisManyNeeded = n - (n / 128); // 99%
-	require (Divisible >= AtLeastThisManyNeeded);
-	
-	Data = B.Out();
-	auto Write = Data;
-	for_(n)
-		*Write++ = *Data++ / oof;
 	return true;
 }
 
 
-static void FindHighest (BookHitter& B) {
+static bool DoDivide (BookHitter& B, const int oof) {
 	auto Data = B.Out();
-	int n = B.Space();
-	u32 H = 0;
-	for_(n)
-		H = std::max(*Data++, H);
-	if (!H) debugger;
-	B.App->Highest = H;
-}
-
-static void Divide_Pre (BookHitter& P) {
-	for (int oof = 15; oof >= 3; oof -= 2)
-		if (AllDivisible(P, oof)) break;
-}
-
-
-static void BitShift_Pre (BookHitter& B) {
-	u32 Bits = 0;
-	auto Data = B.Out();
+	auto Write = Data;
 	int n = B.Space();
 	for_(n)
-		Bits |= *Data++;
-	
-	if (!Bits) return;
+		*Write++ = *Data++ / oof;
 
-	int Count = 0;
-	while (~Bits & 1<<Count)
-		Count++;
+// Update histogram
+	auto& H = B.SampleHisto;
+	int RunningTotal = 0;
+	for_(HistoMax) {
+		int Low  =     i * oof;
+		int High = (i+1) * oof - 1;
+		High = std::min(High, HistoMax-1);
+		int Total = 0;
+		for (int Read = Low; Read <= High; Read++) {
+			Total += H[Read];
+		}
+		RunningTotal += Total;
+		H[i] = Total;
+	}
 	
-	if (!Count) return;
+	if (RunningTotal!=n) debugger; // wat?
+	return true;
+}
+
+
+static void RawHisto (BookHitter& B) {
+
+	auto& H = B.SampleHisto;
+	auto& C = B.CuriosityHisto;
+	auto Data = B.Out();
+	int n = B.Space();
 	
-	Data = B.Out();
 	for_(n) {
-		auto V = *Data;
-		*Data++ = V >> Count;
+		u32 s = Data[i];
+		H[s & HistoMask]++;
+
+		if (s <= HistoMask) continue;
+		Data[i] = s & HistoMax;
+		s >>= 10;
+		C[s & HistoMask]++;
 	}
 }
 
 
-static bool TemporalGeneration(BookHitter& P, GenApproach& App) {
+static bool Divided(BookHitter &B) {
+	const int List[] = {4, 2, 13, 11, 7, 5, 3};
+	for (auto oof:List)
+		if (CanDivide(B, oof))
+			return DoDivide(B, oof);
+	return false;
+}
+
+
+static void PreProcess (BookHitter& B) {
+	B.App->Highest = 0;
+	B.SampleHisto.assign(HistoMax, 0);
+	B.CuriosityHisto.assign(HistoMax, 0);
+	if (B.App->IsSudo()) return;
+	
+	RawHisto(B);
+	while (Divided(B));
+	GroupHisto(B);
+}
+
+
+static bool TemporalGeneration(BookHitter& B, GenApproach& App) {
 	auto t_Start = Now();
-	P.App = &App;
-	P.Time = {};
+	B.App = &App;
+	B.Time = {};
 	App.Stats = {};
-	int Err = pthread_create(&P.GeneratorThread, NULL, &GenerateWrapper, &P);
-	if (!Err) Err = pthread_join(P.GeneratorThread, 0);
-	if (Err)  P.Time.Error = Err;
-	if (P.Time.Error) {
-		fprintf( stderr, "temporal generation err for '%s': %i\n", App.Gen->Name, P.Time.Error);
+	
+	int Err = pthread_create(&B.GeneratorThread, NULL, &GenerateWrapper, &B);
+	if (!Err) Err = pthread_join(B.GeneratorThread, 0);
+	if (Err)  B.Time.Error = Err;
+	
+	if (B.Time.Error) {
+		fprintf( stderr,  "temporal generation err for '%s': %i\n",  App.Gen->Name,  B.Time.Error);
 	} else {
 		App.UseCount++;
-		P.LastGen = App.Gen;
-		P.LastReps = App.Reps;
-		BitShift_Pre(P);
-		for_(3)
-			Divide_Pre(P);
-		FindHighest(P);
+		B.LastGen = App.Gen;
+		B.LastReps = App.Reps;
+		PreProcess(B);
 	}
 	
-	P.Time.Generation = ChronoLength(t_Start);
+	B.Time.Generation = ChronoLength(t_Start);
 	return !Err;
 }
-
 
 #pragma GCC pop_options

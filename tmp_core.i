@@ -22,71 +22,45 @@ void BookHitter::FindMinMax() {
 }
 
 
-static float ExtractAndDetect (BookHitter& B, int Mod, bool Debias, bool Log) {
-	auto& App = *B.App;
-	if (Log or !Debias) {
-		ExtractRandomness(B, Mod, false, Log);
-		if (Log)
-			B.LogApproach();
-	}
-		
-	if (Debias) {
-		ExtractRandomness(B, Mod, true, Log);	
-		if (Log)
-			B.LogApproach("p");
-	}
+float BookHitter::FinalExtractAndDetect (int Mod) {
+	ExtractRandomness(*this, 0,   false, true);
+	TryLogApproach();
+	ExtractRandomness(*this, Mod, true, false);	
+	TryLogApproach("p");
 	
-	B.DetectRandomness();
-	B.FindMinMax();
-	return App.Stats.Worst;
+	return DetectRandomness();
 }
 
 
-static int FinishApproach(BookHitter& B, bh_output& Out, float Time) {
+static int FinishApproach(BookHitter& B, bh_output* Out, float Time) {
 	B.Time.Processing = Time;
-	Out.GenerateTime += B.Time.Generation + B.Time.Processing;
-
-	Out.WorstScore = std::max(Out.WorstScore, B.App->Stats.Worst);
+	if (Out) {
+		auto Ou = *Out;
+		Ou.GenerateTime += B.Time.Generation + B.Time.Processing;
+		Ou.WorstScore = std::max(Ou.WorstScore, B.App->Stats.Worst);
+	}
 	return B.App->Stats.Length;
 }
 
 
-int BookHitter::UseApproach (bh_output& Out) {
+int BookHitter::UseApproach (bh_output* Out) {
 	auto  t_Start = Now();
 	int   BestMod = 0;
 	float BestScore = 1000000.0;
 	
 	for (auto Mod : ModList) {
-		float Score = ExtractAndDetect(*this, Mod, false, false);
+		ExtractRandomness(*this, Mod);
+		float Score = DetectRandomness();
 		if (Score < BestScore) {
 			BestMod = Mod;
 			BestScore = Score;
 		}
 	}
 	
-	ExtractAndDetect(*this, BestMod, true, true);
-
+	FinalExtractAndDetect(BestMod);
 	App->EndExtract();
 
 	return FinishApproach(*this, Out, ChronoLength(t_Start));
-}
-
-
-void BookHitter::DebugProcessFile(string Name) {
-	int x = 0; int y = 0; int comp = 0;
-	
-    u8* Result = stbi_load(Name.c_str(), &x, &y, &comp, 1);
-    auto Start = Extracted();
-    int n = DoBytesToBits(Result, x*y, Start);
-	stbi_image_free(Result);
-
-	GenApproach FakeApp = {};
-	App = &FakeApp; 
-	Do_Histo	(*this, Start, n, Log);
-	App->Stats.Length = DoBitsToBytes(*this, Start, n);
-	DetectRandomness();
-	LogApproach("p");
-	App = 0;
 }
 
 
@@ -104,6 +78,21 @@ bool BookHitter::NextApproachOK(GenApproach& App) {
 }
 
 
+string BookHitter::UniqueReps(GenApproach* App, int R, int S) {
+	App->Reps = ((R * 10) + S-1) / S; 
+	if (App->IsSudo()) App->Reps = 1;
+
+	while (true) {
+		string Name = App->Name();
+		if (!(*this)[Name]) {
+			return Name;
+		}
+		App->Reps++;
+	}
+	return "";
+}
+
+
 void BookHitter::CreateApproaches() {
 	Approaches = {};
 	Map = {};
@@ -111,24 +100,18 @@ void BookHitter::CreateApproaches() {
 
 	if (LogOrDebug())
 		printf("\n :: Available Generators ::\n\"");
+
 	NamedGen* G = 0;
-	GenApproach* Prev = 0;
 	while ((G = NextGenerator(G)))  for (auto R : RepList)  {
 		auto App = GenApproach::neww();
 		App->Gen = G;
-		App->Reps = ((R * 10) + G->Slowness-1) / G->Slowness; 
 		Approaches.push_back(App);
-		if (Prev  and Prev->Gen == G  and  Prev->Reps >= App->Reps) {
-			App->Reps = Prev->Reps + 1;
-		}
+		string Name = UniqueReps(App.get(), R, G->Slowness);
+		Map[Name] = App;
+
 		if (LogOrDebug())
-			printf("%s ", App->Name().c_str());
-		Map[App->Name()] = App;
-		Prev = App.get();
-		if (App->IsSudo()) { // there's really only 1 sudo
-			App->Reps = 1;
-			break;
-		}
+			printf("%s ", Name.c_str());
+		if (App->IsSudo()) break; // there's really only 1 sudo
 	}
 
 	if (LogOrDebug())
@@ -155,7 +138,7 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B, bh_output& Out) {
 	require (LastGen or StabilityCollector( StabilityCount )); 
 	B.Chan = ViewChannel(B.Attempt/4).get();
 	require (TemporalGeneration(*this, *B.Chan));		// pthread err
-	B.Avail = UseApproach(Out);
+	B.Avail = UseApproach(&Out);
 	return true;
 }
 
@@ -163,12 +146,12 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B, bh_output& Out) {
 void BookHitter::DebugRandoBuild(RandomBuildup& B, int N) {
 // it's failing, BUT... often the  output seems good!
 // Why? Find out, here!
-	CreateDirs();
 	printf( "failed worst = %f\n", B.Chan->Stats.Worst );
 	string FailPath = App->FileName("_fail");
 	WriteImg(Extracted(),  B.Avail,  FailPath);
 	FilesToOpenLater.push_back(FailPath);
-	WriteFile(Extracted(),	N,  App->Name() + ".raw");
+	string S = App->Name() + ".raw";
+	WriteFile(Extracted(),	N,  S);
 	App->Stats = {};
 	App->Stats.Length = B.Avail;
 	DetectRandomness();
@@ -187,8 +170,9 @@ bool BookHitter::AssembleRandoms (RandomBuildup& B, bh_output& Out) {
 		B.Score = 0;
 		B.Remaining -= B.Avail;
 		B.Data = Data;
-		if (LogOrDebug())
-			printf( "	:: %s took %.3fs ::\n",  App->Name().c_str(),  Out.GenerateTime + Out.ProcessTime );
+		auto Name = App->Name();
+		if (LogOrDebug()) 
+			printf( "	:: %s took %.3fs ::\n",  Name.c_str(),  Out.GenerateTime + Out.ProcessTime );
 		return true;
 	}
 
@@ -199,3 +183,13 @@ bool BookHitter::AssembleRandoms (RandomBuildup& B, bh_output& Out) {
 	return false;
 }
 
+
+
+void BookHitter::StopStrip() {
+	// I can't debug if the compiler strips out these functions!
+	if (Samples.size() == 1) { // should never happen
+		PrintHisto(*this);
+		PrintProbabilities();
+		DebugSamples(*this);
+	}
+}
