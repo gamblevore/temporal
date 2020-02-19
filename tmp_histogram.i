@@ -98,14 +98,14 @@ struct Histogram {
 		
 	void Add(int Length, bool B) {
 		if (Length) {
-			(*this)[0][B] += Length;							// Collect true-false separately.
+			self[0][B] += Length;							// Collect true-false separately.
 			if (Length >= BarCount) {
 				int LengthMax = BarCount - 1;
 				LostBits += (Length - LengthMax);
 				Length = LengthMax;
 			}
 			
-			(*this)[Length][B] += 1;
+			self[Length][B] += 1;
 		}
 	}
 	
@@ -119,7 +119,7 @@ struct Histogram {
 		float Lim = 0;
 		if (x < HalfIndex)
 			Lim = Expected[x] + Interp(Betweenness(x, 1, 11), 0.025, 0.5);
-		Histo TrueAndFalse = (*this)[x];
+		Histo TrueAndFalse = self[x];
 		Chances Result;
 		for_(2) {
 			float Occur = TrueAndFalse[i];

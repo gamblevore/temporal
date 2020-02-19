@@ -10,7 +10,7 @@ void OpenFile(string Path) {
 }
 
 
-static string ReadFile (string name, int MaxLength) {
+Ooof string ReadFile (string name, int MaxLength) {
 	struct stat sb;
 	require (stat(name.c_str(), &sb)==0);
 	if (sb.st_size > MaxLength) {
@@ -26,7 +26,7 @@ static string ReadFile (string name, int MaxLength) {
 }
 
 
-static void WriteFile (u8* Data, int N, string Name) {
+Ooof void WriteFile (u8* Data, int N, string Name) {
 	FILE* oof = fopen(Name.c_str(), "wb");
 	if (oof) {
 		fwrite(Data, 1, N, oof);
@@ -204,20 +204,13 @@ ref(HTML_Random) BookHitter::HTML(string fn, string t) {
 
 void BookHitter::CreateHTMLRandom(ApproachVec& V, string FileName, string Title) {
 	auto html = HTML(FileName, Title);
-
-	for (auto R : V) {
-		html->WriteOne(0, 0, R.get());
-	}
-	
+	for (auto R : V)
+		html->WriteOne(0, 0, R.get());	
 	html->Finish();
 }
 
 
 void BookHitter::CreateDirs() {
-	if (CreatedDirs) {
-		return;
-	}
-	CreatedDirs = true;
 	int UnixMode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH; // oof unix.
 	IgnoredError = mkdir("steve_output",  UnixMode);
 	IgnoredError = chdir("steve_output");

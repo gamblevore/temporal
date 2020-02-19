@@ -9,14 +9,6 @@ struct NamedGen {
 };
 
 
-struct TimeStats {
-	float		Generation;
-	float		Processing;
-	u16			Spikes;
-	u16         Error;
-};
-
-
 struct RandoStats {
 	float		Entropy;
 	float		ChiSq;
@@ -45,13 +37,15 @@ struct GenApproach {
 	u32			Highest;
 	u16			Fails;
 	u16			Reps;
-	u16			StableRank;
 	u16			UseCount;
-	u8			PhysicalSystem	: 1; // non-power of 2 more physical system to creating numbers
-	u8			UseMidPoint 	: 1; // just use the midpoint... Find a point where half above and half-below.
-	u8			NumForName		: 7;
+	u8			NumForName;
 	
 
+	bool SetGenReps(NamedGen* G, int R) {
+		Gen  = G;
+		Reps = (R*10 + 9) / G->Slowness;
+		return IsSudo();
+	}
 	void EndExtract() {
 		Fails += Stats.FailedCount;
 	}
@@ -59,7 +53,10 @@ struct GenApproach {
 		return (&Stats.Entropy)[i];
 	}
 	bool IsSudo() {
-		return Gen and Gen->GenType == kSudo;
+		return Gen and (Gen->GenType == kSudo);
+	}
+	bool IsChaotic() {
+		return Gen and (Gen->GenType == kChaotic);
 	}
 	u64 StablePRndSeed(u64 i = 0) { // Stable-pRnd that changes between runs.
 		return (UseCount + 1 + i) * (100 + Reps);
@@ -70,16 +67,13 @@ struct GenApproach {
 		return H - (H % Mod);
 	}
 
-	bool IncreaseRank (u32 i) {
-		u32 Desired = (u32)StableRank + i;
-		StableRank = std::min((int)Desired, (int)0xFFFF);
-		return (StableRank != Desired);
+	void DebugName(BookHitter&B) {
+		string s = Name();
+		printf("%s ", s.c_str());
 	}
 	string NameSub() {
 		string name = string(Gen->Name);
 		if (!IsSudo())          name += to_string(Reps);
-		if (PhysicalSystem)		name += "b";
-		if (UseMidPoint)		name += "p";
 		if (NumForName)   		name += "_loop" + to_string(NumForName);
 		return name;
 	}
@@ -137,104 +131,108 @@ struct RandTest {
 struct RandomBuildup {
 	u8*				Data;
 	int				Remaining;
+	bool			IsRetro;
+	float			AllWorst;
 	GenApproach*    Chan;
-	float			Score;
-	int				Avail;
-	int				Attempt;
+	int				Loops;
 	
 	float Worst() {
 		return std::max(Chan->Stats.Worst, 0.0f);
 	}
-	
-	float RandomnessAdded() {
-		float W = Worst();
-		if (W >= 0.9) { // just a heuristic... seems OK.
-						// sometimes monte-carlo wierdly fails even though it looks good. thats why.
-			W = Chan->Stats.ChiSq;
-			if (W >= 0.9) {
-				W = (Chan->Stats.ChiSq + Chan->Stats.Entropy) / 2.0;
-			}
-		}
-
-		float ToAdd = 1 - W;
-		return std::max(ToAdd, 0.0f);
+	bool KeepGoing() {
+		Loops++;
+		if (Chan->IsChaotic() or IsRetro)
+			return Loops <= 1;
+		return Loops <= 3; // be safe... 
 	}
 };
 
 
 struct BookHitter {
 	GenApproach*	App;
-	NamedGen*		LastGen;
 	pthread_t		GeneratorThread;
 	SampleVec		Samples;
 	IntVec			SampleHisto;
-//	ByteArray		SampleHistoGroups; // didn't seem to help.
-	IntVec			CuriosityHisto;
 	ByteArray		Buff;
 	ByteArray		BSL;
 	IntVec			RepList;
-	ApproachMap		Map;
-	ApproachVec		Approaches;
-	CPU_ModeVec		CPU_Modes;
-	ApproachVec		LogApproaches;
+	IntVec			ChaoticRepList;
+	ApproachVec		ApproachList;
+	ApproachVec		ChaoticApproaches;
+	ApproachVec		BasicApproaches;
 	ApproachVec		MinMaxes;
-	TimeStats   	Time;
-	bool			CreatedDirs;
+	bh_output		Time;
+	int				UserChannel;
 	bool			Log;
-	u8				UserChannel;
-	u8				CreationMode;
-	u16				LastReps;
+	bool			DuringStability;
+	u8				LastReps;
 
-	float DetectRandomness ();
-	void DebugRandoBuild(RandomBuildup& B, int N);
-	void CreateDirs();
-	void CreateHTMLRandom(ApproachVec& V, string Name, string Title);
-	void AddToStabilityRank();
-	void DebugProcessFile(string Name);
-	void FindMinMax();
-	void SaveLists();
-	bool LoadLists();
+	float			DetectRandomness ();
+	void			CreateDirs();
+	void			CreateHTMLRandom(ApproachVec& V, string Name, string Title);
+	void			DebugProcessFile(string Name);
+	void			FindMinMax();
 	ref(HTML_Random) HTML(string s, string n);	
-	bool LoadListsSub(string Path);
-	void CreateApproaches();
-	int  UseApproach (bh_output* Out);
-	bool NextApproachOK(GenApproach& App);
-	bool AssembleRandoms (RandomBuildup& B, bh_output& Out);
-	bool CollectPieceOfRandom (RandomBuildup& B, bh_output& Out);
-	bool StabilityCollector(int N);
-	float FinalExtractAndDetect (int Mod);
-	void SortByBestApproach();
-	void TryLogApproach(string name);
-	string UniqueReps(GenApproach* App, int R, int S);
+	void			CreateApproaches();
+	int				UseApproach ();
+	bool			NextApproachOK(GenApproach& App);
+	bool			CollectPieceOfRandom (RandomBuildup& B);
+	void			BestApproachCollector(ApproachVec& L);
+	ApproachVec&	FindBestApproach(ApproachVec& L, bool Chaotic);
+	float			FinalExtractAndDetect (int Mod);
+	void			TryLogApproach(string name);
+
+
 	string FileName(string s="") {
 		return GenApproach::FileName_(App, s);
 	}
+	
 	bool LogOrDebug() {
 		#ifdef DEBUG
 			return true;
 		#endif 
 		return Log;
 	}
-	ref(GenApproach) ViewChannel(int Attempt) {
+
+	bool IsRetro() {
+		return UserChannel > 0;
+	}
+
+	bool IsChaotic() {
+		return UserChannel == 0;
+	}
+	
+	bool ChaosTesting() {
+		return IsChaotic() and DuringStability;
+	}
+
+	int UserChannelIndex() {
 		int i = UserChannel;
 		if (i < 0)
-			return (*this)["Pseudo"];
-		if (!i) i = Attempt;
-		return (CurrSorted())[i % CurrSorted().size()];
+			i = -i;
+		if (i) i--;
+		return i;
 	}
-	ref(GenApproach) operator[] (string Name) {
-		auto oof = Map.find(Name);
-		if (oof != Map.end())
-			return (oof->second);
-		return 0;
+	
+	GenApproach* ViewChannel() {
+		auto L = ApproachesForChannel();
+		int i = UserChannelIndex() % L.size();
+		App = L[i].get();
+		return App;
 	}
-	ApproachVec& CurrSorted() {
-		return (*CPU_Modes[0]);
+	
+	ApproachVec& ApproachesForChannel() {
+		if (IsChaotic()) {
+			return FindBestApproach(ChaoticApproaches, true);
+		} else if (IsRetro()) {
+			return ApproachList;
+		} else {
+			return FindBestApproach(ChaoticApproaches, false);
+		}
 	}
+	
 	void ResetApproach() {
 		App = 0;
-		LastGen = 0;
-		LastReps = 0;
 	}
 	uSample* Out() {
 		return &(Samples[0]);
@@ -245,8 +243,14 @@ struct BookHitter {
 	u8* Extracted() {
 		return &(Buff[0]);
 	}
+	bool IsFastTimeScoring() {
+		return DuringStability and (UserChannel >= 0);
+	}
 	int Space() {
-		return (int)Samples.size();
+		int N = (int)Samples.size();
+		if (IsFastTimeScoring())
+			N /= 16;
+		return N;
 	}
 	void AddM (float Default, int Type) {
 		auto M = GenApproach::neww();
@@ -259,12 +263,11 @@ struct BookHitter {
 		Buff.resize(Samples.size()/8);
 		BSL.resize(Samples.size()+1);
 	}
-	void StopStrip();
 	void CreateReps(int* Reps) {
 		if (!Reps) {
-			RepList = {3, 5, 9, 10, 17, 25, 36, 88, 123, 179};
+			RepList = {3, 5, 9, 17, 25, 123};
 			#if DEBUG
-				RepList = {25, 5, 9, 17};
+				RepList = {25, 3, 5, 9, 17};
 			#endif
 		} else {
 			RepList = {};

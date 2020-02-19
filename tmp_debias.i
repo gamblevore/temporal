@@ -90,7 +90,7 @@ static void PerfectBitDebias (BitView R, GenApproach* App) {
 }
 
 
-static BitView Do_Histo (BookHitter& B, BitView R, bool Log) {
+static BitView Do_Histo (BookHitter& B, BitView R, bool Log, bool Debias) {
 	int n = R.Length;
 	if (n < 64)  return R;
 		
@@ -102,11 +102,13 @@ static BitView Do_Histo (BookHitter& B, BitView R, bool Log) {
 	Histogram H = CollectHistogram(Sections);
 	B.App->Stats.Hist = HistoInputRandomness(H);
 	
-	if (AllowDebiaser)
-		Sections = DebiasSectionsOfLength(H, Sections, B.App);
+	if (Debias) {
+		if (AllowDebiaser)
+			Sections = DebiasSectionsOfLength(H, Sections, B.App);
 
-	R = Sections.Convert(R.Data);
-	PerfectBitDebias(R, B.App);
+		R = Sections.Convert(R.Data);
+		PerfectBitDebias(R, B.App);
+	}
 	
 	if (Log) { // no point logging this, if we didn't use DebiasSectionsOfLength
 		Histogram H2 = CollectHistogram(Sections);

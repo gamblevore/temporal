@@ -237,36 +237,35 @@ Gen(Sudo) { // just to test our numerical strength.
 }
 
 
-
 NamedGen GenList[] = {
-	{FloatSameGenerator,	"float",	10			},
-	{SudoGenerator,			"pseudo",	10,	kSudo 	},
-	{AtomicGenerator,		"atomic",	40			}, // rated at 4x slowness
-	{BoolGenerator,			"bool",		10			},
-	{BitOpsGenerator,		"bitops",	10			},
-	{MemoryGenerator,		"memory",	10			},
-	{TimeGenerator,			"time",		10			},
-	{ChaoticGenerator,		"chaotic",	20			},
+	{FloatSameGenerator,	"float",	10				},
+	{SudoGenerator,			"pseudo",	10,	kSudo 		},
+	{AtomicGenerator,		"atomic",	40				}, // 4x slower
+	{BoolGenerator,			"bool",		10				},
+	{BitOpsGenerator,		"bitops",	10				},
+	{MemoryGenerator,		"memory",	10				},
+	{TimeGenerator,			"time",		10				},
+	{ChaoticGenerator,		"chaotic",	10, kChaotic	},
 	{},
 };
 
 
-
 NamedGen* NextGenerator(NamedGen* G) {
-	if (!G or !G->Name)
-		return &GenList[0];
-	G++;
-	if (G->Name) return G;
+	if (G) {
+		G++;
+		if (G->Name)
+			return G;
+	}
 	return 0;
 }
 
 
-static void FindSpikesAndLowest (uSample* Results, int Count, BookHitter& S, bool NoMax) {
+static void FindSpikesAndLowest (uSample* Results, int Count, BookHitter& B) {
 	u32 Lowest = -1;
 	for_ (Count)
 		Lowest = std::min(Lowest, (u32)Results[i]);
 
-	u32 MaxTime = (NoMax) ? -1 : (Lowest + 2) * 5;
+	u32 MaxTime = (Lowest + 2) * 5;
 	
 	uSample* Write = Results;
 	u32 Spikes = 0;
@@ -276,7 +275,7 @@ static void FindSpikesAndLowest (uSample* Results, int Count, BookHitter& S, boo
 		Spikes += (V > MaxTime);
 	}
 
-	S.Time.Spikes = Spikes;
+	B.Time.Spikes += Spikes;
 } 
 
 
@@ -305,7 +304,7 @@ static void* GenerateWrapper (void* arg) {
 	
 	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
-	FindSpikesAndLowest(Out,  B.Space(),  B,  A.IsSudo());	
+	FindSpikesAndLowest(Out,  B.Space(),  B);	
 	
 	return 0;
 }
@@ -328,11 +327,9 @@ Ooof void PrintHisto (BookHitter& B) {
 
 
 static void GroupHisto (BookHitter& B) {
-// I wanted to do some kinda mid-point split here...
+// I wanted to do some kinda mid-point split...
 // turns out, it completely failed because the output tends to clump up in ranges.
-// We get ranges of 40-50, then ranges of 70-90, then ranges of 30-20... etc
-// meaning we'd get mostly long strings of white/black. Entirely useless. good idea though.
-// Just use the low bits for now...
+// (70-75)*1000, (40-45)*1000, etc.
 
 	int H = 0;
 	auto& HList = B.SampleHisto;
@@ -385,9 +382,7 @@ static bool DoDivide (BookHitter& B, const int oof) {
 
 
 static void RawHisto (BookHitter& B) {
-
 	auto& H = B.SampleHisto;
-	auto& C = B.CuriosityHisto;
 	auto Data = B.Out();
 	int n = B.Space();
 	
@@ -397,15 +392,13 @@ static void RawHisto (BookHitter& B) {
 
 		if (s <= HistoMask) continue;
 		Data[i] = s & HistoMax;
-		s >>= 10;
-		C[s & HistoMask]++;
 	}
 }
 
 
 static bool Divided(BookHitter &B) {
 	const int List[] = {4, 2, 13, 11, 7, 5, 3};
-	for (auto oof:List)
+	for (auto oof : List)
 		if (CanDivide(B, oof))
 			return DoDivide(B, oof);
 	return false;
@@ -415,7 +408,6 @@ static bool Divided(BookHitter &B) {
 static void PreProcess (BookHitter& B) {
 	B.App->Highest = 0;
 	B.SampleHisto.assign(HistoMax, 0);
-	B.CuriosityHisto.assign(HistoMax, 0);
 	if (B.App->IsSudo()) return;
 	
 	RawHisto(B);
@@ -424,7 +416,7 @@ static void PreProcess (BookHitter& B) {
 }
 
 
-static bool TemporalGeneration(BookHitter& B, GenApproach& App) {
+static float TemporalGeneration(BookHitter& B, GenApproach& App) {
 	auto t_Start = Now();
 	B.App = &App;
 	B.Time = {};
@@ -432,19 +424,18 @@ static bool TemporalGeneration(BookHitter& B, GenApproach& App) {
 	
 	int Err = pthread_create(&B.GeneratorThread, NULL, &GenerateWrapper, &B);
 	if (!Err) Err = pthread_join(B.GeneratorThread, 0);
-	if (Err)  B.Time.Error = Err;
+	if (Err)  B.Time.Err = Err;
 	
-	if (B.Time.Error) {
-		fprintf( stderr,  "temporal generation err for '%s': %i\n",  App.Gen->Name,  B.Time.Error);
+	if (B.Time.Err) {
+		fprintf( stderr,  "temporal generation err for '%s': %i\n",  App.Gen->Name,  B.Time.Err);
 	} else {
 		App.UseCount++;
-		B.LastGen = App.Gen;
-		B.LastReps = App.Reps;
 		PreProcess(B);
 	}
 	
-	B.Time.Generation = ChronoLength(t_Start);
-	return !Err;
+	float Time = ChronoLength(t_Start);
+	B.Time.GenerateTime += Time;
+	return Time;
 }
 
 #pragma GCC pop_options

@@ -9,10 +9,9 @@ BookHitter* bh_create() {
 	*G = {};
 
 	try {
-		F.StopStrip(); // for debugging
-		F.Allocate(1<<(21+DEBUG_AS_NUM));
+		StopStrip(F); // for debugging
+		F.Allocate(1<<22);
 		F.CreateReps(0);
-		F.LoadLists();
 	} catch (std::bad_alloc& e) {
 		std::cerr << e.what();
 	}
@@ -22,10 +21,8 @@ BookHitter* bh_create() {
 
 void bh_use_log(BookHitter* f, bool Active) {
 	f->Log = Active;
-	if (Active) {
-		f->CPU_Modes = {};
+	if (Active)
 		f->CreateDirs();
-	}
 }
 
 
@@ -40,21 +37,9 @@ void bh_free (BookHitter* f) {
 }
 
 
-void bh_use_temporal (BookHitter* f, int Channel) {
+void bh_use_channel (BookHitter* f, int Channel) {
 	f->UserChannel = Channel;
-	f->CreationMode = kModeTemporal;
-}
-
-
-void bh_use_retro (BookHitter* f, int Channel) {
-	f->UserChannel = Channel;
-	f->CreationMode = kModeRetroCausal;
-}
-
-
-void bh_use_pseudo (BookHitter* f) {
-	f->UserChannel = 0;
-	f->CreationMode = kModePseudo;
+	f->ResetApproach();
 }
 
 
@@ -63,20 +48,11 @@ void bh_set_reps (BookHitter* f, int* RepList) {
 }
 
 
-bh_output bh_hitbooks (BookHitter* f, u8* Data, int DataLength) {
-	auto &F = *f;
-	if (Data) memset(Data, 0, DataLength);
-	
-	RandomBuildup B = {Data, DataLength};
-	bh_output Result = {};
-	while (F.CollectPieceOfRandom(B, Result))
-		if (F.AssembleRandoms(B, Result))
-			return Result;
-
-	F.ResetApproach();
-	Result.Err = f->Time.Error;
-	if (!Result.Err) Result.Err = -1;
-	return Result;
+bh_output* bh_hitbooks (BookHitter* f, u8* Data, int DataLength) {
+	RandomBuildup B = {Data, DataLength, f->IsRetro()};
+	f->Time = {};
+	while (f->CollectPieceOfRandom(B));
+	return &f->Time;
 }
 
 
@@ -96,9 +72,9 @@ int bh_extract_entropy(BookHitter* B_, uSample* Samples, int N, bh_output* Out) 
 	GenApproach App = {};
 	B.App = &App;
 	
-	FindSpikesAndLowest(B.Out(),  N,  B,  false);	
+	FindSpikesAndLowest(B.Out(),  N,  B);	
 	PreProcess(B);
 	
-	return B.UseApproach(Out);
+	return B.UseApproach();
 }
 

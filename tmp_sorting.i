@@ -1,108 +1,54 @@
 
 
-bool IncreaseRanks(ApproachVec& Sorted) {
-	int i = 0;
-	bool MaxRankReached = false;
-	for (auto R : Sorted)
-		MaxRankReached |= R->IncreaseRank(++i);
-	return !MaxRankReached;
-}
-
- 
-void BookHitter::AddToStabilityRank() {
-	ApproachVec Sorted;
-	for (auto R : Approaches) {
-		R->StableRank++;			// Somehow this makes the temporal-generation output better?
-		Sorted.push_back(R);
-		R->StableRank--;			// Makes no sense.
-	}
-	
-	auto SortComparer = [=] (ref(GenApproach) a, ref(GenApproach) b) {
-		if (a->Stats.Worst < b->Stats.Worst)
-			return true;
-		if (a->Stats.Worst == b->Stats.Worst)
-			for_(5)  if ((*a)[i] < (*b)[i])  return true;
-		return false;
-	};
-
-	std::sort(Sorted.begin(), Sorted.end(), SortComparer);
-
-	if (IncreaseRanks(Sorted)) return;
-
-	puts("BookHitter: Stability ranks need reset.");
-	for (auto R : Sorted) R->StableRank = 0;
-	IncreaseRanks(Sorted);
-}
-
-
-bool BookHitter::StabilityCollector(int N) {
-	if (!Log) printf( "\n:: Locating Temporal Randomness. Be patient: %li approaches! :: \n", Approaches.size() );
-	bh_output Out;
-
-	for_ (N) {
-		if (Log) printf( "\n\n:: Stability %i/%i :: \n", i+1, N );
-		for (auto App : Approaches) { 
-			if (!NextApproachOK(*App)) return false;
-			UseApproach(&Out);
-		}
-		AddToStabilityRank();
-	}
-	
-	SortByBestApproach();
-	SaveLists();
-	CreateHTMLRandom(LogApproaches, "scoring.html", "Fatum Temporal Randomness Test");
-	return true;
-}
-
 
 static void ApproachSort(ApproachVec& V) {
-	auto StabilityComparer = [] (ref(GenApproach) a, ref(GenApproach) b) {
-		if (a->StableRank < b->StableRank)
+	auto Comparer = [] (ref(GenApproach) a, ref(GenApproach) b) {
+		if ((b->Stats.FailedCount) and !(a->Stats.FailedCount))
 			return true;
-		if (a->StableRank == b->StableRank)
-			return (a->Stats.Worst > b->Stats.Worst);
+		if (b->Stats.Worst > a->Stats.Worst)
+			return true;
+		if (b->Stats.Worst == a->Stats.Worst)
+			for_(5)  if ((*b)[i] > (*a)[i])  return true;
 		return false;
 	};
-	std::sort(V.begin(), V.end(), StabilityComparer);
+
+	std::sort(V.begin(), V.end(), Comparer);
 }
 
 
-void BookHitter::SortByBestApproach() {
-	ApproachVec Fails;
-	LogApproaches = {};
-	auto NewMode = New(ApproachVec);
-
-	for (auto R : Approaches)
-		if (R->Fails)
-			Fails.push_back(R);
-		  else
-			LogApproaches.push_back(R);
-
-	ApproachSort(LogApproaches);
-	ApproachSort(Fails);
-
-	for (auto R : LogApproaches)
-		if (!R->IsSudo())
-			NewMode->push_back(R);
-
-	CPU_Modes.insert(CPU_Modes.begin(), NewMode);
-	while (CPU_Modes.size() > 16)
-		CPU_Modes.pop_back();
-
+void BookHitter::BestApproachCollector(ApproachVec& L) {
+	if (!Log) printf( "\n:: Locating Temporal Randomness in %li approaches! :: \n", L.size() );
 	
-	for (auto R : Fails)
-		LogApproaches.push_back(R);
-	
-	if (!NewMode->size()) { // if all are fails, just put the fails in...
-		fprintf( stderr, "All temporal-generators failed! Using failiures then?");
-		for (auto R : LogApproaches) // more robust.
-			NewMode->push_back(R);
+	for (auto App : L) {
+		if (!NextApproachOK(*App)) return;
+		UseApproach();
 	}
-		
-	App = (*NewMode)[0].get();
 	
-	string TmpName = App->Name();
-	printf("\nSteve chose temporal '%s'\n\n", TmpName.c_str());
+	ApproachSort(L);
+	CreateHTMLRandom(L, "scoring.html", "Fatum Temporal Randomness Test");
+
+	for (int i = (int)L.size()-1; i >= 0; i--)
+		if (L[i]->IsSudo())
+			L.erase(L.begin() + i);
+}
+
+
+ApproachVec& BookHitter::FindBestApproach(ApproachVec& V, bool Chaotic) {
+	if (V.size())
+		return V;
+
+	for (auto oof: ApproachList)
+		if (!Chaotic or oof->IsChaotic() or oof->IsSudo())
+			V.push_back(oof); // we remove sudo later anyhow.
+
+	DuringStability = true;
+	BestApproachCollector(V);
+	DuringStability = false;
+	
+	auto Name = V[0]->Name();
+	if (LogOrDebug() and !Time.Err)
+		printf("    :: Steve chose '%s' ::\n", Name.c_str());
+	return V;
 }
 
 

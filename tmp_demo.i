@@ -10,20 +10,20 @@ Steve I hohp u pleezzed okay! :>
 )";
 
 
-static int RunSteveDemo() {
+static int RunTemporalDemo() {
 	puts(WelcomeMsg);
 	
 	auto F = bh_create();
 	bh_use_log(F, true);
 	auto Result = bh_hitbooks(F, 0, 1);
-	auto html = F->HTML("steve.html",  "Randomness Test");
+	auto html = F->HTML("temporal.html",  "Randomness Test");
 	
 	int NB = 4096; 
 	ByteArray D(NB, 0);
 	
-	for_(5) {
+	for_(1) {
 		Result = bh_hitbooks(F, &D[0], NB);
-		if (Result.Err) break;
+		if (Result->Err) break;
 		html->WriteOne(&D[0], NB, F->App);
 	}
 	
@@ -31,7 +31,7 @@ static int RunSteveDemo() {
 	bh_logfiles(F);
 	bh_free(F);
 
-	return Result.Err;
+	return Result->Err;
 }
 
 
@@ -45,7 +45,7 @@ int main (int argc, const char* argv[]) {
 	sizecheck(u64, 8);  sizecheck(u32, 4);  sizecheck(u16, 2);  sizecheck(u8, 1);
 	RestoreDir = getcwd(0, 0);
 	atexit(CleanupMain);
-	int Err = RunSteveDemo();
+	int Err = RunTemporalDemo();
 	printf("\n");
 	return Err;
 }

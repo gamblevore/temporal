@@ -14,6 +14,7 @@
 #define New3(x,a,b)			std::make_shared<x>(a,b)
 #define New4(x,a,b,c)		std::make_shared<x>(a,b,c)
 #define Now()				std::chrono::high_resolution_clock::now()
+#define self				(*this)
 #define ChronoLength(Start)	(std::chrono::duration_cast<std::chrono::duration<float>>(Now() - Start).count())
 #ifdef DEBUG
 	#define debugger asm("int3")
@@ -35,8 +36,5 @@ std::vector<string> FilesToOpenLater;
 
 
 #define		kSudo		  		1
-
-#define		kModeTemporal		0
-#define		kModeRetroCausal	1
-#define		kModePseudo			2
+#define		kChaotic		  	2
 

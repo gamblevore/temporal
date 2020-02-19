@@ -39,7 +39,7 @@ void RandTest::add_byte (int oc) {
 
 void RandoStats::Unify(int i, float Low, float High, float Bad, float Value) {
 	float Result = Betweenness(Value, Low, High);
-	(*this)[i] = Result;
+	self[i] = Result;
 	if (Result >= Bad) {
 		FailedCount++;
 		FailedIndexes |= 1 << i;

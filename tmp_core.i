@@ -1,12 +1,5 @@
 
 
-#if DEBUG
-	#define StabilityCount 1
-#else
-	#define StabilityCount 5
-#endif
-
-
 void BookHitter::FindMinMax() {
 	GenApproach& S = *App;
 	if (S.Stats.FailedCount) return;
@@ -23,33 +16,33 @@ void BookHitter::FindMinMax() {
 
 
 float BookHitter::FinalExtractAndDetect (int Mod) {
-	ExtractRandomness(*this, 0,   false, true);
+	ExtractRandomness(self, 0,   false, true);
+	App->Stats.Length /= 32;             // for style. less is more.
 	TryLogApproach();
-	ExtractRandomness(*this, Mod, true, false);	
+	
+	ExtractRandomness(self, Mod, true, false);	
 	TryLogApproach("p");
 	
 	return DetectRandomness();
 }
 
 
-static int FinishApproach(BookHitter& B, bh_output* Out, float Time) {
-	B.Time.Processing = Time;
-	if (Out) {
-		auto Ou = *Out;
-		Ou.GenerateTime += B.Time.Generation + B.Time.Processing;
-		Ou.WorstScore = std::max(Ou.WorstScore, B.App->Stats.Worst);
-	}
-	return B.App->Stats.Length;
+static int FinishApproach(BookHitter& B, float Time) {
+	auto& App = *B.App;
+	App.Fails += App.Stats.FailedCount;
+	B.Time.ProcessTime += Time;
+	B.Time.WorstScore = std::max(B.Time.WorstScore, App.Stats.Worst);
+	return App.Stats.Length;
 }
 
 
-int BookHitter::UseApproach (bh_output* Out) {
+int BookHitter::UseApproach () {
 	auto  t_Start = Now();
 	int   BestMod = 0;
 	float BestScore = 1000000.0;
 	
 	for (auto Mod : ModList) {
-		ExtractRandomness(*this, Mod);
+		ExtractRandomness(self, Mod, false, false);
 		float Score = DetectRandomness();
 		if (Score < BestScore) {
 			BestMod = Mod;
@@ -58,61 +51,59 @@ int BookHitter::UseApproach (bh_output* Out) {
 	}
 	
 	FinalExtractAndDetect(BestMod);
-	App->EndExtract();
-
-	return FinishApproach(*this, Out, ChronoLength(t_Start));
+	return FinishApproach(self, ChronoLength(t_Start));
 }
 
 
 bool BookHitter::NextApproachOK(GenApproach& App) {
-	this->App = &App; 
-	if ( App.Gen == LastGen and App.Reps == LastReps )
-		return true;
-		
+	static NamedGen* LastGen = 0;
+
+	this->App = &App;
 	if ( App.Gen != LastGen )
 		printf( "\n:: %s gen :: \n", App.Gen->Name );
-
-	require(TemporalGeneration(*this, App));
-	printf( "	:: %03i    \t(took %.3fs) ::\n", App.Reps, Time.Generation );
+	LastGen = App.Gen;
+	
+	float T = TemporalGeneration(self, App);
+	require(!Time.Err);
+	printf( "	:: %03i    \t(took %.3fs) ::\n", App.Reps, T );
 	return true;
 }
 
 
-string BookHitter::UniqueReps(GenApproach* App, int R, int S) {
-	App->Reps = ((R * 10) + S-1) / S; 
-	if (App->IsSudo()) App->Reps = 1;
-
-	while (true) {
-		string Name = App->Name();
-		if (!(*this)[Name]) {
-			return Name;
-		}
-		App->Reps++;
+static IntVec& RepListFor(BookHitter& B, NamedGen* G) {
+	if (G->GenType == kChaotic) {
+		B.ChaoticRepList = {};
+		for_(15) B.ChaoticRepList.push_back(i+1);
+		return B.ChaoticRepList;
 	}
-	return "";
+	
+	return B.RepList;
+}
+
+
+static void CreateApproachSub(BookHitter& B, NamedGen* G) {
+	auto List = RepListFor(B, G);
+	for (auto R : List) {
+		auto App = GenApproach::neww();
+		bool Sudo = App->SetGenReps(G, R);
+		B.ApproachList.push_back(App);
+		if (B.LogOrDebug())  App->DebugName(B);
+		if (Sudo) return;
+	}
 }
 
 
 void BookHitter::CreateApproaches() {
-	Approaches = {};
-	Map = {};
 	MinMaxes = {};
+	ApproachList = {};
+	BasicApproaches = {};
+	ChaoticApproaches = {};
 
 	if (LogOrDebug())
 		printf("\n :: Available Generators ::\n\"");
 
-	NamedGen* G = 0;
-	while ((G = NextGenerator(G)))  for (auto R : RepList)  {
-		auto App = GenApproach::neww();
-		App->Gen = G;
-		Approaches.push_back(App);
-		string Name = UniqueReps(App.get(), R, G->Slowness);
-		Map[Name] = App;
-
-		if (LogOrDebug())
-			printf("%s ", Name.c_str());
-		if (App->IsSudo()) break; // there's really only 1 sudo
-	}
+	for (auto G = &GenList[0];  G;  G = NextGenerator(G))
+		CreateApproachSub(self, G);
 
 	if (LogOrDebug())
 		printf("\"\n");
@@ -133,63 +124,33 @@ static u8* XorCopy(u8* Src, u8* Dest, int N) {
 }
 
 
-bool BookHitter::CollectPieceOfRandom (RandomBuildup& B, bh_output& Out) {
-	require (B.Attempt <= 31);
-	require (LastGen or StabilityCollector( StabilityCount )); 
-	B.Chan = ViewChannel(B.Attempt/4).get();
-	require (TemporalGeneration(*this, *B.Chan));		// pthread err
-	B.Avail = UseApproach(&Out);
-	return true;
-}
+bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
+	B.Chan = ViewChannel();
+	require(!Time.Err);
+	u32 Least = -1; 
 
-
-void BookHitter::DebugRandoBuild(RandomBuildup& B, int N) {
-// it's failing, BUT... often the  output seems good!
-// Why? Find out, here!
-	printf( "failed worst = %f\n", B.Chan->Stats.Worst );
-	string FailPath = App->FileName("_fail");
-	WriteImg(Extracted(),  B.Avail,  FailPath);
-	FilesToOpenLater.push_back(FailPath);
-	string S = App->Name() + ".raw";
-	WriteFile(Extracted(),	N,  S);
-	App->Stats = {};
-	App->Stats.Length = B.Avail;
-	DetectRandomness();
-}
-
-
-static int OntopCount;
-bool BookHitter::AssembleRandoms (RandomBuildup& B, bh_output& Out) {
-	int N = std::min(B.Avail, B.Remaining);
-	u8* Data = XorCopy(Extracted(), B.Data, N);
-	float MoreRando = B.RandomnessAdded(); 
-	B.Score += MoreRando;
-	++B.Attempt;
-
-	if (MoreRando >= 0.5 or UserChannel) {
-		B.Score = 0;
-		B.Remaining -= B.Avail;
-		B.Data = Data;
-		auto Name = App->Name();
-		if (LogOrDebug()) 
-			printf( "	:: %s took %.3fs ::\n",  Name.c_str(),  Out.GenerateTime + Out.ProcessTime );
-		return true;
+	while (B.KeepGoing()) {
+		TemporalGeneration(self, *B.Chan);
+		require(!Time.Err);
+	
+		u32 N = std::min(UseApproach(), B.Remaining);
+		Least = std::min(Least, N);
+		XorCopy(Extracted(), B.Data, N);
+		B.AllWorst = std::max(B.AllWorst, B.Worst());
 	}
 
-	if (LogOrDebug() and MoreRando < 0.25) // debug why its failing.
-		DebugRandoBuild(B, N);
-	if (LogOrDebug())
-		printf("Randomness not good enough, laying more ontop (%i).\n", ++OntopCount);
-	return false;
+	B.Data += Least;
+	B.Remaining -= Least;
+	return (B.Remaining > 0);
 }
 
 
-
-void BookHitter::StopStrip() {
+Ooof void StopStrip(BookHitter&B) {
 	// I can't debug if the compiler strips out these functions!
-	if (Samples.size() == 1) { // should never happen
-		PrintHisto(*this);
+	if (B.Samples.size() == 1) { // should never happen
+		PrintHisto(B);
 		PrintProbabilities();
-		DebugSamples(*this);
+		DebugSamples(B);
 	}
 }
+

@@ -95,7 +95,7 @@ struct BitView {
 		Data[i >> 3] = D;
 	}
 	bool Read() {
-		return (*this)[Pos++];
+		return self[Pos++];
 	}
 	void Write(bool b) {
 		int i = Pos++;
@@ -143,7 +143,7 @@ struct BitSections {
 		Data[i] = b;
 	}
 	u8 Read() {
-		return (*this)[Pos++];
+		return self[Pos++];
 	}
 	void WriteSub(u8 b) {
 		Set(Pos++, b);
@@ -182,7 +182,7 @@ struct BitSections {
 		BitView W = {Write, 0};
 		
 		bool B = false;
-		while (*this) {
+		while (self) {
 			int Count = Read();
 			FOR_(j, Count)
 				W.Write(B);
@@ -205,11 +205,11 @@ BitSections BitView::AsBytes() {
 BitSections BitView::Convert (u8* Write) {
 	BitSections Result = {Length, Write};
 	int Count = 0;
-	bool Prev = (*this)[0];
+	bool Prev = self[0];
 	if (Prev)
 		Result.Write(0); // start with 0 false bits, as bits alternate false/true always
 	
-	while (*this) {
+	while (self) {
 		if (Read() != Prev) {
 			Prev = !Prev;
 			Count = Result.Write(Count);

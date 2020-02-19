@@ -9,15 +9,13 @@
 
 
 //  TODO:
+//  * try to get a stable API out! With retro...
+// 		* Retro can get say 4x64... try extract the randomness
+//		* Do this 144x. So 4.5K. 
+//			* Just use as seeds...
 //  * Final loop has less size?
-//  * Save the expected score? So if it gets worse suddenly, we switch lists.
-//  * Color output
-
-
-//  ADD:
-//  * Retro-causality. Hashes gens :3 no mod needed.
-//		* smaller space-reps needed!
-//  * Let user see preprocessed data... "Watch the channel" Just do mod but not von or xor?
+//  * Reset score every so often... like 16 attempts or whatever.
+//  
 
 
 
