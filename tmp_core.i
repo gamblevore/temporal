@@ -2,7 +2,7 @@
 
 void BookHitter::FindMinMax() {
 	GenApproach& S = *App;
-	if (S.Stats.FailedCount) return;
+	if (DuringStability and S.Stats.FailedCount) return;
 
 	int Su = S.IsSudo() * 2;
 	auto Min = MinMaxes[0 + Su];
@@ -16,11 +16,12 @@ void BookHitter::FindMinMax() {
 
 
 float BookHitter::FinalExtractAndDetect (int Mod) {
-	ExtractRandomness(self, 0,   false, true);
+	ExtractRandomness(self, 0, 0);
 	App->Stats.Length /= 32;             // for style. less is more.
 	TryLogApproach();
 	
-	ExtractRandomness(self, Mod, true, false);	
+	int F = App->FinalFlags();
+	ExtractRandomness(self, Mod, F);	
 	TryLogApproach("p");
 	
 	return DetectRandomness();
@@ -42,7 +43,7 @@ int BookHitter::UseApproach () {
 	float BestScore = 1000000.0;
 	
 	for (auto Mod : ModList) {
-		ExtractRandomness(self, Mod, false, false);
+		ExtractRandomness(self, Mod, App->DetectFlags());
 		float Score = DetectRandomness();
 		if (Score < BestScore) {
 			BestMod = Mod;
@@ -55,9 +56,7 @@ int BookHitter::UseApproach () {
 }
 
 
-bool BookHitter::NextApproachOK(GenApproach& App) {
-	static NamedGen* LastGen = 0;
-
+NamedGen* BookHitter::NextApproachOK(GenApproach& App, NamedGen* LastGen) {
 	this->App = &App;
 	if ( App.Gen != LastGen )
 		printf( "\n:: %s gen :: \n", App.Gen->Name );
@@ -66,7 +65,7 @@ bool BookHitter::NextApproachOK(GenApproach& App) {
 	float T = TemporalGeneration(self, App);
 	require(!Time.Err);
 	printf( "	:: %03i    \t(took %.3fs) ::\n", App.Reps, T );
-	return true;
+	return LastGen;
 }
 
 
@@ -84,17 +83,16 @@ static IntVec& RepListFor(BookHitter& B, NamedGen* G) {
 static void CreateApproachSub(BookHitter& B, NamedGen* G) {
 	auto List = RepListFor(B, G);
 	for (auto R : List) {
-		auto App = GenApproach::neww();
+		auto App = GenApproach::neww(&B);
 		bool Sudo = App->SetGenReps(G, R);
 		B.ApproachList.push_back(App);
-		if (B.LogOrDebug())  App->DebugName(B);
+		App->DebugName();
 		if (Sudo) return;
 	}
 }
 
 
 void BookHitter::CreateApproaches() {
-	MinMaxes = {};
 	ApproachList = {};
 	BasicApproaches = {};
 	ChaoticApproaches = {};
@@ -108,11 +106,8 @@ void BookHitter::CreateApproaches() {
 	if (LogOrDebug())
 		printf("\"\n");
 
-	float Signs[] = {1.0, -1.0};
-	for_(4)
-		AddM(copysign(100000000, Signs[i%2]), i + 1);
-
 	ResetApproach();
+	ResetMinMaxes();
 }
 
 
@@ -129,6 +124,7 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 	require(!Time.Err);
 	u32 Least = -1; 
 
+	B.Loops = 0;
 	while (B.KeepGoing()) {
 		TemporalGeneration(self, *B.Chan);
 		require(!Time.Err);

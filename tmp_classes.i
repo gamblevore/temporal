@@ -31,6 +31,7 @@ struct RandoStats {
 
 
 struct GenApproach {
+	BookHitter*	Owner;
 	NamedGen*	Gen;
 	RandoStats  Stats;
 	float		Mean;
@@ -40,6 +41,28 @@ struct GenApproach {
 	u16			UseCount;
 	u8			NumForName;
 	
+	
+	static int ShrinkFlags_(GenApproach* App) {
+		if (App and App->IsChaotic())
+			return kXShrink|kXHisto;
+		return kXShrink|kXVonn|kXHisto;
+	}
+	
+	int FinalFlags() {
+		return ShrinkFlags_(this);
+	}
+	
+	int DetectFlags() {
+		return ShrinkFlags_(this)&~kXHisto;
+	}
+	
+	static int Shrink (GenApproach* App) {
+		int Flags = ShrinkFlags_(App);		
+		int n = 1;
+		if (Flags&kXVonn)   n *= 5;  // 4x on average, but lets say 5 to be safe.
+		if (Flags&kXShrink) n *= kXORShrinkAmount;
+		return n;
+	}
 
 	bool SetGenReps(NamedGen* G, int R) {
 		Gen  = G;
@@ -67,16 +90,8 @@ struct GenApproach {
 		return H - (H % Mod);
 	}
 
-	void DebugName(BookHitter&B) {
-		string s = Name();
-		printf("%s ", s.c_str());
-	}
-	string NameSub() {
-		string name = string(Gen->Name);
-		if (!IsSudo())          name += to_string(Reps);
-		if (NumForName)   		name += "_loop" + to_string(NumForName);
-		return name;
-	}
+	void DebugName();
+	string NameSub();
 	string Name() {
 		return Name_(this);
 	}
@@ -94,9 +109,9 @@ struct GenApproach {
 	static string FileName_(GenApproach* App, string s="") {
 		return FileName_(Name_(App), s);
 	}
-	static std::shared_ptr<GenApproach> neww() {
+	static std::shared_ptr<GenApproach> neww(BookHitter* Owner) {
 		auto M = New(GenApproach);
-		*M = {};
+		*M = {Owner};
 		return M;
 	}
 };
@@ -162,11 +177,13 @@ struct BookHitter {
 	ApproachVec		BasicApproaches;
 	ApproachVec		MinMaxes;
 	bh_output		Time;
-	int				UserChannel;
+	int				RequestLimit;
+	short			UserChannel;
 	bool			Log;
-	bool			DuringStability;
 	u8				LastReps;
+	bool			DuringStability;
 
+// // Funcs
 	float			DetectRandomness ();
 	void			CreateDirs();
 	void			CreateHTMLRandom(ApproachVec& V, string Name, string Title);
@@ -175,7 +192,7 @@ struct BookHitter {
 	ref(HTML_Random) HTML(string s, string n);	
 	void			CreateApproaches();
 	int				UseApproach ();
-	bool			NextApproachOK(GenApproach& App);
+	NamedGen*		NextApproachOK(GenApproach& App, NamedGen* LastGen);	
 	bool			CollectPieceOfRandom (RandomBuildup& B);
 	void			BestApproachCollector(ApproachVec& L);
 	ApproachVec&	FindBestApproach(ApproachVec& L, bool Chaotic);
@@ -205,6 +222,20 @@ struct BookHitter {
 	bool ChaosTesting() {
 		return IsChaotic() and DuringStability;
 	}
+	
+	bool UsingVon() {
+		// fill in later... chaotic might not need both!
+		return true;
+	}
+
+	bool UsingXOR() {
+		return true;
+	}
+
+	void OnlyNeedSize(int n) {
+		int Shrink = GenApproach::Shrink(App);
+		RequestLimit = (256 + Shrink * std::max(n, 0))*8;
+	} 
 
 	int UserChannelIndex() {
 		int i = UserChannel;
@@ -215,7 +246,7 @@ struct BookHitter {
 	}
 	
 	GenApproach* ViewChannel() {
-		auto L = ApproachesForChannel();
+		auto& L = ApproachesForChannel();
 		int i = UserChannelIndex() % L.size();
 		App = L[i].get();
 		return App;
@@ -231,6 +262,13 @@ struct BookHitter {
 		}
 	}
 	
+	void ResetMinMaxes() {
+		MinMaxes = {};
+		float Signs[] = {1.0, -1.0};
+		for_(4)
+			AddM(copysign(100000000, Signs[i%2]), i + 1);
+	}
+
 	void ResetApproach() {
 		App = 0;
 	}
@@ -249,11 +287,15 @@ struct BookHitter {
 	int Space() {
 		int N = (int)Samples.size();
 		if (IsFastTimeScoring())
-			N /= 16;
+			return N / 16;
+
+		if (RequestLimit > 0 and RequestLimit < N)
+			return RequestLimit;
+		
 		return N;
 	}
 	void AddM (float Default, int Type) {
-		auto M = GenApproach::neww();
+		auto M = GenApproach::neww(this);
 		for_(5) (*M)[i] = Default;
 		M->Stats.Type = Type;
 		MinMaxes.push_back(M);
@@ -266,16 +308,32 @@ struct BookHitter {
 	void CreateReps(int* Reps) {
 		if (!Reps) {
 			RepList = {3, 5, 9, 17, 25, 123};
-			#if DEBUG
-				RepList = {25, 3, 5, 9, 17};
-			#endif
+		#if DEBUG
+			RepList = {3, 5, 9, 17, 25};
+		#endif
 		} else {
 			RepList = {};
-			while (*Reps) {
+			while (*Reps)
 				RepList.push_back(*Reps++);
-			}
 		}
 		CreateApproaches();
 	}
 };
+
+
+void GenApproach::DebugName() {
+	if (Owner->LogOrDebug()) {
+		string s = Name();
+		printf("%s ", s.c_str());
+	}
+}
+
+
+string GenApproach::NameSub() {
+	string name = string(Gen->Name);
+	if (Owner->DuringStability)		name += "_"; // test
+	if (!IsSudo())          		name += to_string(Reps);
+	if (NumForName)   				name += "_loop" + to_string(NumForName);
+	return name;
+}
 

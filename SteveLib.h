@@ -12,8 +12,8 @@ bh_output*		bh_hitbooks			(BookHitter* B, unsigned char* Output, int OutLen);
 void			bh_free				(BookHitter* B);
 
 
-#if DEMO
-void BH_Demo() {
+#if StevesUsageExample
+inline void UsageExample() {
 	BookHitter* Stv = bh_create();
 	unsigned char Data[1024*1024];
 	bh_output Result = bh_hitbooks(Stv, Data, sizeof(Data)); // call as many times as you like...
@@ -24,7 +24,7 @@ void BH_Demo() {
 
 
 // View raw unprocessed temporal stuff... Creates RGB picture!
-bh_output*		steve_throwbooks	(BookHitter* B, unsigned char* View, int ViewLen);
+bh_output*		bh_steve_throwbooks	(BookHitter* B, unsigned char* View, int ViewLen);
 
 
 // Optional config

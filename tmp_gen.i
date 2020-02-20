@@ -302,6 +302,9 @@ static void* GenerateWrapper (void* arg) {
 	uSample* OutEnd    = Out + B.Space();
 	uSample* WarmUp    = Out + 2048;
 	
+	if (OutEnd < WarmUp)
+		OutEnd = WarmUp;
+	
 	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
 	FindSpikesAndLowest(Out,  B.Space(),  B);	
@@ -396,12 +399,11 @@ static void RawHisto (BookHitter& B) {
 }
 
 
-static bool Divided(BookHitter &B) {
+static void Divide(BookHitter &B) {
 	const int List[] = {4, 2, 13, 11, 7, 5, 3};
 	for (auto oof : List)
 		if (CanDivide(B, oof))
-			return DoDivide(B, oof);
-	return false;
+			DoDivide(B, oof);
 }
 
 
@@ -411,7 +413,7 @@ static void PreProcess (BookHitter& B) {
 	if (B.App->IsSudo()) return;
 	
 	RawHisto(B);
-	while (Divided(B));
+	Divide(B);
 	GroupHisto(B);
 }
 

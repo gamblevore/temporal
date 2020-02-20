@@ -49,8 +49,12 @@ void bh_set_reps (BookHitter* f, int* RepList) {
 
 
 bh_output* bh_hitbooks (BookHitter* f, u8* Data, int DataLength) {
+	if (!Data) return 0; // wat?
+
+	memset(Data, 0, DataLength);
 	RandomBuildup B = {Data, DataLength, f->IsRetro()};
 	f->Time = {};
+	f->OnlyNeedSize(DataLength);
 	while (f->CollectPieceOfRandom(B));
 	return &f->Time;
 }

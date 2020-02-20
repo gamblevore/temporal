@@ -6,25 +6,27 @@ Uses da ~RAndoMnEss~ in "hoW loNg" da instruction taykes, 4 fizzicalie bassed ra
 
 Seems ~eggsiiting~! >:3
 
-Steve I hohp u pleezzed okay! :>
+Steve will bee pleezed :>
 )";
 
 
 static int RunTemporalDemo() {
+	const int NumBytes = 4096; 
+	ByteArray D(NumBytes, 0);
+
 	puts(WelcomeMsg);
 	
 	auto F = bh_create();
 	bh_use_log(F, true);
-	auto Result = bh_hitbooks(F, 0, 1);
+
+	auto Result = bh_hitbooks(F, &D[0], 1);
 	auto html = F->HTML("temporal.html",  "Randomness Test");
 	
-	int NB = 4096; 
-	ByteArray D(NB, 0);
-	
-	for_(1) {
-		Result = bh_hitbooks(F, &D[0], NB);
+	for_(5) {
 		if (Result->Err) break;
-		html->WriteOne(&D[0], NB, F->App);
+		F->App->NumForName = i + 1; 
+		Result = bh_hitbooks(F, &D[0], NumBytes);
+		html->WriteOne(F->App);
 	}
 	
 	html->Finish();

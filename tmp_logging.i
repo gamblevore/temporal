@@ -162,13 +162,8 @@ img {
 	}
 
 
-	void WriteOne(u8* Data, int Length, GenApproach* App) {
-		if (Data) {
-			App->NumForName = Variations+1;
-			WriteImg(Data,  Length,  App->FileName());
-		}
-		
-		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr>\n"; 
+	void WriteOne(GenApproach* App) {
+		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr>\n";
 		if (!App->Stats.Length) return;
 		if (Variations % 8 == 0) ofs << Row;
 		HTMLImg(ofs, App);
@@ -178,7 +173,7 @@ img {
 	
 
 	void Finish() {
-		printf(":: %i Randomness variations!  :: \n", Variations);
+		printf("\n:: %i Randomness variations!  :: \n", Variations);
 		
 		ofs << R"(
 </tr>
@@ -205,7 +200,7 @@ ref(HTML_Random) BookHitter::HTML(string fn, string t) {
 void BookHitter::CreateHTMLRandom(ApproachVec& V, string FileName, string Title) {
 	auto html = HTML(FileName, Title);
 	for (auto R : V)
-		html->WriteOne(0, 0, R.get());	
+		html->WriteOne(R.get());	
 	html->Finish();
 }
 

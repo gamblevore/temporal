@@ -13,9 +13,19 @@
 // 		* Retro can get say 4x64... try extract the randomness
 //		* Do this 144x. So 4.5K. 
 //			* Just use as seeds...
-//  * Final loop has less size?
+//  * Perfect bit debias should use histo! not bitcounts...
+//  * The "need more" thing can be via rnd-detection on the output data!
+//       * Nice! Don't need to worry about score... anymore.
+
+// Actual use:
+//		* Generators have bad scores. Why?
+//		* should save MOD... considering that for short randomdata... the detectors can't detect very well... And just give bad result.
+
+
+//  * xor could lower on chaotic, but keep VN?
 //  * Reset score every so often... like 16 attempts or whatever.
-//  
+//  	* Just test for 0.5 seconds max, every 5 seconds or so...
+// 		* Then re-sort.
 
 
 

@@ -73,22 +73,21 @@ static BitView DoModToBit (BookHitter& B, int Mod) {
 }
 
 
-static void ExtractRandomness (BookHitter& B,  int Mod,  bool Debias,  bool WantRaw) {
+static void ExtractRandomness (BookHitter& B,  int Mod,  int Flags) {
 	B.App->Stats = {}; // stats is written to by do_histo, so clear here.
 
-	WantRaw = WantRaw or B.ChaosTesting();
+	if (B.ChaosTesting())
+		Flags &= ~(kXShrink|kXVonn);
 
 	auto bits = DoModToBit	(B, Mod);
 
-	if (!WantRaw)
-		bits  = DoXorShrink	(bits, 16); // 16 seems good?
+	if (Flags & kXShrink)
+		bits  = DoXorShrink	(bits, kXORShrinkAmount); // 16 seems good?
 
-	if (!WantRaw) 
+	if (Flags & kXVonn) 
 		bits  = Do_Vonn		(B, bits);
 
-	
-	Debias = Debias and !WantRaw;
-	bits = Do_Histo			(B, bits, B.LogOrDebug(), Debias);
+	bits = Do_Histo			(B, bits, Flags);
 
 	B.App->Stats.Length = bits.ByteLength();
 }
