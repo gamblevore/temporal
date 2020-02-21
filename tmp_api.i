@@ -58,6 +58,7 @@ bh_output* bh_hitbooks (BookHitter* f, u8* Data, int DataLength) {
 	while (f->CollectPieceOfRandom(B)) {
 		; // boop;
 	}
+	
 	return &f->Time;
 }
 
@@ -69,7 +70,7 @@ void bh_report_speed (bh_output* Result) {
 		printf("%.2fM", M);
 	  else
 		printf("%.2fK", K);
-	printf(" samples⇝%iKB in %.2fs", (Result->BytesOut/1024), Result->GenerateTime + Result->ProcessTime);
+	printf(" samples⇝%iKB @ %.2fs", (Result->BytesOut/1024), Result->GenerateTime + Result->ProcessTime);
 }
 
 

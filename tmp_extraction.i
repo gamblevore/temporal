@@ -1,4 +1,23 @@
 
+static void XorRetro(u8* Src, u8* Dest, int N) {
+	u64* Oofers  = (u64*)Src;
+	u8* Write    = Dest;
+	u8* WriteEnd = Dest + N;
+	
+	while (Write < WriteEnd) {
+		u64 Oof = 0;
+		for_(RetroCount) {
+			u64 Next = uint64_hash(Oofers[i]);
+			Oofers[i] = Next;
+			Oof ^= Next;
+		}
+		
+		for (int i = 0; i < 8 and Write < WriteEnd; i++) {
+			* Write++ = Oof & 255;
+			Oof >>= 8;
+		}
+	}
+}
 
 
 static BitView Do_Vonn (BookHitter& B, BitView R) {
@@ -73,15 +92,15 @@ static BitView DoModToBit (BookHitter& B, int Mod) {
 }
 
 
-BitView BuildOofers(u32* In, u64* Oofers) {
+static BitView BuildOofers(u32* In, u64* Oofers) {
 	BitView Result = {(u8*)Oofers, RetroCount*8}; 
 
 	for_(RetroCount) {
 		u64 Oof = 0;
-		FOR_(b, 8) {
-			Oof = (Oof << 8) | (*In++ & 255);
-		}
-		* Oofers++ = Oof; 
+		FOR_(b, 8)
+			Oof = (Oof << 8) ^ (*In++&255); // prettier colors?
+//		Oof = rotl(Oof, 8) ^ (*In++&255);
+		*Oofers++ = Oof; 
 	}
 	
 	return Result;
@@ -90,11 +109,20 @@ BitView BuildOofers(u32* In, u64* Oofers) {
 
 static void ExtractRetro (BookHitter& B) {
 	B.App->Stats = {}; // stats is written to by do_histo, so clear here.
-	
-	auto bits = BuildOofers(&B.Samples[0], (u64*)B.Extracted());	
-	Shrinkers Retro = {};
-	bits = Do_Histo			(B, bits, Retro);
+	u8* OoferSpace = B.Extracted();
+
+	auto bits = BuildOofers(&B.Samples[0], (u64*)OoferSpace);	
 	B.App->Stats.Length = bits.ByteLength();
+
+	Shrinkers Retro = {};
+	Do_Histo(B, bits, Retro);
+
+	if (B.LogOrDebug()) {
+		B.TryLogApproach("p");
+		bits = {(u8*)(&B.Samples[0]), 1<<14};
+		XorRetro(OoferSpace,  bits.Data,  bits.ByteLength());
+		WriteColorImg(bits.Data, bits.ByteLength(), B.App->FileName(""));
+	}
 }
 
 

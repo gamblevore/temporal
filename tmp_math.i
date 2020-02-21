@@ -1,5 +1,17 @@
 
 
+u64 rotl(u64 x, int N) {
+	int width = sizeof(x) * 8;
+	return (x << N) | (x >> (width-N));
+}
+
+
+u64 rotr(u64 x, int N) {
+	int width = sizeof(x) * 8;
+	return (x >> N) | (x << (width-N));
+}
+
+
 int Sign(int x) {
 	if (x > 0)
 		return 1;

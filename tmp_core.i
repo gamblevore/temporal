@@ -16,15 +16,16 @@ void BookHitter::FindMinMax() {
 
 
 float BookHitter::FinalExtractAndDetect (int Mod) {
-	ExtractRandomness(self, 0, {});
-	App->Stats.Length /= 32;             // for style. less is more.
-	TryLogApproach();
-	
-	if (IsRetro())
+	if (IsRetro()) {
 		ExtractRetro(self);
-	  else
-		ExtractRandomness(self, Mod, App->FinalFlags());	
-	TryLogApproach("p");
+	 } else {
+		ExtractRandomness(self, 0, {});
+		App->Stats.Length /= 32;             // for style. less is more.
+		TryLogApproach();
+		
+		ExtractRandomness(self, Mod, App->FinalFlags());
+		TryLogApproach("p");
+	}
 	
 	return DetectRandomness();
 }
@@ -122,26 +123,6 @@ static void XorCopy(u8* Src, u8* Dest, int N) {
 }
 
 
-static void XorRetro(u8* Src, u8* Dest, int N) {
-	u64* Oofers   = (u64*)Src;
-	u8* Write    = Dest;
-	u8* WriteEnd = Dest + N;
-	while (Write < WriteEnd) {
-		u64 Oof = 0;
-		for_(RetroCount) {
-			u64 Next = uint64_hash(Oofers[i]);
-			Oofers[i] = Next;
-			Oof ^= Next;
-		}
-		
-		for (int i = 0; i < 8 and Write < WriteEnd; i++) {
-			* Write++ = Oof & 255;
-			Oof >>= 8;
-		}
-	}
-}
-
-
 bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 	B.Chan = ViewChannel();
 	require(!Time.Err);
@@ -166,7 +147,9 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 	B.Data += Least;
 	Time.BytesOut += Least;
 	B.Remaining -= Least;
-	return (B.Remaining > 0);
+	if (B.Remaining > 0) return true;
+
+	return false;
 }
 
 

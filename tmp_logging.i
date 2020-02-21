@@ -40,25 +40,29 @@ static void HTMLImg(std::ofstream& ofs, GenApproach* V) {
 	ofs << "<td>";
 	if (R.Stats.Length and !R.Stats.Type) {
 		ofs << "<div class='img_ontop'>\n";
-		ofs << "<img class='behind'  src='" + R.FileName()+"' />\n";
-		ofs << "<img class='main' src='" + R.FileName("p") + "' />\n";
-		ofs << "<img class='histo' src='" + R.FileName("h") + "' />\n";
+		ofs << "<img class='behind'  src='" + R.FileName()    + "' />\n";
+		ofs << "<a target='_' href='" + R.FileName("p") + "'>";
+		ofs << "<img class='main' src='"    + R.FileName("p") + "' />";
+		ofs << "</a>\n";
+		ofs << "<img class='histo' src='"   + R.FileName("h") + "' />\n";
 		ofs << "</div><br/>\n";
 	}
 
 	ofs << R.Name();
-	int W = R.Stats.WorstIndex - 1;
-	int F = R.Stats.FailedIndexes;
-	ofs << ((F) ? " ❌" : "");
-	for_ (5) {
-		if (i == W)  ofs << "<b>";
-		ofs << "<br/>" + ScoreNames[i].substr(0,4) + " ";
-		ofs << std::fixed << std::setprecision(3) << R[i];
-		ofs << (((1<<i) & F) ? " ❌" : "");
-		if (i == W)  ofs << "</b>";
+	if (!V->Owner->IsRetro()) {
+		int W = R.Stats.WorstIndex - 1;
+		int F = R.Stats.FailedIndexes;
+		ofs << ((F) ? " ❌" : "");
+		for_ (5) {
+			if (i == W)  ofs << "<b>";
+			ofs << "<br/>" + ScoreNames[i].substr(0,4) + " ";
+			ofs << std::fixed << std::setprecision(3) << R[i];
+			ofs << (((1<<i) & F) ? " ❌" : "");
+			if (i == W)  ofs << "</b>";
+		}
+		ofs << "<br/>";
 	}
 	
-	ofs << "<br/>";
 	ofs << "</td>\n";
 }
 
@@ -222,8 +226,9 @@ void BookHitter::CreateDirs() {
 void BookHitter::TryLogApproach(string Debiased="") {
 	if (!LogOrDebug()) return;
 	int N = App->Stats.Length;
-	if (Debiased!="")
-		WriteColorImg(Extracted(), N, App->FileName(Debiased));
+	u8* R = Extracted();
+	if (Debiased != "")
+		WriteColorImg(R, N, App->FileName(Debiased));
 	  else
-		WriteColorImg(Extracted(), N, App->FileName());
+		WriteColorImg(R, N, App->FileName());
 }

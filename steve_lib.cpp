@@ -11,8 +11,6 @@
 //  TODO:
 //  * The "need more" thing can be via rnd-detection on the output data!
 //  * Reset score every so often... like 16 attempts or whatever?
-//  * Final drawer should be in hitbooks? Rather than extract?
-//		* maybe final histo, too..
 
 
 
