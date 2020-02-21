@@ -77,7 +77,8 @@ void RandTest::end(GenApproach& App) {
 	auto& Result = App.Stats;
 
 // No idea if these are "right"?! Tweak them if you wanna improve.
-	Result.Unify(0,		0,	    0.5,		0.7,	    8.0 - ent				); // Entropy
+	float EntLengthScale = Result.Length / (32.0*1024.0);
+	Result.Unify(0,		0,	    0.5,		0.7,	    (8.0 - ent)*EntLengthScale	); // Entropy
 	Result.Unify(1, 	217.5,	1810.0,		0.7,		chisq					); // ChiSq
 	Result.Unify(2, 	0.0,	1.0,		1.21,		fabs(Mean)				); // Mean
 	Result.Unify(3, 	0,		0.35,		1.428,		fabs(M_PI - montepi)	); // Monte

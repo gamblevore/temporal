@@ -16,12 +16,14 @@ void BookHitter::FindMinMax() {
 
 
 float BookHitter::FinalExtractAndDetect (int Mod) {
-	ExtractRandomness(self, 0, 0);
+	ExtractRandomness(self, 0, {});
 	App->Stats.Length /= 32;             // for style. less is more.
 	TryLogApproach();
 	
-	int F = App->FinalFlags();
-	ExtractRandomness(self, Mod, F);	
+	if (IsRetro())
+		ExtractRetro(self);
+	  else
+		ExtractRandomness(self, Mod, App->FinalFlags());	
 	TryLogApproach("p");
 	
 	return DetectRandomness();
@@ -42,7 +44,7 @@ int BookHitter::UseApproach () {
 	int   BestMod = 0;
 	float BestScore = 1000000.0;
 	
-	for (auto Mod : ModList) {
+	if (!IsRetro()) for (auto Mod : ModList) {
 		ExtractRandomness(self, Mod, App->DetectFlags());
 		float Score = DetectRandomness();
 		if (Score < BestScore) {
@@ -58,13 +60,14 @@ int BookHitter::UseApproach () {
 
 NamedGen* BookHitter::NextApproachOK(GenApproach& App, NamedGen* LastGen) {
 	this->App = &App;
-	if ( App.Gen != LastGen )
+	if ( App.Gen != LastGen and LogOrDebug() )
 		printf( "\n:: %s gen :: \n", App.Gen->Name );
 	LastGen = App.Gen;
 	
 	float T = TemporalGeneration(self, App);
 	require(!Time.Err);
-	printf( "	:: %03i    \t(took %.3fs) ::\n", App.Reps, T );
+	if (LogOrDebug())
+		printf( "	:: %03i    \t(took %.3fs) ::\n", App.Reps, T );
 	return LastGen;
 }
 
@@ -95,6 +98,7 @@ static void CreateApproachSub(BookHitter& B, NamedGen* G) {
 void BookHitter::CreateApproaches() {
 	ApproachList = {};
 	BasicApproaches = {};
+	RetroApproaches = {};
 	ChaoticApproaches = {};
 
 	if (LogOrDebug())
@@ -111,11 +115,30 @@ void BookHitter::CreateApproaches() {
 }
 
 
-static u8* XorCopy(u8* Src, u8* Dest, int N) {
+static void XorCopy(u8* Src, u8* Dest, int N) {
 	u8* Write = Dest;
-	if (Dest) while (N-- > 0)
+	while (N-- > 0)
 		*Write++ = *Src++ ^ *Dest++;
-	return Dest;
+}
+
+
+static void XorRetro(u8* Src, u8* Dest, int N) {
+	u64* Oofers   = (u64*)Src;
+	u8* Write    = Dest;
+	u8* WriteEnd = Dest + N;
+	while (Write < WriteEnd) {
+		u64 Oof = 0;
+		for_(RetroCount) {
+			u64 Next = uint64_hash(Oofers[i]);
+			Oofers[i] = Next;
+			Oof ^= Next;
+		}
+		
+		for (int i = 0; i < 8 and Write < WriteEnd; i++) {
+			* Write++ = Oof & 255;
+			Oof >>= 8;
+		}
+	}
 }
 
 
@@ -126,16 +149,22 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 
 	B.Loops = 0;
 	while (B.KeepGoing()) {
+		OnlyNeedSize(B.Remaining);
 		TemporalGeneration(self, *B.Chan);
 		require(!Time.Err);
 	
 		u32 N = std::min(UseApproach(), B.Remaining);
 		Least = std::min(Least, N);
-		XorCopy(Extracted(), B.Data, N);
+		if (IsRetro())
+			XorRetro(Extracted(),  B.Data,  N);
+		  else
+			XorCopy (Extracted(),  B.Data,  N);
 		B.AllWorst = std::max(B.AllWorst, B.Worst());
 	}
 
+	RequestLimit = 0; // cleanup.
 	B.Data += Least;
+	Time.BytesOut += Least;
 	B.Remaining -= Least;
 	return (B.Remaining > 0);
 }

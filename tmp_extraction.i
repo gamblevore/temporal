@@ -51,7 +51,7 @@ Ooof BitView DoXorShrink (BitView Bits, int Shrink) {
 
 
 static BitView DoModToBit (BookHitter& B, int Mod) {
-	int n = B.Space();
+	int n = B.GenSpace();
 	auto Data = B.Out();
 	BitView biv = {B.Extracted(), 0};
 
@@ -73,22 +73,50 @@ static BitView DoModToBit (BookHitter& B, int Mod) {
 }
 
 
-static void ExtractRandomness (BookHitter& B,  int Mod,  int Flags) {
+BitView BuildOofers(u32* In, u64* Oofers) {
+	BitView Result = {(u8*)Oofers, RetroCount*8}; 
+
+	for_(RetroCount) {
+		u64 Oof = 0;
+		FOR_(b, 8) {
+			Oof = (Oof << 8) | (*In++ & 255);
+		}
+		* Oofers++ = Oof; 
+	}
+	
+	return Result;
+}
+
+
+static void ExtractRetro (BookHitter& B) {
+	B.App->Stats = {}; // stats is written to by do_histo, so clear here.
+	
+	auto bits = BuildOofers(&B.Samples[0], (u64*)B.Extracted());	
+	Shrinkers Retro = {};
+	bits = Do_Histo			(B, bits, Retro);
+	B.App->Stats.Length = bits.ByteLength();
+}
+
+
+static void ExtractRandomness (BookHitter& B,  int Mod,  Shrinkers Flags) {
 	B.App->Stats = {}; // stats is written to by do_histo, so clear here.
 
-	if (B.ChaosTesting())
-		Flags &= ~(kXShrink|kXVonn);
+	if (B.ChaosTesting()) {
+		Flags.Vonn = 0;
+		Flags.PreXOR = 0;
+	}
 
 	auto bits = DoModToBit	(B, Mod);
 
-	if (Flags & kXShrink)
-		bits  = DoXorShrink	(bits, kXORShrinkAmount); // 16 seems good?
+	if (Flags.PreXOR)
+		bits  = DoXorShrink	(bits, Flags.PreXOR); // 16 seems good?
 
-	if (Flags & kXVonn) 
+	if (Flags.Vonn) 
 		bits  = Do_Vonn		(B, bits);
 
 	bits = Do_Histo			(B, bits, Flags);
 
-	B.App->Stats.Length = bits.ByteLength();
+	int N = bits.ByteLength();
+	B.App->Stats.Length = N;
 }
 

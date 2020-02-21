@@ -163,6 +163,7 @@ img {
 
 
 	void WriteOne(GenApproach* App) {
+		if (!Started) return;
 		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr>\n";
 		if (!App->Stats.Length) return;
 		if (Variations % 8 == 0) ofs << Row;
@@ -173,6 +174,7 @@ img {
 	
 
 	void Finish() {
+		if (!Started) return;
 		printf("\n:: %i Randomness variations!  :: \n", Variations);
 		
 		ofs << R"(
@@ -192,7 +194,8 @@ img {
 
 ref(HTML_Random) BookHitter::HTML(string fn, string t) {
 	auto Result = New4(HTML_Random, fn, t, this);
-	Result->Start();
+	if (LogOrDebug())
+		Result->Start();
 	return Result;
 }	
 
@@ -206,6 +209,9 @@ void BookHitter::CreateHTMLRandom(ApproachVec& V, string FileName, string Title)
 
 
 void BookHitter::CreateDirs() {
+	if (CreatedDirs or !LogOrDebug()) return;
+
+	CreatedDirs = true;
 	int UnixMode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH; // oof unix.
 	IgnoredError = mkdir("steve_output",  UnixMode);
 	IgnoredError = chdir("steve_output");

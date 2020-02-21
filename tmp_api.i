@@ -20,9 +20,7 @@ BookHitter* bh_create() {
 
 
 void bh_use_log(BookHitter* f, bool Active) {
-	f->Log = Active;
-	if (Active)
-		f->CreateDirs();
+	f->Log_ = Active;
 }
 
 
@@ -51,12 +49,27 @@ void bh_set_reps (BookHitter* f, int* RepList) {
 bh_output* bh_hitbooks (BookHitter* f, u8* Data, int DataLength) {
 	if (!Data) return 0; // wat?
 
+	f->CreateDirs();
+
 	memset(Data, 0, DataLength);
 	RandomBuildup B = {Data, DataLength, f->IsRetro()};
 	f->Time = {};
-	f->OnlyNeedSize(DataLength);
-	while (f->CollectPieceOfRandom(B));
+
+	while (f->CollectPieceOfRandom(B)) {
+		; // boop;
+	}
 	return &f->Time;
+}
+
+void bh_report_speed (bh_output* Result) {
+	float M = ((float)(Result->SamplesGenerated))/1000000.0;
+	float K = ((float)(Result->SamplesGenerated))/1000.0;
+	
+	if (M > 0.1)
+		printf("%.2fM", M);
+	  else
+		printf("%.2fK", K);
+	printf(" samples⇝%iKB in %.2fs", (Result->BytesOut/1024), Result->GenerateTime + Result->ProcessTime);
 }
 
 

@@ -299,15 +299,17 @@ static void* GenerateWrapper (void* arg) {
 
 	GenApproach& A     = *B.App;	
 	auto Out           = B.Out();
-	uSample* OutEnd    = Out + B.Space();
+	int Space		   = B.GenSpace();
+	uSample* OutEnd    = Out + Space;
 	uSample* WarmUp    = Out + 2048;
 	
 	if (OutEnd < WarmUp)
 		OutEnd = WarmUp;
 	
+	B.Time.SamplesGenerated += (OutEnd - Out);
 	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
-	FindSpikesAndLowest(Out,  B.Space(),  B);	
+	FindSpikesAndLowest(Out,  Space,  B);	
 	
 	return 0;
 }
@@ -423,20 +425,28 @@ static float TemporalGeneration(BookHitter& B, GenApproach& App) {
 	B.App = &App;
 	B.Time = {};
 	App.Stats = {};
-	
+
 	int Err = pthread_create(&B.GeneratorThread, NULL, &GenerateWrapper, &B);
 	if (!Err) Err = pthread_join(B.GeneratorThread, 0);
 	if (Err)  B.Time.Err = Err;
+
+	auto& T = B.Time;
+	float Time = ChronoLength(t_Start);
+	App.GenTime = Time;
+	T.GenerateTime += Time;
 	
-	if (B.Time.Err) {
+	if (T.Err) {
 		fprintf( stderr,  "temporal generation err for '%s': %i\n",  App.Gen->Name,  B.Time.Err);
 	} else {
+		t_Start = Now();
 		App.UseCount++;
-		PreProcess(B);
+		if (!B.IsRetro())
+			PreProcess(B);
+		float PTime = ChronoLength(t_Start);
+		Time += PTime;
+		T.ProcessTime += PTime;
 	}
 	
-	float Time = ChronoLength(t_Start);
-	B.Time.GenerateTime += Time;
 	return Time;
 }
 

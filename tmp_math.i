@@ -74,15 +74,6 @@ struct BitView {
 	u8  Tmp;
 	u8* Data;
 	
-	u32 BitCount() {
-		int Result = 0;
-		u64* Oof = (u64*)Data;
-		u64* End = (u64*)(Data + ByteLength());
-		while (Oof < End)
-			Result += __builtin_popcountll(*Oof++);
-		return Result;
-	}
-
 	bool operator [](int i) {
 		u32 BitMask = 1 << (i & 7);
 		u32 BytePos = i >> 3;

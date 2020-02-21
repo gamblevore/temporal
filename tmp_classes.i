@@ -30,11 +30,20 @@ struct RandoStats {
 };
 
 
+struct Shrinkers {
+	u32 PreXOR	: 6;
+	u32 Vonn	: 1;
+	u32 Histo	: 1;
+	u32 PostXOR	: 6;
+};
+
+
 struct GenApproach {
 	BookHitter*	Owner;
 	NamedGen*	Gen;
 	RandoStats  Stats;
 	float		Mean;
+	float		GenTime;
 	u32			Highest;
 	u16			Fails;
 	u16			Reps;
@@ -42,25 +51,29 @@ struct GenApproach {
 	u8			NumForName;
 	
 	
-	static int ShrinkFlags_(GenApproach* App) {
+	static Shrinkers ShrinkFlags_(GenApproach* App) {
+		Shrinkers Result = {16, 1, 1};
 		if (App and App->IsChaotic())
-			return kXShrink|kXHisto;
-		return kXShrink|kXVonn|kXHisto;
+			Result.PreXOR = 4;
+		return Result;
 	}
 	
-	int FinalFlags() {
+	Shrinkers FinalFlags() {
 		return ShrinkFlags_(this);
 	}
 	
-	int DetectFlags() {
-		return ShrinkFlags_(this)&~kXHisto;
+	Shrinkers DetectFlags() {
+		auto Result = ShrinkFlags_(this);
+		Result.Histo = 0;
+		return Result;
 	}
 	
 	static int Shrink (GenApproach* App) {
-		int Flags = ShrinkFlags_(App);		
+		auto Flags = ShrinkFlags_(App);		
 		int n = 1;
-		if (Flags&kXVonn)   n *= 5;  // 4x on average, but lets say 5 to be safe.
-		if (Flags&kXShrink) n *= kXORShrinkAmount;
+		if (Flags.Vonn)		n *= 5;  // 4x on average, but lets say 5 to be safe.
+		if (Flags.PreXOR)	n *= Flags.PreXOR;
+		if (Flags.PostXOR)	n *= Flags.PostXOR;
 		return n;
 	}
 
@@ -173,13 +186,15 @@ struct BookHitter {
 	IntVec			RepList;
 	IntVec			ChaoticRepList;
 	ApproachVec		ApproachList;
+	ApproachVec		RetroApproaches;
 	ApproachVec		ChaoticApproaches;
 	ApproachVec		BasicApproaches;
 	ApproachVec		MinMaxes;
 	bh_output		Time;
 	int				RequestLimit;
 	short			UserChannel;
-	bool			Log;
+	bool			Log_;
+	bool			CreatedDirs;
 	u8				LastReps;
 	bool			DuringStability;
 
@@ -195,7 +210,7 @@ struct BookHitter {
 	NamedGen*		NextApproachOK(GenApproach& App, NamedGen* LastGen);	
 	bool			CollectPieceOfRandom (RandomBuildup& B);
 	void			BestApproachCollector(ApproachVec& L);
-	ApproachVec&	FindBestApproach(ApproachVec& L, bool Chaotic);
+	ApproachVec&	FindBestApproach(ApproachVec& L);
 	float			FinalExtractAndDetect (int Mod);
 	void			TryLogApproach(string name);
 
@@ -205,10 +220,7 @@ struct BookHitter {
 	}
 	
 	bool LogOrDebug() {
-		#ifdef DEBUG
-			return true;
-		#endif 
-		return Log;
+		return DEBUG_AS_NUM or Log_;
 	}
 
 	bool IsRetro() {
@@ -232,9 +244,16 @@ struct BookHitter {
 		return true;
 	}
 
-	void OnlyNeedSize(int n) {
-		int Shrink = GenApproach::Shrink(App);
-		RequestLimit = (256 + Shrink * std::max(n, 0))*8;
+	void OnlyNeedSize(int N) {
+		N = std::max(N, 0);
+		if (IsRetro()) {
+			RequestLimit = N;
+		} else {
+			int Shrink = GenApproach::Shrink(App);
+			int SafeExtra = 256;
+			int BitsToBytes = 8;
+			RequestLimit = (SafeExtra + Shrink * N)*BitsToBytes;
+		}
 	} 
 
 	int UserChannelIndex() {
@@ -254,11 +273,11 @@ struct BookHitter {
 	
 	ApproachVec& ApproachesForChannel() {
 		if (IsChaotic()) {
-			return FindBestApproach(ChaoticApproaches, true);
+			return FindBestApproach(ChaoticApproaches);
 		} else if (IsRetro()) {
-			return ApproachList;
+			return FindBestApproach(RetroApproaches);
 		} else {
-			return FindBestApproach(ChaoticApproaches, false);
+			return FindBestApproach(ChaoticApproaches);
 		}
 	}
 	
@@ -281,18 +300,21 @@ struct BookHitter {
 	u8* Extracted() {
 		return &(Buff[0]);
 	}
-	bool IsFastTimeScoring() {
-		return DuringStability and (UserChannel >= 0);
-	}
 	int Space() {
 		int N = (int)Samples.size();
-		if (IsFastTimeScoring())
+		
+		if (ChaosTesting())
 			return N / 16;
 
 		if (RequestLimit > 0 and RequestLimit < N)
 			return RequestLimit;
 		
 		return N;
+	}
+	int GenSpace() {
+		if (IsRetro()) // half extra, for temporal cohesion...
+			return (RetroCount*8)+(RetroCount/2);
+		return Space();
 	}
 	void AddM (float Default, int Type) {
 		auto M = GenApproach::neww(this);

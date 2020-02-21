@@ -42,6 +42,8 @@ struct bh_output {
 	float	ProcessTime;
 	float	WorstScore;
 	int		Err;
+	int		SamplesGenerated;
+	int		BytesOut;
 	int		Spikes;
 };
 

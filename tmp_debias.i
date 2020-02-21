@@ -73,8 +73,7 @@ static bool pdb (BitView& R, u32 i, int Offness) {
 }
 
 
-static void PerfectBitDebias (BitView R, GenApproach* App) {
-	auto TotalBits = R.BitCount();
+static void PerfectBitDebias (BitView R, GenApproach* App, u32 TotalBits) {
 	int n = R.Length;
 	int Offness = TotalBits - (n/2);
 	App->Stats.BitsRandomised += abs(Offness);
@@ -90,7 +89,7 @@ static void PerfectBitDebias (BitView R, GenApproach* App) {
 }
 
 
-static BitView Do_Histo (BookHitter& B, BitView R, int Flags) {
+static BitView Do_Histo (BookHitter& B, BitView R, Shrinkers Flags) {
 	int n = R.Length;
 	if (n < 64)  return R;
 		
@@ -102,12 +101,12 @@ static BitView Do_Histo (BookHitter& B, BitView R, int Flags) {
 	Histogram H = CollectHistogram(Sections);
 	B.App->Stats.Hist = HistoInputRandomness(H);
 	
-	if (Flags&kXHisto) {
+	if (Flags.Histo) {
 		if (AllowDebiaser)
 			Sections = DebiasSectionsOfLength(H, Sections, B.App);
 
 		R = Sections.Convert(R.Data);
-		PerfectBitDebias(R, B.App);
+		PerfectBitDebias(R, B.App, H[0][1]);
 	}
 	
 	if (B.LogOrDebug()) { // no point logging this, if we didn't use DebiasSectionsOfLength

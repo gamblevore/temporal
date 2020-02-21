@@ -11,21 +11,25 @@ Steve will bee pleezed :>
 
 
 static int RunTemporalDemo() {
-	const int NumBytes = 4096; 
+	const int NumBytes = 16*1024; 
 	ByteArray D(NumBytes, 0);
 
 	puts(WelcomeMsg);
 	
 	auto F = bh_create();
 	bh_use_log(F, true);
+	bh_use_channel(F, 1);
 
 	auto Result = bh_hitbooks(F, &D[0], 1);
 	auto html = F->HTML("temporal.html",  "Randomness Test");
 	
 	for_(5) {
 		if (Result->Err) break;
-		F->App->NumForName = i + 1; 
+		F->App->NumForName = i + 1;
+		printf(":: Item %i (", i + 1);
 		Result = bh_hitbooks(F, &D[0], NumBytes);
+		bh_report_speed(Result);
+		printf(") ::\n");
 		html->WriteOne(F->App);
 	}
 	
@@ -37,18 +41,12 @@ static int RunTemporalDemo() {
 }
 
 
-static string RestoreDir;
-static void CleanupMain () {
-	IgnoredError = chdir(RestoreDir.c_str());
-}
-
-
 int main (int argc, const char* argv[]) {
 	sizecheck(u64, 8);  sizecheck(u32, 4);  sizecheck(u16, 2);  sizecheck(u8, 1);
-	RestoreDir = getcwd(0, 0);
-	atexit(CleanupMain);
+	auto RestoreDir = getcwd(0, 0);
 	int Err = RunTemporalDemo();
 	printf("\n");
+	IgnoredError = chdir(RestoreDir);
 	return Err;
 }
 
