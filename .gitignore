@@ -38,6 +38,7 @@ Thumbs.db
 /Debug/
 /temporal_research.build/
 *.build/
+build/
 temporal
 steve_breathe
 time_imgs
