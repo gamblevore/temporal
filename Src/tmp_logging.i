@@ -219,11 +219,11 @@ static void TemporalCrashHandler(int Signal) {
     printf( "error: unhandled signal %i\n", Signal);
     void* array[32];
     int   size      = backtrace( array, 32 );
+    printf( "%i stack size\n", size);
     char  **strings = backtrace_symbols( array, size );
 
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++)
         puts( strings[i] );
-    }
     
     puts("");
 	free( strings );
