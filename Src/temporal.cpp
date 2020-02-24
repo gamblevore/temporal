@@ -5,16 +5,6 @@
 	Could be used in almost anything! Even games :3
 	Can we make a computer FEEL Psychic energy?
 	We compile the generator separately, because optimisations ruin the output!
-
-
-# compile:
-    mkdir -p build
-    cd build
-    g++            -std=c++0x  -O0  -c  ../tmp_gen.cpp
-    g++  -pthread  -std=c++0x  -Os  -c  ../temporal.cpp
-    g++ *.o -o temporal
-	
-# or use Xcode project
 */
 
 

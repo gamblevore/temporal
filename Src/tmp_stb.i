@@ -6,7 +6,7 @@
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBIW_WINDOWS_UTF8
-#include "stb_image_write.h"
+#include "includes/stb_image_write.h"
 
 
 #define STBI_NO_JPEG
@@ -19,7 +19,7 @@
 #define STBI_NO_PNM
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ASSERT(x)
-#include "stb_image.h"
+#include "includes/stb_image.h"
 
 #pragma GCC diagnostic pop
 
