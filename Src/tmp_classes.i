@@ -160,7 +160,7 @@ struct RandomBuildup {
 	int				Loops;
 	
 	float Worst() {
-		return std::max(Chan->Stats.Worst, 0.0f);
+		return max(Chan->Stats.Worst, 0.0f);
 	}
 	
 	bool KeepGoing() {
@@ -252,7 +252,7 @@ struct BookHitter {
 	}
 
 	void OnlyNeedSize(int N) {
-		N = std::max(N, 0);
+		N = max(N, 0);
 		if (IsRetro()) {
 			RequestLimit = N;
 		} else {

@@ -12,8 +12,8 @@ void BookHitter::FindMinMax() {
 	Max.UseCount++;
 	
 	for_(5) {
-		Max[i] = std::max(S[i], Max[i]);
-		Min[i] = std::min(S[i], Min[i]);
+		Max[i] = max(S[i], Max[i]);
+		Min[i] = min(S[i], Min[i]);
 	}
 }
 
@@ -38,7 +38,7 @@ static int FinishApproach(BookHitter& B, float Time) {
 	auto& App = *B.App;
 	App.Fails += App.Stats.FailedCount;
 	B.Stats.ProcessTime += Time;
-	B.Stats.WorstScore = std::max(B.Stats.WorstScore, App.Stats.Worst);
+	B.Stats.WorstScore = max(B.Stats.WorstScore, App.Stats.Worst);
 	return App.Stats.Length;
 }
 
@@ -138,13 +138,13 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 		TemporalGeneration(self, *B.Chan);
 		require(!Stats.Err);
 	
-		u32 N = std::min(UseApproach(), B.Remaining);
-		Least = std::min(Least, N);
+		u32 N = min(UseApproach(), B.Remaining);
+		Least = min(Least, N);
 		if (IsRetro())
 			XorRetro(Extracted(),  B.Data,  N);
 		  else
 			XorCopy (Extracted(),  B.Data,  N);
-		B.AllWorst = std::max(B.AllWorst, B.Worst());
+		B.AllWorst = max(B.AllWorst, B.Worst());
 	}
 
 	RequestLimit = 0; // cleanup.

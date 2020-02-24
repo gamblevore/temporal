@@ -2,10 +2,10 @@
 
 static float SpeedScore(float b, float a) {
 	float thresh = 1.25;
-	if (std::max(a, b) <= 0) return 0;
+	if (max(a, b) <= 0) return 0;
 	
-	float score = fabsf(std::max(b,a)) / fabsf(std::min(a,b));
-	score = std::max(score-thresh, 0.0f);
+	float score = fabsf(max(b,a)) / fabsf(min(a,b));
+	score = max(score-thresh, 0.0f);
 	score = score / 1000.0;
 	score = copysign(score, b - a);
 	return score; 

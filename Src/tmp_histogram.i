@@ -7,7 +7,7 @@ struct ChanceShuffler {
 	u8			Position;
 	
 	u64 CreateValue() {
-		int N = (std::min(Chance+MissingChance, 1.0f) * 64.0f) + 0.5;
+		int N = (min(Chance+MissingChance, 1.0f) * 64.0f) + 0.5;
 		MissingChance = Chance - ((float)N / 64.0f);
 
 		u64 V = (N<64) ? (1ul<<N) - 1 : -1;
@@ -35,7 +35,7 @@ struct ChanceShuffler {
 	}
 
 	void Init(float C) {
-		Chance = std::min(C, 1.0f);
+		Chance = min(C, 1.0f);
 		MissingChance = 0;
 		Reset();
 	}
@@ -123,7 +123,7 @@ struct Histogram {
 		Chances Result;
 		for_(2) {
 			float Occur = TrueAndFalse[i];
-			float Extra = std::max(Occur - Lim, 0.0f);
+			float Extra = max(Occur - Lim, 0.0f);
 			float Chance = Occur > (1.0/2048.0) ? Extra/Occur : 0; 
 			Result.Shuff[i].Init(Chance);
 		}

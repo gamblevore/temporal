@@ -17,7 +17,7 @@ Ooof void DebugSamples (BookHitter& B) {
 	auto Name = B.App->Name();
 	printf("Samples for %s:\n", Name.c_str());
 	auto S = B.Out();
-	for_ (std::min(1000, B.Space()))
+	for_ (min(1000, B.Space()))
 		printf("%i, ", S[i]);
 	printf("0\n");
 }
@@ -60,7 +60,7 @@ Ooof BitSections DebiasSectionsOfLength (Histogram& H, BitSections R, GenApproac
 
 static bool pdb (BitView& R, u32 i, int Offness) {
 	bool T = (Offness > 0);
-	u32 n = std::min(i + 2, R.Length);
+	u32 n = min(i + 2, R.Length);
 
 	for (; i < n; i++) {
 		if (R[i] == T) {

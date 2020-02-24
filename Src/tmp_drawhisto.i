@@ -2,8 +2,8 @@
 
 static void DrawRect(u8* Image, int ImageWidth, int ImageHeight, int RectX, int RectWidth, int RectY, int RectHeight, int Value) {
 	Image += RectY*ImageWidth;
-	int RectXEnd = std::min(RectX + RectWidth,  ImageWidth );
-	int RectYEnd = std::min(RectY + RectHeight, ImageHeight);
+	int RectXEnd = min(RectX + RectWidth,  ImageWidth );
+	int RectYEnd = min(RectY + RectHeight, ImageHeight);
 	for (int y = RectY; y < RectYEnd; y++)
 		for (int x = RectX; x < RectXEnd; x++)
 			Image[(ImageHeight-y)*ImageWidth + x] = Value;
@@ -36,7 +36,7 @@ static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraNam
 	
 	int BarWidth = 10; // px
 	int BarGap = 2;
-	int MyBarCount = 6;   MyBarCount = std::min(MyBarCount, BarCount);
+	int MyBarCount = 6;   MyBarCount = min(MyBarCount, BarCount);
 	
 	int TotalWidth = (BarWidth * MyBarCount*2) + (BarGap*(MyBarCount-1));
 	int TotalHeight = TotalWidth; // why not.

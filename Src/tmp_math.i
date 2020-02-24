@@ -154,7 +154,7 @@ struct BitSections {
 	int Write(int Count) {
 //		BitLength += Count;
 		while (1) {
-			int ToWrite = std::min(Count, 255);
+			int ToWrite = min(Count, 255);
 			Count -= ToWrite; 
 			WriteSub(ToWrite);
 			if (!Count) return 0;

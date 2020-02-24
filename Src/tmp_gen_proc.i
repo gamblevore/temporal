@@ -16,7 +16,7 @@ NamedGen* NextGenerator(NamedGen* G) {
 static void FindSpikesAndLowest (uSample* Results, int Count, BookHitter& B) {
 	u32 Lowest = -1;
 	for_ (Count)
-		Lowest = std::min(Lowest, (u32)Results[i]);
+		Lowest = min(Lowest, (u32)Results[i]);
 
 	u32 MaxTime = (Lowest + 2) * 5;
 	
@@ -125,7 +125,7 @@ static bool DoDivide (BookHitter& B, const int oof) {
 	for_(HistoMax) {
 		int Low  =     i * oof;
 		int High = (i+1) * oof - 1;
-		High = std::min(High, HistoMax-1);
+		High = min(High, HistoMax-1);
 		int Total = 0;
 		for (int Read = Low; Read <= High; Read++) {
 			Total += H[Read];
