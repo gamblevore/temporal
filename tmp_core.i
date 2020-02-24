@@ -55,6 +55,7 @@ int BookHitter::UseApproach () {
 	}
 	
 	FinalExtractAndDetect(BestMod);
+	FindMinMax();
 	return FinishApproach(self, ChronoLength(t_Start));
 }
 
@@ -105,7 +106,7 @@ void BookHitter::CreateApproaches() {
 	if (LogOrDebug())
 		printf("\n :: Available Generators ::\n\"");
 
-	for (auto G = &GenList[0];  G;  G = NextGenerator(G))
+	for (auto G = &TmpGenList[0];  G;  G = NextGenerator(G))
 		CreateApproachSub(self, G);
 
 	if (LogOrDebug())

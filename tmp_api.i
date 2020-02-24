@@ -62,6 +62,7 @@ bh_output* bh_hitbooks (BookHitter* f, u8* Data, int DataLength) {
 	return &f->Time;
 }
 
+
 void bh_report_speed (bh_output* Result) {
 	float M = ((float)(Result->SamplesGenerated))/1000000.0;
 	float K = ((float)(Result->SamplesGenerated))/1000.0;

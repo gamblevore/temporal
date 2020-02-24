@@ -1,20 +1,32 @@
 
-//  
-//  Generate temporal number stream: © 2019-2020 Theodore H. Smith
-//  Could be used in almost anything! Even games :3
-//  Can we make a computer FEEL Psychic energy?
-//  compile: g++ -pthread -std=c++0x -Os steve_lib.cpp -o steve_breathe
-//	  or use Xcode project
-//  
+
+/*  
+	Generate temporal number stream: © 2019-2020 Theodore H. Smith
+	Could be used in almost anything! Even games :3
+	Can we make a computer FEEL Psychic energy?
+	We compile the generator separately, because optimisations ruin the output!
 
 
+# compile:
+    mkdir -p build
+    cd build
+    g++            -std=c++0x  -O0  -c  ../tmp_gen.cpp
+    g++  -pthread  -std=c++0x  -Os  -c  ../temporal.cpp
+    g++ *.o -o temporal
+	
+# or use Xcode project
+*/
+
+
+//
 //  TODO:
-//  * The "need more" thing can be via rnd-detection on the output data!
+//  * "need more" (For non-retro non-chaotic gens) can be via rnd-detection on output data?
 //  * Reset score every so often... like 16 attempts or whatever?
+// 
 
 
-
-//  NEW ALGORITHM: (more of an opt, do for a later version once people are happy with existing code.)
+//  NEW ALGORITHM:
+//  * (An opt. Do for later vers, once people like the existing code.)
 //  * histogram debiaser should use sliding window, and be single-pass...
 //      * This just gives more data, then dump von-neuman, which costs us 4x data.
 //		* maybe via a "one byte per bit-length" system.
@@ -27,11 +39,14 @@
 
 #include "SteveLib.h"
 #include "tmp_headers.i"
+#include "tmp_stb.i"
 #include "tmp_typedefs.i"
 #include "tmp_defines.i"
+#include "tmp_vars.i"
+#include "tmp_shared.i"
 #include "tmp_math.i"
 #include "tmp_classes.i"
-#include "tmp_gen.i"
+#include "tmp_gen_proc.i"
 #include "tmp_stats.i"
 #include "tmp_img.i"
 #include "tmp_logging.i"

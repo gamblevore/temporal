@@ -1,13 +1,6 @@
 
 
 
-struct NamedGen {
-	GenFunc		Func;
-	const char*	Name;
-	u8       	Slowness;
-	u8       	GenType;
-};
-
 
 struct RandoStats {
 	float		Entropy;
@@ -329,9 +322,9 @@ struct BookHitter {
 	}
 	void CreateReps(int* Reps) {
 		if (!Reps) {
-			RepList = {3, 5, 9, 17, 25, 123};
+			RepList = {3, 5,  9,  17,  25, 31};
 		#if DEBUG
-			RepList = {3, 5, 9, 17, 25};
+			RepList = {3, 5,  9,  17,  25};
 		#endif
 		} else {
 			RepList = {};

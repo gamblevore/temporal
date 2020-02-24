@@ -14,8 +14,11 @@ This project was inspired by the fatum project, a totally cool project about: No
 
 # compile
 
-compile: `g++ -pthread -std=c++0x -Os temporal.cpp -o temporal`
-or use the Xcode project supplied
+    mkdir -p build
+    cd build
+    g++            -std=c++0x  -O0  -c  ../tmp_gen.cpp
+    g++  -pthread  -std=c++0x  -Os  -c  ../temporal.cpp
+    g++ *.o -o temporal
 
 
 # Efforts made
@@ -23,8 +26,9 @@ or use the Xcode project supplied
 * The design of the code is important. We need to "defeat optimisations". For example my time-generator doesn't just call `Time32`, it ALSO xor's the result and returns it, ensuring it isn't optimised away.
 * We use warmups to help timings.
 * We try various mod sizes to extract randomness. (like `temporal_rand() mod 17`)
-* Uses histograms, von-neuman and all sorts of stuff.
+* Uses histograms, von-neuman and XOR.
 * We use some defines to make code more consistant. `Time_`, `for_`, `Gen`
+* A lot more design is going on, inside... to make it work and be nice...
 
 
 # theory

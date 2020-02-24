@@ -10,7 +10,7 @@ Steve will bee pleezed :>
 )";
 
 
-static int RunTemporalDemo() {
+static int RunTemporalDemo(int Chan) {
 	const int NumBytes = 16*1024; 
 	ByteArray D(NumBytes, 0);
 
@@ -18,7 +18,7 @@ static int RunTemporalDemo() {
 	
 	auto F = bh_create();
 	bh_use_log(F, true);
-	bh_use_channel(F, 1);
+	bh_use_channel(F, Chan);
 
 	auto Result = bh_hitbooks(F, &D[0], 1);
 	auto html = F->HTML("temporal.html",  "Randomness Test");
@@ -44,7 +44,8 @@ static int RunTemporalDemo() {
 int main (int argc, const char* argv[]) {
 	sizecheck(u64, 8);  sizecheck(u32, 4);  sizecheck(u16, 2);  sizecheck(u8, 1);
 	auto RestoreDir = getcwd(0, 0);
-	int Err = RunTemporalDemo();
+	int Chan = argv[1]?atoi(argv[1]):0; 
+	int Err = RunTemporalDemo(Chan);
 	printf("\n");
 	IgnoredError = chdir(RestoreDir);
 	return Err;

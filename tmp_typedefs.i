@@ -22,5 +22,4 @@ typedef std::vector<ref(RandoStats)>		StatsVec;
 typedef std::vector<ref(GenApproach)>		ApproachVec;
 typedef std::vector<ref(ApproachVec)>		CPU_ModeVec;
 typedef std::map<string, ref(GenApproach)>	ApproachMap;
-typedef u64 (*GenFunc) (uSample* Data, uSample* DataEnd, u32 Input, int Reps);
 

@@ -101,7 +101,6 @@ static void DetectRandomness_ (GenApproach& App, u8* Start, int n) {
 
 float BookHitter::DetectRandomness () {
 	DetectRandomness_(*(this->App), Extracted(), App->Stats.Length); 
-	FindMinMax();
 	return App->Stats.Worst;
 }
 
