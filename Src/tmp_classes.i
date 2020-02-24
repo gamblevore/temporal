@@ -202,6 +202,7 @@ struct BookHitter {
 // // Funcs
 	bh_stats*		Hit (u8* Data, int DataLength);
 	void			Retest();
+	void 			SetCrashHandler();
 	float			DetectRandomness ();
 	void			CreateDirs();
 	void			CreateHTMLRandom(ApproachVec& V, string Name, string Title);

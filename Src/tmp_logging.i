@@ -213,6 +213,31 @@ void BookHitter::CreateHTMLRandom(ApproachVec& V, string FileName, string Title)
 }
 
 
+
+
+static void TemporalCrashHandler(int Signal) {
+    printf( "error: unhandled signal %i\n", Signal);
+    void* array[32];
+    int   size      = backtrace( array, 32 );
+    char  **strings = backtrace_symbols( array, size );
+
+    for (int i = 0; i < size; i++) {
+        puts( strings[i] );
+    }
+    
+    puts("");
+	free( strings );
+    exit(-1);
+
+}
+
+
+void BookHitter::SetCrashHandler() {
+	auto H = (Conf.Log) ? TemporalCrashHandler : 0;
+	signal(SIGSEGV, H);   // install our handler
+}
+
+
 void BookHitter::CreateDirs() {
 	if (CreatedDirs or !LogOrDebug()) return;
 

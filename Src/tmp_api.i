@@ -22,6 +22,7 @@ BookHitter* bh_create() {
 void bh_logfiles(BookHitter* f) {
 	for (auto S : FilesToOpenLater)
 		OpenFile(S);
+	FilesToOpenLater.clear();
 }
 
 
@@ -61,6 +62,7 @@ bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
 
 
 bh_stats* bh_hitbooks (BookHitter* B, u8* Data, int DataLength) {
+	B->SetCrashHandler();
 	return B->Hit(Data, DataLength);
 }
 
