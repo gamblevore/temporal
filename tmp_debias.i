@@ -109,7 +109,7 @@ static BitView Do_Histo (BookHitter& B, BitView R, Shrinkers Flags) {
 		PerfectBitDebias(R, B.App, H[0][1]);
 	}
 	
-	if (B.LogOrDebug()) { // no point logging this, if we didn't use DebiasSectionsOfLength
+	if (Flags.Log) { // no point logging this, if we didn't use DebiasSectionsOfLength
 		Histogram H2 = CollectHistogram(Sections);
 		DrawHistogram(B, H2, n, "");
 	}

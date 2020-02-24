@@ -37,6 +37,7 @@ Ooof void WriteFile (u8* Data, int N, string Name) {
 
 static void HTMLImg(std::ofstream& ofs, GenApproach* V) {
 	GenApproach& R = *V;
+	if (!R.UseCount) return;
 	ofs << "<td>";
 	if (R.Stats.Length and !R.Stats.Type) {
 		ofs << "<div class='img_ontop'>\n";
@@ -49,7 +50,7 @@ static void HTMLImg(std::ofstream& ofs, GenApproach* V) {
 	}
 
 	ofs << R.Name();
-	if (!V->Owner->IsRetro()) {
+	if (!R.Owner->IsRetro()) {
 		int W = R.Stats.WorstIndex - 1;
 		int F = R.Stats.FailedIndexes;
 		ofs << ((F) ? " ❌" : "");
@@ -224,7 +225,7 @@ void BookHitter::CreateDirs() {
 
 
 void BookHitter::TryLogApproach(string Debiased="") {
-	if (!LogOrDebug()) return;
+	if (!LogOrDebug() or NoImgs()) return;
 	int N = App->Stats.Length;
 	u8* R = Extracted();
 	if (Debiased != "")

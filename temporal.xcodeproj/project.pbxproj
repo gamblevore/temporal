@@ -36,17 +36,9 @@
 
 /* Begin PBXFileReference section */
 		AC2BC71E23DE674D0055621C /* tmp_saving.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_saving.i; sourceTree = SOURCE_ROOT; };
-		AC3EEFB423C13D0800AB0611 /* scoring.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = scoring.html; path = Debug/time_output/scoring.html; sourceTree = "<group>"; };
 		AC456295240098330047EB5C /* tmp_gen_proc.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_gen_proc.i; sourceTree = "<group>"; };
 		AC50FBF82404255D00AB4285 /* tmp_gen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tmp_gen.cpp; sourceTree = "<group>"; };
-		AC50FC002404271B00AB4285 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		AC50FC0E2404292900AB4285 /* generator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = generator.hpp; sourceTree = "<group>"; };
-		AC50FC102404292900AB4285 /* generatorPriv.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = generatorPriv.hpp; sourceTree = "<group>"; };
-		AC50FC122404292900AB4285 /* generator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = generator.cpp; sourceTree = "<group>"; };
 		AC50FC242404297400AB4285 /* libgenerators.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgenerators.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		AC50FC262404297400AB4285 /* generators.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = generators.hpp; sourceTree = "<group>"; };
-		AC50FC282404297400AB4285 /* generatorsPriv.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = generatorsPriv.hpp; sourceTree = "<group>"; };
-		AC50FC2A2404297400AB4285 /* generators.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = generators.cpp; sourceTree = "<group>"; };
 		AC64043823F4AB3F0094EE18 /* tmp_debias.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_debias.i; sourceTree = SOURCE_ROOT; };
 		AC671D7A23E7021D002019A9 /* tmp_drawhisto.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_drawhisto.i; sourceTree = SOURCE_ROOT; };
 		AC671D7C23E702BB002019A9 /* tmp_histogram.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_histogram.i; sourceTree = SOURCE_ROOT; };
@@ -64,7 +56,7 @@
 		ACA7E85F23D9D44E001A6BDA /* tmp_core.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_core.i; sourceTree = SOURCE_ROOT; };
 		ACA7E86023D9D44E001A6BDA /* tmp_api.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_api.i; sourceTree = SOURCE_ROOT; };
 		ACAB07E723E8BD0D00DA0C85 /* tmp_math.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_math.i; sourceTree = SOURCE_ROOT; };
-		ACD54ACF2299957800526848 /* steve_breathe */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = steve_breathe; sourceTree = BUILT_PRODUCTS_DIR; };
+		ACD54ACF2299957800526848 /* temporal */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = temporal; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACD54ADB22999D1800526848 /* temporal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = temporal.cpp; sourceTree = SOURCE_ROOT; };
 		ACF1BDAF23D93D4A0085B8F4 /* tmp_defines.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_defines.i; sourceTree = SOURCE_ROOT; };
 		ACF1BDB023D93D4A0085B8F4 /* tmp_typedefs.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = tmp_typedefs.i; sourceTree = SOURCE_ROOT; };
@@ -96,64 +88,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		AC50FBFF2404271B00AB4285 /* idk */ = {
-			isa = PBXGroup;
-			children = (
-				AC50FC002404271B00AB4285 /* main.cpp */,
-			);
-			path = idk;
-			sourceTree = "<group>";
-		};
-		AC50FC0D2404292900AB4285 /* generator */ = {
-			isa = PBXGroup;
-			children = (
-				AC50FC0E2404292900AB4285 /* generator.hpp */,
-				AC50FC102404292900AB4285 /* generatorPriv.hpp */,
-				AC50FC122404292900AB4285 /* generator.cpp */,
-			);
-			path = generator;
-			sourceTree = "<group>";
-		};
-		AC50FC252404297400AB4285 /* generators */ = {
-			isa = PBXGroup;
-			children = (
-				AC50FC262404297400AB4285 /* generators.hpp */,
-				AC50FC282404297400AB4285 /* generatorsPriv.hpp */,
-				AC50FC2A2404297400AB4285 /* generators.cpp */,
-			);
-			path = generators;
-			sourceTree = "<group>";
-		};
-		AC50FC3224042AB400AB4285 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		ACD54AC62299957800526848 = {
 			isa = PBXGroup;
 			children = (
-				ACD54AD12299957800526848 /* steve_breathe */,
-				AC50FBFF2404271B00AB4285 /* idk */,
-				AC50FC0D2404292900AB4285 /* generator */,
-				AC50FC252404297400AB4285 /* generators */,
+				ACD54AD12299957800526848 /* cpp files */,
 				ACD54AD02299957800526848 /* Products */,
-				AC3EEFB423C13D0800AB0611 /* scoring.html */,
-				AC50FC3224042AB400AB4285 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		ACD54AD02299957800526848 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				ACD54ACF2299957800526848 /* steve_breathe */,
+				ACD54ACF2299957800526848 /* temporal */,
 				AC50FC242404297400AB4285 /* libgenerators.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		ACD54AD12299957800526848 /* steve_breathe */ = {
+		ACD54AD12299957800526848 /* cpp files */ = {
 			isa = PBXGroup;
 			children = (
 				ACA7E85923D9D44D001A6BDA /* SteveLib.h */,
@@ -187,7 +139,7 @@
 				ACF1BDB723D93D4B0085B8F4 /* tmp_stats.i */,
 				ACF1BDB023D93D4A0085B8F4 /* tmp_typedefs.i */,
 			);
-			name = steve_breathe;
+			name = "cpp files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -220,9 +172,9 @@
 			productReference = AC50FC242404297400AB4285 /* libgenerators.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		ACD54ACE2299957800526848 /* steve_breathe */ = {
+		ACD54ACE2299957800526848 /* temporal */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = ACD54AD62299957800526848 /* Build configuration list for PBXNativeTarget "steve_breathe" */;
+			buildConfigurationList = ACD54AD62299957800526848 /* Build configuration list for PBXNativeTarget "temporal" */;
 			buildPhases = (
 				ACD54ACB2299957800526848 /* Sources */,
 				ACD54ACC2299957800526848 /* Frameworks */,
@@ -233,9 +185,9 @@
 			dependencies = (
 				AC50FC312404299A00AB4285 /* PBXTargetDependency */,
 			);
-			name = steve_breathe;
+			name = temporal;
 			productName = temporal_research;
-			productReference = ACD54ACF2299957800526848 /* steve_breathe */;
+			productReference = ACD54ACF2299957800526848 /* temporal */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -256,7 +208,7 @@
 					};
 				};
 			};
-			buildConfigurationList = ACD54ACA2299957800526848 /* Build configuration list for PBXProject "steve_breathe" */;
+			buildConfigurationList = ACD54ACA2299957800526848 /* Build configuration list for PBXProject "temporal" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -269,7 +221,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				ACD54ACE2299957800526848 /* steve_breathe */,
+				ACD54ACE2299957800526848 /* temporal */,
 				AC50FC232404297400AB4285 /* generators */,
 			);
 		};
@@ -352,6 +304,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -398,6 +351,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -415,7 +369,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_FAST_MATH = YES;
-				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_STRICT_ALIASING = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -425,7 +378,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_FAST_MATH = YES;
-				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_STRICT_ALIASING = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -443,7 +395,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		ACD54ACA2299957800526848 /* Build configuration list for PBXProject "steve_breathe" */ = {
+		ACD54ACA2299957800526848 /* Build configuration list for PBXProject "temporal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				ACD54AD42299957800526848 /* Debug */,
@@ -452,7 +404,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		ACD54AD62299957800526848 /* Build configuration list for PBXNativeTarget "steve_breathe" */ = {
+		ACD54AD62299957800526848 /* Build configuration list for PBXNativeTarget "temporal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				ACD54AD72299957800526848 /* Debug */,

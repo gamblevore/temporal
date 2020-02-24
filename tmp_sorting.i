@@ -55,6 +55,38 @@ void BookHitter::BestApproachCollector(ApproachVec& L) {
 }
 
 
+void BookHitter::Retest() {
+	if (IsRetro()) return;
+	if (RescoreFreq++ % 4) return;
+
+	DuringStability = 2;
+	auto s = App->Name();
+	auto& L = ApproachesForChannel();
+	if (LogOrDebug())
+		printf("\n:: Retest %s", s.c_str());
+
+	RequestLimit = 0;
+	RescoreSelf = !RescoreSelf;
+
+	auto Orig = App;
+	if (!RescoreSelf) {
+		u32 i = RescoreIndex++ % L.size();
+		App = L[ i ].get();
+	}
+	float OldWorst = App->Stats.Worst;
+
+	TemporalGeneration(self, *App);
+	UseApproach();
+	ApproachSort(L);
+
+	if (LogOrDebug())
+		printf("    %.3f⇝%.3f ::\n", OldWorst, App->Stats.Worst );
+	
+	DuringStability = false;
+	App = Orig;
+}
+
+
 ApproachVec& BookHitter::FindBestApproach(ApproachVec& V) {
 	if (V.size())
 		return V;
@@ -62,7 +94,7 @@ ApproachVec& BookHitter::FindBestApproach(ApproachVec& V) {
 	bool Chaotic = IsChaotic();
 	for (auto oof: ApproachList)
 		if (!Chaotic or oof->IsChaotic() or oof->IsSudo())
-			V.push_back(oof); // we remove sudo later anyhow.
+			V.push_back(oof); // We remove sudo later anyhow.
 
 	DuringStability = true;
 	BestApproachCollector(V);
@@ -70,7 +102,7 @@ ApproachVec& BookHitter::FindBestApproach(ApproachVec& V) {
 	
 	ResetMinMaxes();
 	auto Name = ViewChannel()->Name();
-	if (LogOrDebug() and !Time.Err)
+	if (LogOrDebug() and !Stats.Err)
 		printf(":: Temporal choice: '%s'  ::\n", Name.c_str());
 	return V;
 }

@@ -28,7 +28,7 @@ static void FindSpikesAndLowest (uSample* Results, int Count, BookHitter& B) {
 		Spikes += (V > MaxTime);
 	}
 
-	B.Time.Spikes += Spikes;
+	B.Stats.Spikes += Spikes;
 } 
 
 
@@ -59,7 +59,7 @@ static void* GenerateWrapper (void* arg) {
 	if (OutEnd < WarmUp)
 		OutEnd = WarmUp;
 	
-	B.Time.SamplesGenerated += (OutEnd - Out);
+	B.Stats.SamplesGenerated += (OutEnd - Out);
 	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
 	FindSpikesAndLowest(Out,  Space,  B);	
@@ -176,20 +176,20 @@ static void PreProcess (BookHitter& B) {
 static float TemporalGeneration(BookHitter& B, GenApproach& App) {
 	auto t_Start = Now();
 	B.App = &App;
-	B.Time = {};
+	B.Stats = {};
 	App.Stats = {};
 
 	int Err = pthread_create(&B.GeneratorThread, NULL, &GenerateWrapper, &B);
 	if (!Err) Err = pthread_join(B.GeneratorThread, 0);
-	if (Err)  B.Time.Err = Err;
+	if (Err)  B.Stats.Err = Err;
 
-	auto& T = B.Time;
+	auto& T = B.Stats;
 	float Time = ChronoLength(t_Start);
 	App.GenTime = Time;
 	T.GenerateTime += Time;
 	
 	if (T.Err) {
-		fprintf( stderr,  "temporal generation err for '%s': %i\n",  App.Gen->Name,  B.Time.Err);
+		fprintf( stderr,  "temporal generation err for '%s': %i\n",  App.Gen->Name,  B.Stats.Err);
 	} else {
 		t_Start = Now();
 		App.UseCount++;

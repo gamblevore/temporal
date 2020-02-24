@@ -117,7 +117,7 @@ static void ExtractRetro (BookHitter& B) {
 	Shrinkers Retro = {};
 	Do_Histo(B, bits, Retro);
 
-	if (B.LogOrDebug()) {
+	if (B.LogOrDebug() and !B.NoImgs()) {
 		B.TryLogApproach("p");
 		bits = {(u8*)(&B.Samples[0]), 1<<14};
 		XorRetro(OoferSpace,  bits.Data,  bits.ByteLength());
@@ -128,6 +128,8 @@ static void ExtractRetro (BookHitter& B) {
 
 static void ExtractRandomness (BookHitter& B,  int Mod,  Shrinkers Flags) {
 	B.App->Stats = {}; // stats is written to by do_histo, so clear here.
+	if (!B.LogOrDebug()) 
+		Flags.Log = false;
 
 	if (B.ChaosTesting()) {
 		Flags.Vonn = 0;

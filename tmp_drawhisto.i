@@ -32,6 +32,8 @@ static float HScale(float Value, float Height, float Expected) {
 
 
 static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraName) {
+	if (B.NoImgs()) return;
+	
 	int BarWidth = 10; // px
 	int BarGap = 2;
 	int MyBarCount = 6;   MyBarCount = std::min(MyBarCount, BarCount);

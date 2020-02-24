@@ -82,7 +82,7 @@ void RandTest::end(GenApproach& App) {
 	Result.Unify(1, 	217.5,	1810.0,		0.7,		chisq					); // ChiSq
 	Result.Unify(2, 	0.0,	1.0,		1.21,		fabs(Mean)				); // Mean
 	Result.Unify(3, 	0,		0.35,		1.428,		fabs(M_PI - montepi)	); // Monte
-	Result.Unify(4, 	0,		1,			2,			Result.Hist*1.5			); // Histogram
+	Result.Unify(4, 	0,		1,			0.09,		Result.Hist*1.5			); // Histogram
 
 //	Result.Hist = Result.BitsRandomised;
 }

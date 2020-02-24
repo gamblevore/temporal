@@ -18,13 +18,6 @@
 */
 
 
-//
-//  TODO:
-//  * "need more" (For non-retro non-chaotic gens) can be via rnd-detection on output data?
-//  * Reset score every so often... like 16 attempts or whatever?
-// 
-
-
 //  NEW ALGORITHM:
 //  * (An opt. Do for later vers, once people like the existing code.)
 //  * histogram debiaser should use sliding window, and be single-pass...

@@ -17,20 +17,26 @@ static int RunTemporalDemo(int Chan) {
 	puts(WelcomeMsg);
 	
 	auto F = bh_create();
-	bh_use_log(F, true);
-	bh_use_channel(F, Chan);
+	bh_config(F)->Log = true;
+	bh_config(F)->Channel = Chan;
+//	bh_config(F)->AutoRetest = 1;
 
 	auto Result = bh_hitbooks(F, &D[0], 1);
 	auto html = F->HTML("temporal.html",  "Randomness Test");
 	
-	for_(5) {
+	for_(16) {
 		if (Result->Err) break;
-		F->App->NumForName = i + 1;
-		printf(":: Item %i (", i + 1);
+		F->DebugLoopCount = i + 1;
 		Result = bh_hitbooks(F, &D[0], NumBytes);
-		bh_report_speed(Result);
-		printf(") ::\n");
-		html->WriteOne(F->App);
+		
+		if (i==0)
+			ReportStuff(Result);
+
+		auto App = F->App;
+		auto s = App->Name();
+		printf( ":: %i:  %s (", i + 1, s.c_str() );
+		printf( "%.3fs) ::\n", Result->GenerateTime + Result->ProcessTime );
+		html->WriteOne(App);
 	}
 	
 	html->Finish();

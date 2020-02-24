@@ -5,12 +5,15 @@ void BookHitter::FindMinMax() {
 	if (DuringStability and S.Stats.FailedCount) return;
 
 	int Su = S.IsSudo() * 2;
-	auto Min = MinMaxes[0 + Su];
-	auto Max = MinMaxes[1 + Su];
+	auto& Min = *MinMaxes[0 + Su];
+	auto& Max = *MinMaxes[1 + Su];
+	
+	Min.UseCount++;
+	Max.UseCount++;
 	
 	for_(5) {
-		(*Max)[i] = std::max(S[i], (*Max)[i]);
-		(*Min)[i] = std::min(S[i], (*Min)[i]);
+		Max[i] = std::max(S[i], Max[i]);
+		Min[i] = std::min(S[i], Min[i]);
 	}
 }
 
@@ -34,8 +37,8 @@ float BookHitter::FinalExtractAndDetect (int Mod) {
 static int FinishApproach(BookHitter& B, float Time) {
 	auto& App = *B.App;
 	App.Fails += App.Stats.FailedCount;
-	B.Time.ProcessTime += Time;
-	B.Time.WorstScore = std::max(B.Time.WorstScore, App.Stats.Worst);
+	B.Stats.ProcessTime += Time;
+	B.Stats.WorstScore = std::max(B.Stats.WorstScore, App.Stats.Worst);
 	return App.Stats.Length;
 }
 
@@ -67,7 +70,7 @@ NamedGen* BookHitter::NextApproachOK(GenApproach& App, NamedGen* LastGen) {
 	LastGen = App.Gen;
 	
 	float T = TemporalGeneration(self, App);
-	require(!Time.Err);
+	require(!Stats.Err);
 	if (LogOrDebug())
 		printf( "	:: %03i    \t(took %.3fs) ::\n", App.Reps, T );
 	return LastGen;
@@ -98,6 +101,7 @@ static void CreateApproachSub(BookHitter& B, NamedGen* G) {
 
 
 void BookHitter::CreateApproaches() {
+	RescoreIndex = 0;
 	ApproachList = {};
 	BasicApproaches = {};
 	RetroApproaches = {};
@@ -112,7 +116,7 @@ void BookHitter::CreateApproaches() {
 	if (LogOrDebug())
 		printf("\"\n");
 
-	ResetApproach();
+	App = 0;
 	ResetMinMaxes();
 }
 
@@ -126,14 +130,13 @@ static void XorCopy(u8* Src, u8* Dest, int N) {
 
 bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 	B.Chan = ViewChannel();
-	require(!Time.Err);
+	require(!Stats.Err);
 	u32 Least = -1; 
 
-	B.Loops = 0;
 	while (B.KeepGoing()) {
 		OnlyNeedSize(B.Remaining);
 		TemporalGeneration(self, *B.Chan);
-		require(!Time.Err);
+		require(!Stats.Err);
 	
 		u32 N = std::min(UseApproach(), B.Remaining);
 		Least = std::min(Least, N);
@@ -146,7 +149,7 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 
 	RequestLimit = 0; // cleanup.
 	B.Data += Least;
-	Time.BytesOut += Least;
+	Stats.BytesOut += Least;
 	B.Remaining -= Least;
 	if (B.Remaining > 0) return true;
 

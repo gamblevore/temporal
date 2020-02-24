@@ -28,6 +28,7 @@ struct Shrinkers {
 	u32 Vonn	: 1;
 	u32 Histo	: 1;
 	u32 PostXOR	: 6;
+	u32 Log		: 1;
 };
 
 
@@ -41,7 +42,6 @@ struct GenApproach {
 	u16			Fails;
 	u16			Reps;
 	u16			UseCount;
-	u8			NumForName;
 	
 	
 	static Shrinkers ShrinkFlags_(GenApproach* App) {
@@ -52,7 +52,9 @@ struct GenApproach {
 	}
 	
 	Shrinkers FinalFlags() {
-		return ShrinkFlags_(this);
+		auto Result = ShrinkFlags_(this);
+		Result.Log = true;
+		return Result;
 	}
 	
 	Shrinkers DetectFlags() {
@@ -160,11 +162,15 @@ struct RandomBuildup {
 	float Worst() {
 		return std::max(Chan->Stats.Worst, 0.0f);
 	}
+	
 	bool KeepGoing() {
 		Loops++;
-		if (Chan->IsChaotic() or IsRetro)
-			return Loops <= 1;
-		return Loops <= 3; // be safe... 
+		if (!Chan->Stats.FailedCount) {
+			if (Chan->IsChaotic() or IsRetro)
+				return Loops <= 1;
+			return Loops <= 3; // be safe...
+		}
+		return Loops <= 8; 
 	}
 };
 
@@ -183,15 +189,19 @@ struct BookHitter {
 	ApproachVec		ChaoticApproaches;
 	ApproachVec		BasicApproaches;
 	ApproachVec		MinMaxes;
-	bh_output		Time;
-	int				RequestLimit;
-	short			UserChannel;
-	bool			Log_;
+	bh_stats		Stats;
+	bh_conf			Conf;
+	short			DebugLoopCount;
+	u32				RequestLimit;
+	u8				RescoreFreq;
+	u8				RescoreIndex;
+	u8				DuringStability;
+	bool			RescoreSelf;
 	bool			CreatedDirs;
-	u8				LastReps;
-	bool			DuringStability;
 
 // // Funcs
+	bh_stats*		Hit (u8* Data, int DataLength);
+	void			Retest();
 	float			DetectRandomness ();
 	void			CreateDirs();
 	void			CreateHTMLRandom(ApproachVec& V, string Name, string Title);
@@ -212,16 +222,20 @@ struct BookHitter {
 		return GenApproach::FileName_(App, s);
 	}
 	
+	bool NoImgs() {
+		return (DuringStability == 2);
+	}
+
 	bool LogOrDebug() {
-		return DEBUG_AS_NUM or Log_;
+		return DEBUG_AS_NUM or Conf.Log;
 	}
 
 	bool IsRetro() {
-		return UserChannel > 0;
+		return Conf.Channel > 0;
 	}
 
 	bool IsChaotic() {
-		return UserChannel == 0;
+		return Conf.Channel == 0;
 	}
 	
 	bool ChaosTesting() {
@@ -250,7 +264,7 @@ struct BookHitter {
 	} 
 
 	int UserChannelIndex() {
-		int i = UserChannel;
+		int i = Conf.Channel;
 		if (i < 0)
 			i = -i;
 		if (i) i--;
@@ -281,9 +295,6 @@ struct BookHitter {
 			AddM(copysign(100000000, Signs[i%2]), i + 1);
 	}
 
-	void ResetApproach() {
-		App = 0;
-	}
 	uSample* Out() {
 		return &(Samples[0]);
 	}
@@ -346,9 +357,12 @@ void GenApproach::DebugName() {
 
 string GenApproach::NameSub() {
 	string name = string(Gen->Name);
-	if (Owner->DuringStability)		name += "_"; // test
+	if (Owner->DuringStability==1)	name += "_"; // test
 	if (!IsSudo())          		name += to_string(Reps);
-	if (NumForName)   				name += "_loop" + to_string(NumForName);
+	if (!Owner->NoImgs() and Owner->DebugLoopCount) {
+		name += "_loop" + to_string(Owner->DebugLoopCount);
+	}
+	   
 	return name;
 }
 
