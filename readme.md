@@ -14,11 +14,7 @@ This project was inspired by the fatum project, a totally cool project about: No
 
 # compile
 
-    mkdir -p build
-    cd build
-    g++            -std=c++0x  -O0  -c  ../tmp_gen.cpp
-    g++  -pthread  -std=c++0x  -Os  -c  ../temporal.cpp
-    g++ *.o -o temporal
+    make.sh
 
 
 # Efforts made

@@ -7,10 +7,10 @@ struct BookHitter; struct bh_stats; struct bh_conf;
 
 // You only need these 3 funcs
 BookHitter*		bh_create			();
-bh_stats*		bh_hitbooks			(BookHitter* B, unsigned char* Output, int OutLen);
+bh_stats*		bh_hitbooks			(BookHitter* B,  unsigned char* Output,  int OutLen);
 void			bh_free				(BookHitter* B);
 
-// conf is optional!
+// config is optional!
 bh_conf*		bh_config			(BookHitter* B);
 
 
