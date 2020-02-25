@@ -221,7 +221,6 @@ static void TemporalCrashHandler(int Signal) {
     int   size      = backtrace( array, 32 );
     printf( "%i stack size\n", size);
     char** strings = backtrace_symbols( array, size );
-    printf( "Reporting stack\n");
 
     for (int i = 0; i < size; i++)
         puts( strings[i] );
