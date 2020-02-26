@@ -10,3 +10,4 @@ cd build
 g++  -std=c++0x  -O0  -c  ../Src/tmp_gen.cpp
 g++  -std=c++0x  -Os  -c  ../Src/temporal.cpp
 g++ -pthread *.o -o temporal
+cp temporal ../temporal
