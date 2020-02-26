@@ -5,7 +5,7 @@
 //  Can we make a computer FEEL Psychic energy?
 // 
 
-#include "SteveLib.h"
+#include "TemporalLib.h"
 #include "tmp_headers.i"
 #include "tmp_typedefs.i"
 #include "tmp_defines.i"
@@ -14,17 +14,16 @@
 
 extern "C" {
 
-static inline u32 rdtscp( u32 & aux ) {
-	// remove aux?
+static inline u32 rdtscp( ) {
+// obviously this can't work on ARM.
 	u64 rax, rdx;
-	asm volatile ( "rdtscp\n" : "=a" (rax), "=d" (rdx), "=c" (aux) : : );
+	asm volatile ( "rdtscp\n" : "=a" (rax), "=d" (rdx) : : );
 	return (u32)rax;
 }
 
 
 static inline u32 Time32 () {
-	u32 T;
-	return rdtscp(T);
+	return rdtscp();
 }
 
 

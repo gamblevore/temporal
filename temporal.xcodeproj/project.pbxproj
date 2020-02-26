@@ -53,7 +53,6 @@
 		ACA5A15B24046D3A00EFFC13 /* tmp_core.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_core.i; path = Src/tmp_core.i; sourceTree = "<group>"; };
 		ACA5A15C24046D3A00EFFC13 /* temporal.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = temporal.cpp; path = Src/temporal.cpp; sourceTree = "<group>"; };
 		ACA5A15D24046D3A00EFFC13 /* tmp_typedefs.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_typedefs.i; path = Src/tmp_typedefs.i; sourceTree = "<group>"; };
-		ACA5A15E24046D3A00EFFC13 /* SteveLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SteveLib.h; path = Src/SteveLib.h; sourceTree = "<group>"; };
 		ACA5A15F24046D3A00EFFC13 /* tmp_defines.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_defines.i; path = Src/tmp_defines.i; sourceTree = "<group>"; };
 		ACA5A16024046D3A00EFFC13 /* tmp_drawhisto.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_drawhisto.i; path = Src/tmp_drawhisto.i; sourceTree = "<group>"; };
 		ACA5A16124046D3A00EFFC13 /* tmp_classes.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_classes.i; path = Src/tmp_classes.i; sourceTree = "<group>"; };
@@ -103,7 +102,6 @@
 		ACD54AD12299957800526848 /* cpp files */ = {
 			isa = PBXGroup;
 			children = (
-				ACA5A15E24046D3A00EFFC13 /* SteveLib.h */,
 				ACA5A15C24046D3A00EFFC13 /* temporal.cpp */,
 				ACA5A15124046D3A00EFFC13 /* tmp_gen.cpp */,
 				ACA5A15824046D3A00EFFC13 /* tmp_demo.i */,

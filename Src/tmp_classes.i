@@ -170,6 +170,8 @@ struct RandomBuildup {
 				return Loops <= 1;
 			return Loops <= 3; // be safe...
 		}
+		if (IsRetro)
+			return Loops <= 3;
 		return Loops <= 8; 
 	}
 };

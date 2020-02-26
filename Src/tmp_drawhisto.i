@@ -34,9 +34,9 @@ static float HScale(float Value, float Height, float Expected) {
 static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraName) {
 	if (B.NoImgs()) return;
 	
-	int BarWidth = 10; // px
+	int BarWidth = 7; // px
 	int BarGap = 2;
-	int MyBarCount = 6;   MyBarCount = min(MyBarCount, BarCount);
+	int MyBarCount = 8;   MyBarCount = min(MyBarCount, BarCount);
 	
 	int TotalWidth = (BarWidth * MyBarCount*2) + (BarGap*(MyBarCount-1));
 	int TotalHeight = TotalWidth; // why not.

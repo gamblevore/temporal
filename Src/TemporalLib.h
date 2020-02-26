@@ -14,7 +14,7 @@ void			bh_free				(BookHitter* B);
 bh_conf*		bh_config			(BookHitter* B);
 
 
-#if StevesUsageExample
+#ifdef LibUsageExample
 inline void UsageExample() {
 	BookHitter* Stv = bh_create();
 	unsigned char Data[1024*1024];

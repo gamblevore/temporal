@@ -20,9 +20,10 @@
 //        So we can add/remove things in a variable window-length per bit-section-length?
 
 
-#include "SteveLib.h"
+#include "TemporalLib.h"
 #include "tmp_headers.i"
 #include "tmp_stb.i"
+extern "C" {
 #include "tmp_typedefs.i"
 #include "tmp_defines.i"
 #include "tmp_vars.i"
@@ -40,10 +41,9 @@
 #include "tmp_extraction.i"
 #include "tmp_sorting.i"
 #include "tmp_core.i"
-extern "C" { // A simple C API!
-	#include "tmp_api.i"
-}
+#include "tmp_api.i"
 #include "tmp_demo.i"
+}
 
 
 
