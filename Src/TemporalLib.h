@@ -46,6 +46,7 @@ struct bh_stats {
 	int		Err;
 };
 
+
 struct bh_conf {
 	bool   Log;
 	bool   AutoRetest;
