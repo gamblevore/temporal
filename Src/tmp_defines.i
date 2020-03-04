@@ -5,7 +5,6 @@
 #define for_(count)			for (int i = 0; i < count; i++)
 #define FOR_(var, count)	for (int var = 0; var < count; var++)
 #define require(expr)		if (!(expr)) {return {};}
-#define sizecheck(a,b)		if (sizeof(a)!=b) {return -100;} // sizecheck
 #define Time_(R)			u32 TimeFinish = 0; while (Data < DataEnd) { u32 Start = Time32(); for_(R)
 #define TimeEnd 			; TimeFinish = Time32(); *Data++ = TimeDiff(Start,TimeFinish);}
 #define Gen(name) static u64 name##Generator (uSample* Data, uSample* DataEnd, u32 Input, int Reps)
@@ -25,6 +24,7 @@
 #endif
 #define Ooof				[[maybe_unused]] static
 #define test(cond)	if (!(cond)) {debugger;}
+#define sizecheck(a,b)		if (sizeof(a)!=b) {asm("int3"); return 0;} // sizecheck
 
 
 #define		kSudo	 			1

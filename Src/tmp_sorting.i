@@ -41,13 +41,13 @@ void BookHitter::BestApproachCollector(ApproachVec& L) {
 	if (LogOrDebug()) printf( "\n:: Locating Temporal Randomness in %li approaches! :: \n", L.size() );
 	
 	NamedGen* LastGen = 0;
-	for (auto App : L) {
-		LastGen = NextApproachOK(*App, LastGen);
+	for (auto app : L) {
+		LastGen = NextApproachOK(*app, LastGen);
 		if (!LastGen) return;
 		UseApproach();
 	}
 	
-	if (!IsRetro())
+	if (!IsRetro() or !Conf.DontSortRetro)
 		ApproachSort(L);
 	if (LogOrDebug())
 		CreateHTMLRandom(L,  "scoring.html",  "Fatum Temporal Randomness Test");

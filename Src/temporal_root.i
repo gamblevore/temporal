@@ -37,7 +37,6 @@ extern "C" {
 #include "tmp_sorting.i"
 #include "tmp_core.i"
 #include "tmp_api.i"
-#include "tmp_demo.i"
 }
 
 

@@ -63,16 +63,16 @@ int BookHitter::UseApproach () {
 }
 
 
-NamedGen* BookHitter::NextApproachOK(GenApproach& App, NamedGen* LastGen) {
-	this->App = &App;
-	if ( App.Gen != LastGen and LogOrDebug() )
-		printf( "\n:: %s gen :: \n", App.Gen->Name );
-	LastGen = App.Gen;
+NamedGen* BookHitter::NextApproachOK(GenApproach& app, NamedGen* LastGen) {
+	this->App = &app;
+	if ( app.Gen != LastGen and LogOrDebug() )
+		printf( "\n:: %s gen :: \n", app.Gen->Name );
+	LastGen = app.Gen;
 	
-	float T = TemporalGeneration(self, App);
+	float T = TemporalGeneration(self, app);
 	require(!Stats.Err);
 	if (LogOrDebug())
-		printf( "	:: %03i    \t(took %.3fs) ::\n", App.Reps, T );
+		printf( "	:: %03i    \t(took %.3fs) ::\n", app.Reps, T );
 	return LastGen;
 }
 
@@ -94,7 +94,6 @@ static void CreateApproachSub(BookHitter& B, NamedGen* G) {
 		auto App = GenApproach::neww(&B);
 		bool Sudo = App->SetGenReps(G, R);
 		B.ApproachList.push_back(App);
-		App->DebugName();
 		if (Sudo) return;
 	}
 }
@@ -107,14 +106,8 @@ void BookHitter::CreateApproaches() {
 	RetroApproaches = {};
 	ChaoticApproaches = {};
 
-	if (LogOrDebug())
-		printf("\n :: Available Generators ::\n\"");
-
 	for (auto G = &TmpGenList[0];  G;  G = NextGenerator(G))
 		CreateApproachSub(self, G);
-
-	if (LogOrDebug())
-		printf("\"\n");
 
 	App = 0;
 	ResetMinMaxes();
@@ -166,3 +159,35 @@ Ooof void StopStrip(BookHitter&B) {
 	}
 }
 
+
+
+bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
+	if (!Data) return 0; // wat?
+
+	CreateDirs();
+
+	memset(Data, 0, DataLength);
+	RandomBuildup B = {Data, DataLength, IsRetro()};
+	Stats = {};
+
+	while (CollectPieceOfRandom(B)) {
+		B.Loops = 0;
+	}
+
+	if (Conf.AutoRetest)
+		Retest();
+		
+	return &Stats;
+}
+
+
+Ooof void ReportStuff (bh_stats* Result) {
+	float M = ((float)(Result->SamplesGenerated))/1000000.0;
+	float K = ((float)(Result->SamplesGenerated))/1000.0;
+	
+	if (M > 0.1)
+		printf(":: %.2fM", M);
+	  else
+		printf(":: %.2fK", K);
+	printf(" samples⇝%iKB ::\n", (Result->BytesOut/1024));
+}

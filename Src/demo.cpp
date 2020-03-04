@@ -1,12 +1,12 @@
 
 
+#include "temporal_root.i"
+
+
 static const char* WelcomeMsg = R"(Reesurrch iN2 teMpOwAls!!
 
-Uses da ~RAndoMnEss~ in "hoW loNg" da instruction taykes, 4 fizzicalie bassed raNdoMness.
+Uses WAndoMness in "hoW loNg" da instruction taykes, 4 fizicks raNdoMness.
 
-Seems ~eggsiiting~! >:3
-
-Steve will bee pleezed :>
 )";
 
 
@@ -17,9 +17,11 @@ static int RunTemporalDemo(int Chan) {
 	puts(WelcomeMsg);
 	
 	auto F = bh_create();
-	bh_config(F)->Log = true;
-	bh_config(F)->Channel = Chan;
-//	bh_config(F)->AutoRetest = 1;
+	auto& Conf = *bh_config(F); 
+	Conf.Log = true;
+	Conf.Channel = Chan;
+	Conf.DontSortRetro = true;
+//	Conf.AutoRetest = 1;
 
 	auto Result = bh_hitbooks(F, &D[0], 1);
 	auto html = F->HTML("temporal.html",  "Randomness Test");
@@ -47,10 +49,17 @@ static int RunTemporalDemo(int Chan) {
 }
 
 
+// temporal 1    file.rnd 1024000
+// temporal chan fileout  KBsize
+
 int main (int argc, const char* argv[]) {
-	sizecheck(u64, 8);  sizecheck(u32, 4);  sizecheck(u16, 2);  sizecheck(u8, 1);
 	auto RestoreDir = getcwd(0, 0);
-	int Chan = argv[1]?atoi(argv[1]):0; 
+	int Chan = argv[1] ? atoi(argv[1]) : 0;
+	string FileOut  = (argc >= 3) ? argv[2]       : "";
+	int SizeFileOut = (argc >= 4) ? atoi(argv[3]) : 0;
+	
+	
+	
 	int Err = RunTemporalDemo(Chan);
 	printf("\n");
 	IgnoredError = chdir(RestoreDir);

@@ -12,6 +12,7 @@ void			bh_free				(BookHitter* B);
 
 // config is optional!
 bh_conf*		bh_config			(BookHitter* B);
+void			bh_logfiles(BookHitter* f);
 
 
 #ifdef LibUsageExample
@@ -48,9 +49,10 @@ struct bh_stats {
 
 
 struct bh_conf {
-	bool   Log;
-	bool   AutoRetest;
-	short  Channel;
+	unsigned char   Log;
+	unsigned char   DontSortRetro;
+	unsigned char   AutoRetest;
+	short  			Channel;
 };
 
 }

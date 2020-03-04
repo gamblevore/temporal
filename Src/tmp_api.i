@@ -1,7 +1,9 @@
 
+#pragma GCC visibility push(default)
 
 
 BookHitter* bh_create() {
+	sizecheck(u64, 8);  sizecheck(u32, 4);  sizecheck(u16, 2);  sizecheck(u8, 1);
 	auto G = new BookHitter;
 	auto& F = *G;
 	require (G);
@@ -41,41 +43,10 @@ bh_conf* bh_config (BookHitter* f) {
 }
 
 
-bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
-	if (!Data) return 0; // wat?
-
-	CreateDirs();
-
-	memset(Data, 0, DataLength);
-	RandomBuildup B = {Data, DataLength, IsRetro()};
-	Stats = {};
-
-	while (CollectPieceOfRandom(B)) {
-		B.Loops = 0;
-	}
-
-	if (Conf.AutoRetest)
-		Retest();
-		
-	return &Stats;
-}
-
-
 bh_stats* bh_hitbooks (BookHitter* B, u8* Data, int DataLength) {
 	return B->Hit(Data, DataLength);
 }
 
-
-static void ReportStuff (bh_stats* Result) {
-	float M = ((float)(Result->SamplesGenerated))/1000000.0;
-	float K = ((float)(Result->SamplesGenerated))/1000.0;
-	
-	if (M > 0.1)
-		printf(":: %.2fM", M);
-	  else
-		printf(":: %.2fK", K);
-	printf(" samples⇝%iKB ::\n", (Result->BytesOut/1024));
-}
 
 
 uSample* bh_extract_input(BookHitter* B, int N) {
@@ -99,4 +70,7 @@ int bh_extract_perform(BookHitter* B_, uSample* Samples, int N, bh_stats* Out) {
 	
 	return B.UseApproach();
 }
+
+#pragma GCC visibility pop
+
 
