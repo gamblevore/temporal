@@ -11,7 +11,7 @@
 		AC692014240FF2DA007F3DB4 /* libgenerators.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC50FC242404297400AB4285 /* libgenerators.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		AC69202F240FF408007F3DB4 /* dump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC69202A240FF3FF007F3DB4 /* dump.cpp */; };
 		AC692030240FF412007F3DB4 /* lib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC69202B240FF3FF007F3DB4 /* lib.cpp */; };
-		ACA5A16624046D3F00EFFC13 /* demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACA5A15C24046D3A00EFFC13 /* demo.cpp */; };
+		ACA5A16624046D3F00EFFC13 /* vis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACA5A15C24046D3A00EFFC13 /* vis.cpp */; };
 		ACA5A16724046D4800EFFC13 /* gen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACA5A15124046D3A00EFFC13 /* gen.cpp */; };
 /* End PBXBuildFile section */
 
@@ -88,7 +88,7 @@
 		ACA5A15924046D3A00EFFC13 /* tmp_headers.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_headers.i; path = Src/tmp_headers.i; sourceTree = "<group>"; };
 		ACA5A15A24046D3A00EFFC13 /* tmp_vars.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_vars.i; path = Src/tmp_vars.i; sourceTree = "<group>"; };
 		ACA5A15B24046D3A00EFFC13 /* tmp_core.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_core.i; path = Src/tmp_core.i; sourceTree = "<group>"; };
-		ACA5A15C24046D3A00EFFC13 /* demo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = demo.cpp; path = Src/demo.cpp; sourceTree = "<group>"; };
+		ACA5A15C24046D3A00EFFC13 /* vis.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = vis.cpp; path = Src/vis.cpp; sourceTree = "<group>"; };
 		ACA5A15D24046D3A00EFFC13 /* tmp_typedefs.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_typedefs.i; path = Src/tmp_typedefs.i; sourceTree = "<group>"; };
 		ACA5A15F24046D3A00EFFC13 /* tmp_defines.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_defines.i; path = Src/tmp_defines.i; sourceTree = "<group>"; };
 		ACA5A16024046D3A00EFFC13 /* tmp_drawhisto.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_drawhisto.i; path = Src/tmp_drawhisto.i; sourceTree = "<group>"; };
@@ -156,7 +156,7 @@
 		ACD54AD12299957800526848 /* cpp files */ = {
 			isa = PBXGroup;
 			children = (
-				ACA5A15C24046D3A00EFFC13 /* demo.cpp */,
+				ACA5A15C24046D3A00EFFC13 /* vis.cpp */,
 				AC69202A240FF3FF007F3DB4 /* dump.cpp */,
 				AC69202B240FF3FF007F3DB4 /* lib.cpp */,
 				ACA5A15124046D3A00EFFC13 /* gen.cpp */,
@@ -349,7 +349,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ACA5A16624046D3F00EFFC13 /* demo.cpp in Sources */,
+				ACA5A16624046D3F00EFFC13 /* vis.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
