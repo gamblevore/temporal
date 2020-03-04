@@ -41,12 +41,12 @@ static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraNam
 	int TotalWidth = (BarWidth * MyBarCount*2) + (BarGap*(MyBarCount-1));
 	int TotalHeight = TotalWidth; // why not.
 	int Size = TotalHeight*TotalWidth;
-	ByteArray Data(Size, (u8)0);
-	u8* Start = &Data[0];
+
+	ByteArray Data(Size*2, (u8)0); // stb_write has trouble otherwise... no idea why!
+	u8* const Start = &Data[0];
 
 	float Scale = (float)TotalHeight;
 	int x = 0;
-//	float* Expected = H.Expected->Values;
 	
 	FOR_(b, MyBarCount) {
 		float* Values = H[b].Value;
@@ -58,6 +58,7 @@ static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraNam
 		x += BarGap;
 	}
 	
-	WriteImg(Start, Size, B.FileName(ExtraName + "h"));
+	auto name = B.FileName(ExtraName + "h");
+	WriteImg(Start, Size, name);
 }
 

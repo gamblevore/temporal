@@ -12,12 +12,7 @@
 //  * (An opt. Do for later vers, once people like the existing code.)
 //  * histogram debiaser should use sliding window, and be single-pass...
 //      * This just gives more data, then dump von-neuman, which costs us 4x data.
-//		* maybe via a "one byte per bit-length" system.
-//			* Easy to delete bit-sections! Just delete 1 byte.
-//      * Maybe each bit-section-length should store the "position of how long ago did
-//        we find section N of the same length"?
-//        For example, if bit-section-length=4, then we might expect no closer than 60 bytes
-//        So we can add/remove things in a variable window-length per bit-section-length?
+//      * Needs to be done in terms of "how long ago did find a section of the same length"?
 
 
 #include "TemporalLib.h"

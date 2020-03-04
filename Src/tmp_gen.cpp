@@ -16,9 +16,25 @@ extern "C" {
 
 static inline u32 rdtscp( ) {
 // obviously this can't work on ARM.
+#if defined(__i386__) || defined(__x86_64__) || defined(__amd64__)
 	u64 rax, rdx;
 	asm volatile ( "rdtscp\n" : "=a" (rax), "=d" (rdx) : : );
 	return (u32)rax;
+#elif (__ARM_ARCH >= 6)  // V6 is the earliest arch that has a standard cyclecount
+	// Read the user mode perf monitor counter access permissions.
+	uint32_t pmuseren;
+	asm volatile("mrc p15, 0, %0, c9, c14, 0" : "=r"(pmuseren));
+	if (pmuseren & 1) {  // Allows reading perfmon counters for user mode code.
+		uint32_t pmcntenset;
+		asm volatile("mrc p15, 0, %0, c9, c12, 1" : "=r"(pmcntenset));
+		if (pmcntenset & 0x80000000ul) {  // Is it counting?
+			uint32_t pmccntr;
+			asm volatile("mrc p15, 0, %0, c9, c13, 0" : "=r"(pmccntr));
+			return pmccntr * 64
+		}
+	}
+	return 0;
+#endif
 }
 
 

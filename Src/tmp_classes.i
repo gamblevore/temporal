@@ -221,7 +221,7 @@ struct BookHitter {
 	void			TryLogApproach(string name);
 
 
-	string FileName(string s="") {
+	string FileName(string s = "") {
 		return GenApproach::FileName_(App, s);
 	}
 	
@@ -245,15 +245,6 @@ struct BookHitter {
 		return IsChaotic() and DuringStability;
 	}
 	
-	bool UsingVon() {
-		// fill in later... chaotic might not need both!
-		return true;
-	}
-
-	bool UsingXOR() {
-		return true;
-	}
-
 	void OnlyNeedSize(int N) {
 		N = max(N, 0);
 		if (IsRetro()) {
@@ -282,13 +273,12 @@ struct BookHitter {
 	}
 	
 	ApproachVec& ApproachesForChannel() {
-		if (IsChaotic()) {
+		if (IsChaotic())
 			return FindBestApproach(ChaoticApproaches);
-		} else if (IsRetro()) {
+		  else if (IsRetro())
 			return FindBestApproach(RetroApproaches);
-		} else {
-			return FindBestApproach(ChaoticApproaches);
-		}
+		  else
+			return FindBestApproach(BasicApproaches);
 	}
 	
 	void ResetMinMaxes() {
@@ -360,8 +350,11 @@ void GenApproach::DebugName() {
 
 string GenApproach::NameSub() {
 	string name = string(Gen->Name);
-	if (Owner->DuringStability==1)	name += "_"; // test
-	if (!IsSudo())          		name += to_string(Reps);
+	if (!IsSudo()) {
+		name += to_string(Reps);
+		if (Owner->DuringStability==1)
+			name += "_"; // test
+	}
 	if (!Owner->NoImgs() and Owner->DebugLoopCount) {
 		name += "_loop" + to_string(Owner->DebugLoopCount);
 	}
