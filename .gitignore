@@ -39,10 +39,13 @@ Thumbs.db
 /temporal_research.build/
 *build/
 temporal
+scoring
+visualisation
 steve_breathe
 time_imgs
 *_out
 *_output
 XCBuildData
+result
 
 

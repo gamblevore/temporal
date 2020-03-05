@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "ACD54ACE2299957800526848"
-               BuildableName = "demo"
-               BlueprintName = "demo"
+               BuildableName = "temporal"
+               BlueprintName = "temporal"
                ReferencedContainer = "container:temporal.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -31,8 +31,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "ACD54ACE2299957800526848"
-            BuildableName = "demo"
-            BlueprintName = "demo"
+            BuildableName = "temporal"
+            BlueprintName = "temporal"
             ReferencedContainer = "container:temporal.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -57,11 +57,33 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "ACD54ACE2299957800526848"
-            BuildableName = "demo"
-            BlueprintName = "demo"
+            BuildableName = "temporal"
+            BlueprintName = "temporal"
             ReferencedContainer = "container:temporal.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "score"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "dump"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "1"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "256kb"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "rand.txt"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -74,8 +96,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "ACD54ACE2299957800526848"
-            BuildableName = "demo"
-            BlueprintName = "demo"
+            BuildableName = "temporal"
+            BlueprintName = "temporal"
             ReferencedContainer = "container:temporal.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

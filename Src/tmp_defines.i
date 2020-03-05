@@ -29,3 +29,4 @@
 
 #define		kSudo	 			1
 #define		kChaotic	  		2
+#define     ArgError			-5555
