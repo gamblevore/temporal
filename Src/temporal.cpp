@@ -12,9 +12,8 @@ Uses WAndoMness in "hoW loNg" da instruction taykes, 4 fizicks raNdoMness.
 
 
 static int ScoreAction (int argc, const char* argv[]) {
-	if (argc!=3) {
+	if (argc!=3)
 		return ArgError;
-	}
 	int Chan = argv[2] ? atoi(argv[2]) : 0;
 
 	const int NumBytes = 16*1024; 
@@ -67,7 +66,7 @@ int DumpAction (int argc, const char* argv[]) {
 	bh_config(F)->Log = -1; // no log even debug
 	bh_config(F)->Channel = atoi(argv[2]);
 	int          Remain   = ParseLength(argv[3]);
-	string       FileOut  = argv[4];
+	string       FileOut  = argv[4] ? argv[4] : "";
 	if (!Remain) return errno;
 	FILE*        Dest     = CmdArgFile(FileOut);
 	if (!Dest)   return errno;
@@ -87,12 +86,14 @@ int DumpAction (int argc, const char* argv[]) {
 		fwrite(&D[0], 1, This, Dest);
 		Remain  -= This;
 		Written += This;
-		
-		int Seconds = floorf(ChronoLength(TStart));
-		if ((Seconds/5) > (OldSeconds/5) or !Remain) {
-			OldSeconds = Seconds;
-			printf("%.1fKB in %is\n", ((float)(Written))/1024, Seconds);
-		} 
+
+		if (Dest != stdout) {
+			int Seconds = floorf(ChronoLength(TStart));
+			if ((Seconds/5) > (OldSeconds/5) or !Remain) {
+				OldSeconds = Seconds;
+				printf("%.1fKB in %is\n", ((float)(Written))/1024, Seconds);
+			} 
+		}
 	}
 
 	fclose(Dest);

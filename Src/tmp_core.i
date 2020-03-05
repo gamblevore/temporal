@@ -170,9 +170,8 @@ bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
 	RandomBuildup B = {Data, DataLength, IsRetro()};
 	Stats = {};
 
-	while (CollectPieceOfRandom(B)) {
+	while (CollectPieceOfRandom(B))
 		B.Loops = 0;
-	}
 
 	if (Conf.AutoRetest)
 		Retest();

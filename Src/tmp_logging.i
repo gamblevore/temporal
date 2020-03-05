@@ -218,9 +218,12 @@ void BookHitter::CreateDirs() {
 
 	CreatedDirs = true;
 	int UnixMode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH; // oof unix.
-	IgnoredError = mkdir("visualisation",  UnixMode);
-	IgnoredError = chdir("visualisation");
-	IgnoredError = mkdir("time_imgs",	  UnixMode);
+#ifndef WIN32
+	IgnoredError = chdir("/tmp/");
+#endif
+	IgnoredError = mkdir("temporal_scoring",  UnixMode);
+	IgnoredError = chdir("temporal_scoring");
+	IgnoredError = mkdir("time_imgs",	      UnixMode);
 }
 
 

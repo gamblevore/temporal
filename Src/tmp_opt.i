@@ -30,7 +30,8 @@ Ooof bool matchi(const char* a, const char* b) {
 	
 	return true;
 }
- 
+
+
 Ooof int ParseLength (string L) {
 	int mul = 0;
 	int spl = SplitUnit(L);
@@ -62,13 +63,17 @@ Ooof int ParseLength (string L) {
 
 Ooof FILE* CmdArgFile (string FileOut) {
 	if (FileOut == "")  {
+		std::cerr << "No file specified.\n\n";
 		errno = ArgError;
 		return 0;
 	}
-	if (FileOut == "-") return stdout;
+	
+	if (FileOut == "-")
+		return stdout;
 
 	auto Dest = fopen(FileOut.c_str(), "w");
-	if (Dest) return Dest;
+	if (Dest)
+		return Dest;
 
 	std::cerr << "Can't open: " << FileOut;
 	return 0;
