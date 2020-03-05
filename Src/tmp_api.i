@@ -61,7 +61,7 @@ uSample* bh_extract_input(BookHitter* B, int N) {
 
 
 int bh_extract_perform(BookHitter* B_, uSample* Samples, int N, bh_stats* Out) {
-	auto B = *B_;
+	auto& B = *B_;
 	GenApproach App = {};
 	B.App = &App;
 	

@@ -43,14 +43,13 @@ static int ParseLength (string L) {
 
 
 static FILE* OofFile (string FileOut) {
-	if (!FileOut.length())
-		return stdout;
+	if (FileOut == "")  return 0;
+	if (FileOut == "-") return stdout;
 
 	auto Dest = fopen(FileOut.c_str(), "w");
-	if (Dest)
-		return Dest;
+	if (Dest) return Dest;
 
-	std::cerr << "Can't open file: " << FileOut;
+	std::cerr << "Can't open: " << FileOut;
 	return 0;
 }
 
@@ -79,11 +78,10 @@ int main (int argc, const char* argv[]) {
 	auto TStart = Now();
 	u32 Written = 0;
 	int OldSeconds = 0;
-	int DSize = 64 * 1024;
+	int DSize = 256 * 1024;
 	ByteArray D(DSize, 0);
 	
-	if (!FileOut.size()) FileOut = "stdout";
-	printf("Steve is writing Randomness to: %s\n", FileOut.c_str());
+	printf("Steve is writing randomness to: %s\n", FileOut.c_str());
 	
 	while (Remain > 0) {
 		bh_stats* Result = bh_hitbooks(F, &D[0], DSize);
