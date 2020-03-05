@@ -46,7 +46,7 @@ static void* GenerateWrapper (void* arg) {
 			sch.sched_priority--;
 		};
 		if (FIFOError)
-			fprintf( stderr, "    :: Temporal Error: Can't set thread priority to FIFO. Error: %i ::\n", FIFOError);
+			fprintf( stderr, "    :: (Hint: Run this code with higher priority (sudo) to get better randomness.) ::\n");
 	}
 	
 
