@@ -65,23 +65,23 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "score"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "dump"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "1"
+            argument = "dump"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-1"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "256kb"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "rand.txt"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>

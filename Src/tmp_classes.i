@@ -152,7 +152,7 @@ struct RandTest {
 
 
 struct RandomBuildup {
-	u8*				Data;
+	u8*				OutgoingData;
 	int				Remaining;
 	bool			IsRetro;
 	float			AllWorst;
@@ -227,8 +227,8 @@ struct BookHitter {
 	
 	
 	void SetChannel(int i) {
-		unsigned char s = i;
-		if (i!=s) {
+		char s = i;
+		if (i != s) {
 			printf("Can't set channel %i, out of range (-128 to 127)\n", i);
 		} else {
 			Conf.Channel = s;
@@ -308,6 +308,10 @@ struct BookHitter {
 	u8* Extracted() {
 		return &(Buff[0]);
 	}
+	u64* OoferSpace() {
+		return (u64*)Extracted();
+	}
+
 	int Space() {
 		int N = (int)Samples.size();
 		
@@ -362,9 +366,9 @@ void GenApproach::DebugName() {
 string GenApproach::NameSub() {
 	string name = string(Gen->Name);
 	if (!IsSudo()) {
-		name += to_string(Reps);
 		if (Owner->DuringStability==1)
 			name += "_"; // test
+		name += to_string(Reps);
 	}
 	if (!Owner->NoImgs() and Owner->DebugLoopCount) {
 		name += "_loop" + to_string(Owner->DebugLoopCount);

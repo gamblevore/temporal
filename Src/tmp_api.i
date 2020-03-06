@@ -49,8 +49,8 @@ bh_stats* bh_hitbooks (BookHitter* B, u8* Data, int DataLength) {
 
 
 int bh_view_colorisedsamples (BookHitter* B, u8* Out, int OutLength) {
-	int InputBytes = RetroCount * 8;
-	int BytesAvail = InputBytes * 4;
+	int InputBytes = RetroCount * 8; // 64-bit values, means 8-bytes per value
+	int BytesAvail = InputBytes * 4; // rgba... cos each byte is turned into 4 bytes.
 	if (!Out)
 		return BytesAvail;
 

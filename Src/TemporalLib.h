@@ -55,7 +55,7 @@ struct bh_stats {
 
 
 struct bh_conf {
-	unsigned char  	Channel;
+	         char  	Channel;
 	unsigned char   Log;
 	unsigned char   DontSortRetro;
 	unsigned char   AutoRetest;

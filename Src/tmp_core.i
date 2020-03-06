@@ -130,18 +130,18 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 		OnlyNeedSize(B.Remaining);
 		TemporalGeneration(self, *B.Chan);
 		require(!Stats.Err);
-	
+		
 		u32 N = min(UseApproach(), B.Remaining);
 		Least = min(Least, N);
 		if (IsRetro())
-			XorRetro(Extracted(),  B.Data,  N);
+			XorRetro( OoferSpace(),  B.OutgoingData,  N);
 		  else
-			XorCopy (Extracted(),  B.Data,  N);
+			XorCopy ( Extracted(),  B.OutgoingData,  N);
 		B.AllWorst = max(B.AllWorst, B.Worst());
 	}
 
 	RequestLimit = 0; // cleanup.
-	B.Data += Least;
+	B.OutgoingData += Least;
 	Stats.BytesOut += Least;
 	B.Remaining -= Least;
 	if (B.Remaining > 0) return true;

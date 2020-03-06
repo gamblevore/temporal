@@ -81,8 +81,8 @@ float HistoProbSlot(int N, int X) {
 struct BitSections;
 struct BitView {
 	// just a nicer way to read/write bits from a string!
-	u32 Length; // in bits
-	u32 Pos;    // also in bits
+	u32 Length;		// in bits
+	u32 Pos;    	// also in bits
 	u8  Tmp;
 	u8* Data;
 	
@@ -126,7 +126,7 @@ struct BitView {
 		return (void*)Active();
 	}
 	BitView(u8* d, u32 ByteLength) {
-		Data = d; Length = ByteLength*8; Pos = 0; Tmp = 0;
+		Data = d;  Length = ByteLength*8;  Pos = 0;  Tmp = 0;
 	}
 	BitSections AsBytes();
 	BitSections Convert (u8* Write);

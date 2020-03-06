@@ -36,13 +36,13 @@ static int ScoreAction (int argc, const char* argv[]) {
 		F->DebugLoopCount = i + 1;
 		Result = bh_hitbooks(F, &D[0], NumBytes);
 		
-		if (i==0)
+		if (i == 0)
 			ReportStuff(Result);
 
 		auto App = F->App;
 		auto s = App->Name();
-		printf( ":: %i:  %s (", i + 1, s.c_str() );
-		printf( "%.3fs) ::\n", Result->GenerateTime + Result->ProcessTime );
+		printf( ":: %i:  %s (", i + 1,  s.c_str() );
+		printf( "%.3fs) ::\n",  Result->GenerateTime + Result->ProcessTime );
 		html->WriteOne(App);
 	}
 	
