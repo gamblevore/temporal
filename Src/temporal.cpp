@@ -6,7 +6,7 @@
 
 static const char* WelcomeMsg = R"(Reesurrch iN2 teMpOwAls!!
 
-Uses WAndoMness in "hoW loNg" da instruction taykes, 4 fizicks raNdoMness.
+Uses WAndoMness in "hoW loNg" da instruction taykes.
 
 )";
 

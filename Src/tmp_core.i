@@ -125,13 +125,14 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 	B.Chan = ViewChannel();
 	require(!Stats.Err);
 	u32 Least = -1; 
-
+	
 	while (B.KeepGoing()) {
 		OnlyNeedSize(B.Remaining);
 		TemporalGeneration(self, *B.Chan);
 		require(!Stats.Err);
 		
-		u32 N = min(UseApproach(), B.Remaining);
+		int ActualBytes = UseApproach(); 
+		u32 N = min(ActualBytes, B.Remaining);
 		Least = min(Least, N);
 		if (IsRetro())
 			XorRetro( OoferSpace(),  B.OutgoingData,  N);
@@ -158,7 +159,6 @@ Ooof void StopStrip(BookHitter&B) {
 		DebugSamples(B);
 	}
 }
-
 
 
 bh_stats* BookHitter::Hit (u8* Data, int DataLength) {

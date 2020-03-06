@@ -155,9 +155,10 @@ struct RandomBuildup {
 	u8*				OutgoingData;
 	int				Remaining;
 	bool			IsRetro;
+	char			Loops;
+	u8				FailCount;
 	float			AllWorst;
 	GenApproach*    Chan;
-	int				Loops;
 	
 	float Worst() {
 		return max(Chan->Stats.Worst, 0.0f);
@@ -165,7 +166,10 @@ struct RandomBuildup {
 	
 	bool KeepGoing() {
 		Loops++;
-		if (!Chan->Stats.FailedCount) {
+		auto OldF = FailCount;
+		auto NewF = Chan->Stats.FailedCount;
+		FailCount = NewF;  
+		if (NewF <= OldF) {
 			if (Chan->IsChaotic() or IsRetro)
 				return Loops <= 1;
 			return Loops <= 3; // be safe...
