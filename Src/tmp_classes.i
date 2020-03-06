@@ -225,6 +225,16 @@ struct BookHitter {
 		return GenApproach::FileName_(App, s);
 	}
 	
+	
+	void SetChannel(int i) {
+		unsigned char s = i;
+		if (i!=s) {
+			printf("Can't set channel %i, out of range (-128 to 127)\n", i);
+		} else {
+			Conf.Channel = s;
+		}
+	}
+	
 	bool NoImgs() {
 		return (DuringStability == 2);
 	}

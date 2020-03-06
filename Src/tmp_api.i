@@ -48,6 +48,31 @@ bh_stats* bh_hitbooks (BookHitter* B, u8* Data, int DataLength) {
 }
 
 
+int bh_view_colorisedsamples (BookHitter* B, u8* Out, int OutLength) {
+	int InputBytes = RetroCount * 8;
+	int BytesAvail = InputBytes * 4;
+	if (!Out)
+		return BytesAvail;
+
+	OutLength = min(OutLength, BytesAvail);
+	ColoriseSamples(B->Extracted(), Out, InputBytes);
+
+	return BytesAvail;
+}
+
+
+int bh_view_rawsamples (BookHitter* B, u8* Out, int OutLength) {
+	int InputBytes = RetroCount * 8;
+	int BytesAvail = InputBytes;
+	if (!Out)
+		return BytesAvail;
+
+	OutLength = min(OutLength, BytesAvail);
+	memcpy(Out, B->Extracted(), OutLength);
+	
+	return BytesAvail;
+}
+
 
 uSample* bh_extract_input(BookHitter* B, int N) {
 	try {

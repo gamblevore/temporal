@@ -56,9 +56,7 @@
 		ACA5A15324046D3A00EFFC13 /* tmp_img.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_img.i; path = Src/tmp_img.i; sourceTree = "<group>"; };
 		ACA5A15424046D3A00EFFC13 /* tmp_stats.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_stats.i; path = Src/tmp_stats.i; sourceTree = "<group>"; };
 		ACA5A15524046D3A00EFFC13 /* tmp_stb.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_stb.i; path = Src/tmp_stb.i; sourceTree = "<group>"; };
-		ACA5A15624046D3A00EFFC13 /* tmp_saving.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_saving.i; path = Src/tmp_saving.i; sourceTree = "<group>"; };
 		ACA5A15724046D3A00EFFC13 /* tmp_shared.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_shared.i; path = Src/tmp_shared.i; sourceTree = "<group>"; };
-		ACA5A15824046D3A00EFFC13 /* tmp_demo.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_demo.i; path = Src/tmp_demo.i; sourceTree = "<group>"; };
 		ACA5A15924046D3A00EFFC13 /* tmp_headers.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_headers.i; path = Src/tmp_headers.i; sourceTree = "<group>"; };
 		ACA5A15A24046D3A00EFFC13 /* tmp_vars.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_vars.i; path = Src/tmp_vars.i; sourceTree = "<group>"; };
 		ACA5A15B24046D3A00EFFC13 /* tmp_core.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_core.i; path = Src/tmp_core.i; sourceTree = "<group>"; };
@@ -123,8 +121,8 @@
 			children = (
 				ACA5A15C24046D3A00EFFC13 /* temporal.cpp */,
 				AC69202B240FF3FF007F3DB4 /* lib.cpp */,
+				ACA5A15924046D3A00EFFC13 /* tmp_headers.i */,
 				ACA5A15124046D3A00EFFC13 /* gen.cpp */,
-				ACA5A15824046D3A00EFFC13 /* tmp_demo.i */,
 				ACA5A14F24046D3A00EFFC13 /* tmp_api.i */,
 				ACA5A16124046D3A00EFFC13 /* tmp_classes.i */,
 				ACA5A15B24046D3A00EFFC13 /* tmp_core.i */,
@@ -133,12 +131,10 @@
 				ACA5A16024046D3A00EFFC13 /* tmp_drawhisto.i */,
 				ACA5A15024046D3A00EFFC13 /* tmp_extraction.i */,
 				ACA5A14D24046D3A00EFFC13 /* tmp_gen_proc.i */,
-				ACA5A15924046D3A00EFFC13 /* tmp_headers.i */,
 				ACA5A16224046D3A00EFFC13 /* tmp_histogram.i */,
 				ACA5A15324046D3A00EFFC13 /* tmp_img.i */,
 				ACA5A16324046D3A00EFFC13 /* tmp_logging.i */,
 				ACA5A16424046D3A00EFFC13 /* tmp_math.i */,
-				ACA5A15624046D3A00EFFC13 /* tmp_saving.i */,
 				ACA5A15724046D3A00EFFC13 /* tmp_shared.i */,
 				ACA5A16524046D3A00EFFC13 /* tmp_sorting.i */,
 				ACA5A15424046D3A00EFFC13 /* tmp_stats.i */,

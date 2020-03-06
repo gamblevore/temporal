@@ -10,9 +10,18 @@ BookHitter*		bh_create			();
 bh_stats*		bh_hitbooks			(BookHitter* B,  unsigned char* Output,  int OutLen);
 void			bh_free				(BookHitter* B);
 
-// config is optional!
+
+// visualisation
+int				bh_view_colorisedsamples(BookHitter* B, unsigned char* Out, int OutLength);
+int				bh_view_rawsamples		(BookHitter* B, unsigned char* Out, int OutLength);
+
+
+// config
 bh_conf*		bh_config			(BookHitter* B);
-void			bh_logfiles(BookHitter* f);
+
+
+// Tells the bookhitter to write the html debug-log-files to disk.
+void			bh_logfiles			(BookHitter* B);
 
 
 #ifdef LibUsageExample
@@ -25,9 +34,6 @@ inline void UsageExample() {
 }
 #endif
 
-
-// View raw unprocessed temporal stuff... Creates RGB picture!
-// bh_stats*		bh_steve_throwbooks	(BookHitter* B, unsigned char* View, int ViewLen);
 
 // Input medium-quality entropy (PEAR GCP project) and get good entropy back. 
 unsigned int*	bh_extract_input	(BookHitter* B,  int N);
@@ -43,16 +49,16 @@ struct bh_stats {
 	int		SamplesGenerated;
 	int		BytesOut; // BytesOut is equal to amount requested in bh_hitbooks.
 
-// error number incase of error.
+// Error number incase of error.
 	int		Err;
 };
 
 
 struct bh_conf {
+	unsigned char  	Channel;
 	unsigned char   Log;
 	unsigned char   DontSortRetro;
 	unsigned char   AutoRetest;
-	short  			Channel;
 };
 
 }

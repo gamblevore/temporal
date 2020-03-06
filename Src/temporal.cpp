@@ -24,7 +24,7 @@ static int ScoreAction (int argc, const char* argv[]) {
 	auto F = bh_create();
 	auto& Conf = *bh_config(F); 
 	Conf.Log = true;
-	Conf.Channel = Chan;
+	F->SetChannel( Chan );
 	Conf.DontSortRetro = true;
 //	Conf.AutoRetest = 1;
 
@@ -64,7 +64,7 @@ int DumpAction (int argc, const char* argv[]) {
 	
 	auto F = bh_create();
 	bh_config(F)->Log = -1; // no log even debug
-	bh_config(F)->Channel = atoi(argv[2]);
+	F->SetChannel(atoi(argv[2]));
 	int          Remain   = ParseLength(argv[3]);
 	string       FileOut  = argv[4] ? argv[4] : "";
 	if (!Remain) return errno;
@@ -77,7 +77,7 @@ int DumpAction (int argc, const char* argv[]) {
 	int DSize = 256 * 1024;
 	ByteArray D(DSize, 0);
 	
-	printf("Steve is writing randomness to: %s\n", FileOut.c_str());
+	printf( "Steve is writing randomness to: %s\n", FileOut.c_str() );
 	
 	while (Remain > 0) {
 		u32 This = min(DSize, Remain);
