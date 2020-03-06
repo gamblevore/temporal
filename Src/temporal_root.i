@@ -8,6 +8,8 @@
 */
 
 
+// todo:
+// tweak stuff till the visualiser looks nice!
 //  NEW ALGORITHM:
 //  * (An opt. Do for later vers, once people like the existing code.)
 //  * histogram debiaser should use sliding window, and be single-pass...

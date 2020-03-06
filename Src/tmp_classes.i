@@ -155,8 +155,8 @@ struct RandomBuildup {
 	u8*				OutgoingData;
 	int				Remaining;
 	bool			IsRetro;
-	char			Loops;
-	u8				FailCount;
+	bool			AnyOK;
+	u8				Loops;
 	float			AllWorst;
 	GenApproach*    Chan;
 	
@@ -166,17 +166,12 @@ struct RandomBuildup {
 	
 	bool KeepGoing() {
 		Loops++;
-		auto OldF = FailCount;
-		auto NewF = Chan->Stats.FailedCount;
-		FailCount = NewF;  
-		if (NewF <= OldF) {
-			if (Chan->IsChaotic() or IsRetro)
-				return Loops <= 1;
-			return Loops <= 3; // be safe...
-		}
-		if (IsRetro)
-			return Loops <= 3;
-		return Loops <= 8; 
+		if (!Chan->Stats.FailedCount)
+			AnyOK = true;
+		int Double = 2 - AnyOK;   
+		if (Chan->IsChaotic() or IsRetro)
+			return Loops <= (3*Double);
+		return Loops <= (6*Double);
 	}
 };
 
@@ -321,6 +316,9 @@ struct BookHitter {
 		
 		if (ChaosTesting())
 			return N / 16;
+
+		if (DuringStability)
+			return N / 2;
 
 		if (RequestLimit > 0 and RequestLimit < N)
 			return RequestLimit;
