@@ -12,7 +12,7 @@ Uses WAndoMness in "hoW loNg" da instruction taykes.
 
 
 static int ScoreAction (StringVec& Args) {
-	if (Args.size()!=3)
+	if (Args.size() < 2)
 		return ArgError;
 	int Chan = Num(Args[1]);
 

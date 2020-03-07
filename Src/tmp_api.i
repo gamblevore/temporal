@@ -9,6 +9,7 @@ BookHitter* bh_create() {
 	require (G);
 
 	*G = {};
+	G->Conf.Channel = 1; // faster and better for most people.
 
 	try {
 		StopStrip(F); // for debugging

@@ -125,24 +125,28 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 	require(!Timing.Err);
 	u32 Least = -1; 
 	
+	printf("collecting %i\n", B.Remaining);
+	
 	while (B.KeepGoing()) {
 		OnlyNeedSize(B.Remaining);
 		TemporalGeneration(self, *B.Chan);
 		require(!Timing.Err);
 
 		int ActualBytes = UseApproach(); 
+		printf("    got %i\n", ActualBytes);
+		B.BytesUsed += ActualBytes;
 		u32 N = min(ActualBytes, B.Remaining);
 		Least = min(Least, N);
 		if (IsRetro())
-			XorRetro( OoferSpace(),  B.OutgoingData,  N);
+			XorRetro( OoferSpace(), B.OutgoingData,  N);
 		  else
 			XorCopy ( Extracted(),  B.OutgoingData,  N);
 		B.AllWorst = max(B.AllWorst, B.Worst());
 	}
 
-	RequestLimit = 0; // cleanup.
+	printf("Removed %i\n", Least);
+	RequestLimit = 0;			// cleanup.
 	B.OutgoingData += Least;
-	Timing.BytesOut += Least;
 	B.Remaining -= Least;
 	if (B.Remaining > 0) return true;
 
@@ -168,13 +172,15 @@ bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
 	memset(Data, 0, DataLength);
 	RandomBuildup B = {Data, DataLength, IsRetro()};
 	Timing = {};
+	Timing.BytesGiven = DataLength;
 
 	while (CollectPieceOfRandom(B))
 		B.Reset();
 
 	if (Conf.AutoReScore)
 		ReScore();
-		
+	
+	Timing.BytesUsed = B.BytesUsed;
 	return &Timing;
 }
 
@@ -184,8 +190,8 @@ Ooof void ReportStuff (bh_stats* Result) {
 	float K = ((float)(Result->SamplesGenerated))/1000.0;
 	
 	if (M > 0.1)
-		printf(":: %.2fM", M);
+		printf(":: %.2fMB", M);
 	  else
-		printf(":: %.2fK", K);
-	printf(" samples⇝%iKB ::\n", (Result->BytesOut/1024));
+		printf(":: %.2fKB", K);
+	printf("⇝%iKB ::\n", (Result->BytesUsed/1024));
 }

@@ -15,7 +15,7 @@ g++  -pthread build/gen.o build/temporal.o -o result/temporal
 ar   rcs      result/TemporalLib.a build/gen.o build/lib.o
 cd "$ORIG"
 
-if [ "$1" == "install" ]; then
+if [ "$1" != "noinstall" ]; then
 	sudo cp "$DIR/result/temporal" "/usr/local/bin/temporal"
 fi
 

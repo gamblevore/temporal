@@ -46,8 +46,9 @@ struct bh_stats {
 	float	ProcessTime;
 	int		Spikes;
 	int		SamplesGenerated;
-	int		BytesOut; // BytesOut is equal to amount requested in bh_hitbooks.
-
+	int		BytesUsed; // not bytes output, but throughput... including wasted bytes.
+	int		BytesGiven; // not bytes output, but throughput... including wasted bytes.
+	
 // Error number incase of error.
 	int		Err;
 };

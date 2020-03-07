@@ -154,6 +154,7 @@ struct RandTest {
 struct RandomBuildup {
 	u8*				OutgoingData;
 	int				Remaining;
+	int				BytesUsed;
 	bool			IsRetro;
 	bool			AnyOK;
 	u8				Loops;
