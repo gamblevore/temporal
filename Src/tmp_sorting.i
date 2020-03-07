@@ -93,7 +93,7 @@ ApproachVec& BookHitter::FindBestApproach(ApproachVec& V) {
 
 	bool Chaotic = IsChaotic();
 	for (auto oof: ApproachList)
-		if (!Chaotic or oof->IsChaotic() or oof->IsSudo())
+		if (Chaotic == oof->IsChaotic() or oof->IsSudo())
 			V.push_back(oof); // We remove sudo later anyhow.
 
 	DuringStability = true;

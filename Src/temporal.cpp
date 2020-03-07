@@ -25,7 +25,7 @@ static int ScoreAction (int argc, const char* argv[]) {
 	auto& Conf = *bh_config(F); 
 	Conf.Log = true;
 	F->SetChannel( Chan );
-	Conf.DontSortRetro = true;
+//	Conf.DontSortRetro = true;
 //	Conf.AutoRetest = 1;
 
 	auto Result = bh_hitbooks(F, &D[0], 1);
