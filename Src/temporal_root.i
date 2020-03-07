@@ -10,6 +10,8 @@
 
 // todo:
 // tweak stuff till the visualiser looks nice!
+// retro looks better with more data... increase retrocount?
+// or can we visualise the last half or so?
 //  NEW ALGORITHM:
 //  * (An opt. Do for later vers, once people like the existing code.)
 //  * histogram debiaser should use sliding window, and be single-pass...

@@ -45,8 +45,8 @@ static void* GenerateWrapper (void* arg) {
 			if (!FIFOError) break;
 			sch.sched_priority--;
 		};
-		if (FIFOError)
-			fprintf( stderr, "    :: (Hint: Run this code with higher priority (sudo) to get better randomness.) ::\n");
+		if (FIFOError and B.LogOrDebug())
+			printf( "    :: (Hint: Run 'TemporalLib' with higher priority (sudo) to get better randomness.) ::\n");
 	}
 	
 

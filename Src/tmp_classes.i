@@ -176,8 +176,8 @@ struct RandomBuildup {
 			AnyOK = true;
 		int Double = 2 - AnyOK;   
 		if (Chan->IsChaotic() or IsRetro)
-			return Loops <= (3*Double);
-		return Loops <= (6*Double);
+			return Loops <= (2*Double);
+		return Loops <= (4*Double);
 	}
 };
 
