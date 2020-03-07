@@ -77,7 +77,8 @@ int DumpAction (StringVec& Args, bool Hex) {
 	int DSize = 64 * 1024;
 	ByteArray D(DSize, 0);
 	
-	printf( "Steve is writing randomness to: %s\n", FileOut.c_str() );
+	if (Dest!=stdout)
+		printf( "Steve is writing randomness to: %s\n", FileOut.c_str() );
 	
 	while (Remain > 0) {
 		u32 This = min(DSize, Remain);
@@ -100,6 +101,9 @@ int DumpAction (StringVec& Args, bool Hex) {
 		}
 	}
 
+	if (Hex) fputc('\n', Dest);
+	
+
 	fclose(Dest);
 	bh_free(F);
 	return 0;
@@ -111,7 +115,9 @@ int main (int argc, const char* argv[]) {
 	auto Args = ArgArray(argc, argv);
 	int Err = ArgError;
 
-	if ( matchi(Args[0], "dump") )
+	if (Args.size() <= 0)
+		Err = ArgError; // 
+	  else if ( matchi(Args[0], "dump") )
 		Err = DumpAction(Args, false);
 	  else if ( matchi(Args[0], "hexdump") )
 		Err = DumpAction(Args, true);
@@ -124,7 +130,7 @@ int main (int argc, const char* argv[]) {
 "  (or)\n"
 "       temporal hexdump  (-50 to 50) (1KB to 100MB) (file.txt)\n"
 "  (or)\n"
-"       temporal score    (-50 to 50)\n");
+"       temporal score    (-50 to 50) \n");
 
 	printf("\n");
 	IgnoredError = chdir(RestoreDir);

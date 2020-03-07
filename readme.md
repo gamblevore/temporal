@@ -14,7 +14,9 @@ This project was inspired by the fatum project, a totally cool project about: No
 
 # compile
 
-    sudo make.sh
+	./make.sh
+		(or)	
+	./make.sh install
 
 
 # Efforts made

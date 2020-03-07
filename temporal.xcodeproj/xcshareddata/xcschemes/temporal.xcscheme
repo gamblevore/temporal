@@ -83,10 +83,6 @@
             argument = "rand.txt"
             isEnabled = "YES">
          </CommandLineArgument>
-         <CommandLineArgument
-            argument = "hex"
-            isEnabled = "YES">
-         </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
