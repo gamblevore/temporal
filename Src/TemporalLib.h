@@ -59,6 +59,7 @@ struct bh_conf {
 	unsigned char   Log;
 	unsigned char   DontSortRetro;
 	unsigned char   AutoReScore;
+	unsigned char	WarmupMul;
 };
 
 }

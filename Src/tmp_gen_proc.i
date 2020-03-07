@@ -30,13 +30,11 @@ static void TemporalHeart (BookHitter& B) {
 	GenApproach& A     = *B.App;	
 	auto Out           = B.Out();
 	int Space		   = B.GenSpace();
+	int WarmupSize     = B.WarmupSize();
 	uSample* OutEnd    = Out + Space;
-	uSample* WarmUp    = Out + 2048;
-
-	if (OutEnd < WarmUp)
-		OutEnd = WarmUp;
-
-	B.Timing.SamplesGenerated += (OutEnd - Out);
+	uSample* WarmUp    = Out + WarmupSize;
+                                              
+	B.Timing.SamplesGenerated += Space;
 	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
 	FindLowest(Out,  Space,  B);	

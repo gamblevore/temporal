@@ -22,6 +22,12 @@ Ooof void fhex(u8 c, FILE* F) {
 }
 
 
+Ooof void fhexwrite(u8* D, int N, FILE* F) {
+	for_(N)
+		fhex(D[i], F);
+}
+
+
 Ooof std::vector<string> ArgArray(int argc, const char* argv[]) {
 	std::vector<string> Result;
 	int i = 1;
@@ -101,6 +107,17 @@ Ooof FILE* CmdArgFile (string FileOut) {
 	return 0;
 }
 
+
 Ooof int Num(string s) {
 	return atoi(s.c_str());
+}
+
+
+Ooof int GetNum (StringVec& V, int i) {
+	if (i < V.size()) {
+		auto s = V[i];
+		return Num(s);
+	}
+	errno = ArgError;
+	return 0;
 }

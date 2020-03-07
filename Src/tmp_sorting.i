@@ -59,7 +59,7 @@ void BookHitter::ReScore() {
 	if (IsRetro()) return;
 	if (RescoreFreq++ % 4) return;
 
-	DuringStability = 2;
+	DuringTesting = 2;
 	auto s = App->Name();
 	auto& L = ApproachesForChannel();
 	if (LogOrDebug())
@@ -82,7 +82,7 @@ void BookHitter::ReScore() {
 	if (LogOrDebug())
 		printf("    %.3f⇝%.3f ::\n", OldWorst, App->Stats.Worst );
 	
-	DuringStability = false;
+	DuringTesting = false;
 	App = Orig;
 }
 
@@ -96,9 +96,9 @@ ApproachVec& BookHitter::FindBestApproach(ApproachVec& V) {
 		if (Chaotic == oof->IsChaotic() or oof->IsSudo())
 			V.push_back(oof); // We remove sudo later anyhow.
 
-	DuringStability = true;
+	DuringTesting = true;
 	BestApproachCollector(V);
-	DuringStability = false;
+	DuringTesting = false;
 	
 	ResetMinMaxes();
 	auto Name = ViewChannel()->Name();

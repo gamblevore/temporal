@@ -7,9 +7,20 @@
 static const char* WelcomeMsg = R"(teMpOwAl resurtch!! Uses WAndoMness in "hoW loNg" instructions tayke.)";
 
 
+static int ParseWarmup(StringVec& Args) {
+	if (Args.size() >= 3) {
+		auto S = Args[2];
+		return Num(S);
+	}
+	
+	return 1;
+}
+
+
 static int ScoreAction (StringVec& Args) {
 	if (Args.size() < 2) return ArgError;
-	int Chan = Num(Args[1]);
+	int Chan = GetNum(Args, 1);
+	if (errno) return errno;
 	const int NumBytes = 16 * 1024; 
 	ByteArray D(NumBytes, 0);
 
@@ -22,9 +33,11 @@ static int ScoreAction (StringVec& Args) {
 	F->SetChannel( Chan );
 	Conf.DontSortRetro = true;
 	Conf.AutoReScore = 0;
+//	Conf.WarmupMul = 1;//ParseWarmup(Args);
 
 	auto Result = bh_hitbooks(F, &D[0], 1);
 	auto html = F->HTML("temporal.html",  "Randomness Test");
+//	printf(":: Warmupmul: %i ::\n", Conf.WarmupMul);
 	
 	for_(16) {
 		if (Result->Err) break;
@@ -50,7 +63,7 @@ static int ScoreAction (StringVec& Args) {
 
 
 
-// temporal dump   1    1024000 file.rnd hex
+// temporal dump   1    1024000 file.rnd
 
 int DumpAction (StringVec& Args, bool Hex) {
 	if (Args.size() < 4)
@@ -58,7 +71,7 @@ int DumpAction (StringVec& Args, bool Hex) {
 	
 	auto F = bh_create();
 	bh_config(F)->Log = -1; // no log even debug
-	F->SetChannel(Num(Args[1]));
+	F->SetChannel(GetNum(Args,1));
 	
 	int          Remain   = ParseLength(Args[2]);
 	string       FileOut  = Args[3];
@@ -72,15 +85,15 @@ int DumpAction (StringVec& Args, bool Hex) {
 	int DSize = 64 * 1024;
 	ByteArray D(DSize, 0);
 	
-	if (Dest!=stdout)
-		printf( "Steve is writing randomness to: %s\n", FileOut.c_str() );
+	if (Dest != stdout)
+		printf( "Steve is sending randomness to: %s\n", FileOut.c_str() );
 	
 	while (Remain > 0) {
 		u32 This = min(DSize, Remain);
 		bh_stats* Result = bh_hitbooks(F, &D[0], This);
 		if (Result->Err) return Result->Err;
-		if (Hex) for_(This)
-			fhex(D[i], Dest);
+		if (Hex)
+			fhexwrite(&D[0], This, Dest);
 		  else
 			fwrite(&D[0], 1, This, Dest);
 
@@ -126,7 +139,7 @@ int main (int argc, const char* argv[]) {
 "       temporal hexdump  (-50 to 50) (1KB to 100MB) (file.txt)\n"
 "  (or)\n"
 "       temporal score    (-50 to 50)\n\n"
-"  by http://randonauts.com/s/temporal\n");
+"  About: http://randonauts.com/s/temporal\n");
 
 	printf("\n");
 	IgnoredError = chdir(RestoreDir);

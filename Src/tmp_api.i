@@ -5,11 +5,12 @@
 BookHitter* bh_create() {
 	sizecheck(u64, 8);  sizecheck(u32, 4);  sizecheck(u16, 2);  sizecheck(u8, 1);
 	auto G = new BookHitter;
-	auto& F = *G;
 	require (G);
 
-	*G = {};
-	G->Conf.Channel = 1; // faster and better for most people.
+	auto& F = *G;
+	F = {};
+	F.Conf.WarmupMul = 2; // retro only... makes graphics look better? (experimentally only... there is no reason behind it and finding good generators for graphical output is an art not a science.)
+	F.Conf.Channel = 1;   // faster and better for most people.
 
 	try {
 		StopStrip(F); // for debugging

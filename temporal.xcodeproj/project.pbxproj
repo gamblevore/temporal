@@ -44,6 +44,8 @@
 
 /* Begin PBXFileReference section */
 		AC0D0B782413E18200E245C3 /* temporal_root.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = temporal_root.i; path = Src/temporal_root.i; sourceTree = "<group>"; };
+		AC105AD8241459470001A7B2 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
+		AC105AD9241459470001A7B2 /* make.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = make.sh; sourceTree = "<group>"; };
 		AC50FC242404297400AB4285 /* libgenerators.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgenerators.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC69201E240FF302007F3DB4 /* libTemporal.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTemporal.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC69202B240FF3FF007F3DB4 /* lib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lib.cpp; path = Src/lib.cpp; sourceTree = "<group>"; };
@@ -102,6 +104,8 @@
 		ACD54AC62299957800526848 = {
 			isa = PBXGroup;
 			children = (
+				AC105AD9241459470001A7B2 /* make.sh */,
+				AC105AD8241459470001A7B2 /* readme.md */,
 				ACD54AD12299957800526848 /* cpp files */,
 				ACD54AD02299957800526848 /* Products */,
 			);

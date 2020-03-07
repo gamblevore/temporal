@@ -199,11 +199,11 @@ struct BookHitter {
 	ApproachVec		MinMaxes;
 	bh_stats		Timing;
 	bh_conf			Conf;
-	short			DebugLoopCount;
 	u32				RequestLimit;
+	short			DebugLoopCount;
 	u8				RescoreFreq;
 	u8				RescoreIndex;
-	u8				DuringStability;
+	u8				DuringTesting;
 	bool			RescoreSelf;
 	bool			CreatedDirs;
 
@@ -242,7 +242,7 @@ struct BookHitter {
 	}
 	
 	bool NoImgs() {
-		return (DuringStability == 2);
+		return (DuringTesting == 2);
 	}
 
 	bool LogOrDebug() {
@@ -259,7 +259,7 @@ struct BookHitter {
 	}
 	
 	bool ChaosTesting() {
-		return IsChaotic() and DuringStability;
+		return IsChaotic() and DuringTesting;
 	}
 	
 	void OnlyNeedSize(int N) {
@@ -324,7 +324,7 @@ struct BookHitter {
 		if (ChaosTesting())
 			return N / 16;
 
-		if (DuringStability)
+		if (DuringTesting)
 			return N / 2;
 
 		if (RequestLimit > 0 and RequestLimit < N)
@@ -336,6 +336,12 @@ struct BookHitter {
 		if (IsRetro()) // half extra, for temporal cohesion...
 			return (RetroCount*8)+(RetroCount/2);
 		return Space();
+	}
+	int WarmupSize() {
+		int S = GenSpace();
+		if (IsRetro() and DuringTesting)
+			S *= max((int)Conf.WarmupMul,1);
+		return min(S, (int)Samples.size());
 	}
 	void AddM (float Default, int Type) {
 		auto M = GenApproach::neww(this);
@@ -375,7 +381,7 @@ void GenApproach::DebugName() {
 string GenApproach::NameSub() {
 	string name = string(Gen->Name);
 	if (!IsSudo()) {
-		if (Owner->DuringStability==1)
+		if (Owner->DuringTesting==1)
 			name += "_"; // test
 		name += to_string(Reps);
 	}

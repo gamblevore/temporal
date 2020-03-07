@@ -2,7 +2,7 @@
 
 void BookHitter::FindMinMax() {
 	GenApproach& S = *App;
-	if (DuringStability and S.Stats.FailedCount) return;
+	if (DuringTesting and S.Stats.FailedCount) return;
 
 	int Su = S.IsSudo() * 2;
 	auto& Min = *MinMaxes[0 + Su];
