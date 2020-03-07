@@ -125,7 +125,7 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 	require(!Timing.Err);
 	u32 Least = -1; 
 	
-	printf("collecting %i\n", B.Remaining);
+//	printf("collecting %i\n", B.Remaining);
 	
 	while (B.KeepGoing()) {
 		OnlyNeedSize(B.Remaining);
@@ -133,7 +133,7 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 		require(!Timing.Err);
 
 		int ActualBytes = UseApproach(); 
-		printf("    got %i\n", ActualBytes);
+//		printf("    got %i\n", ActualBytes);
 		B.BytesUsed += ActualBytes;
 		u32 N = min(ActualBytes, B.Remaining);
 		Least = min(Least, N);
@@ -144,7 +144,7 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 		B.AllWorst = max(B.AllWorst, B.Worst());
 	}
 
-	printf("Removed %i\n", Least);
+//	printf("Removed %i\n", Least);
 	RequestLimit = 0;			// cleanup.
 	B.OutgoingData += Least;
 	B.Remaining -= Least;

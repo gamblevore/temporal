@@ -4,29 +4,24 @@
 
 
 
-static const char* WelcomeMsg = R"(Reesurrch iN2 teMpOwAls!!
-
-Uses WAndoMness in "hoW loNg" da instruction taykes.
-
-)";
+static const char* WelcomeMsg = R"(teMpOwAl resurtch!! Uses WAndoMness in "hoW loNg" instructions tayke.)";
 
 
 static int ScoreAction (StringVec& Args) {
-	if (Args.size() < 2)
-		return ArgError;
+	if (Args.size() < 2) return ArgError;
 	int Chan = Num(Args[1]);
-
-	const int NumBytes = 16*1024; 
+	const int NumBytes = 16 * 1024; 
 	ByteArray D(NumBytes, 0);
 
 	puts(WelcomeMsg);
 	
 	auto F = bh_create();
 	auto& Conf = *bh_config(F); 
+
 	Conf.Log = true;
 	F->SetChannel( Chan );
 	Conf.DontSortRetro = true;
-//	Conf.AutoReScore = 1;
+	Conf.AutoReScore = 0;
 
 	auto Result = bh_hitbooks(F, &D[0], 1);
 	auto html = F->HTML("temporal.html",  "Randomness Test");
@@ -130,7 +125,8 @@ int main (int argc, const char* argv[]) {
 "  (or)\n"
 "       temporal hexdump  (-50 to 50) (1KB to 100MB) (file.txt)\n"
 "  (or)\n"
-"       temporal score    (-50 to 50) \n");
+"       temporal score    (-50 to 50)\n\n"
+"  by http://randonauts.com/s/temporal\n");
 
 	printf("\n");
 	IgnoredError = chdir(RestoreDir);
