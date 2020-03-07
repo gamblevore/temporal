@@ -171,7 +171,7 @@ bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
 	Stats = {};
 
 	while (CollectPieceOfRandom(B))
-		B.Loops = 0;
+		B.Reset();
 
 	if (Conf.AutoRetest)
 		Retest();

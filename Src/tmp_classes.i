@@ -160,6 +160,12 @@ struct RandomBuildup {
 	float			AllWorst;
 	GenApproach*    Chan;
 	
+	void Reset() {
+		Loops = 0;
+		AnyOK = false;
+		AllWorst = 0;
+	}
+	
 	float Worst() {
 		return max(Chan->Stats.Worst, 0.0f);
 	}
