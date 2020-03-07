@@ -205,9 +205,23 @@ ref(HTML_Random) BookHitter::HTML(string fn, string t) {
 }	
 
 
-void BookHitter::CreateHTMLRandom(ApproachVec& V, string FileName, string Title) {
+void BookHitter::CreateHTMLRandom(ApproachVec& V1, string FileName, string Title) {
+	ApproachVec  V2;
+	ApproachVec* V = &V1;
+	
+	// display alpha-sort
+	if (IsRetro()) {
+		V2 = V1;
+		auto Comparer = [] (ref(GenApproach) a, ref(GenApproach) b) {
+			return a->Name() < b->Name();
+		};
+
+		std::sort(V2.begin(), V2.end(), Comparer);
+		V = &V2;
+	}
+	
 	auto html = HTML(FileName, Title);
-	for (auto R : V)
+	for (auto R : *V)
 		html->WriteOne(R.get());	
 	html->Finish();
 }

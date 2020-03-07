@@ -17,6 +17,7 @@ using   std::ofstream;  using std::string;		using std::to_string;	using std::sha
 using	std::max;		using std::min;
 #define ref(x) std::shared_ptr<x>
 typedef std::vector<u8>		   				ByteArray;
+typedef std::vector<string>					StringVec;
 typedef std::vector<int>					IntVec;
 typedef std::vector<uSample>				SampleVec;
 typedef std::vector<ref(RandoStats)>		StatsVec;

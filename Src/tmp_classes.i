@@ -177,7 +177,7 @@ struct RandomBuildup {
 		int Double = 2 - AnyOK;   
 		if (Chan->IsChaotic() or IsRetro)
 			return Loops <= (2*Double);
-		return Loops <= (4*Double);
+		return Loops <= (3+Double);
 	}
 };
 
@@ -196,7 +196,7 @@ struct BookHitter {
 	ApproachVec		ChaoticApproaches;
 	ApproachVec		BasicApproaches;
 	ApproachVec		MinMaxes;
-	bh_stats		Stats;
+	bh_stats		Timing;
 	bh_conf			Conf;
 	short			DebugLoopCount;
 	u32				RequestLimit;
@@ -208,7 +208,7 @@ struct BookHitter {
 
 // // Funcs
 	bh_stats*		Hit (u8* Data, int DataLength);
-	void			Retest();
+	void			ReScore();
 	void 			SetCrashHandler();
 	float			DetectRandomness ();
 	void			CreateDirs();

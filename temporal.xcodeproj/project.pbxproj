@@ -43,6 +43,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AC0D0B782413E18200E245C3 /* temporal_root.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = temporal_root.i; path = Src/temporal_root.i; sourceTree = "<group>"; };
 		AC50FC242404297400AB4285 /* libgenerators.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgenerators.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC69201E240FF302007F3DB4 /* libTemporal.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTemporal.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC69202B240FF3FF007F3DB4 /* lib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lib.cpp; path = Src/lib.cpp; sourceTree = "<group>"; };
@@ -120,9 +121,9 @@
 			isa = PBXGroup;
 			children = (
 				ACA5A15C24046D3A00EFFC13 /* temporal.cpp */,
-				AC69202B240FF3FF007F3DB4 /* lib.cpp */,
-				ACA5A15924046D3A00EFFC13 /* tmp_headers.i */,
 				ACA5A15124046D3A00EFFC13 /* gen.cpp */,
+				AC0D0B782413E18200E245C3 /* temporal_root.i */,
+				ACA5A15924046D3A00EFFC13 /* tmp_headers.i */,
 				ACA5A14F24046D3A00EFFC13 /* tmp_api.i */,
 				ACA5A16124046D3A00EFFC13 /* tmp_classes.i */,
 				ACA5A15B24046D3A00EFFC13 /* tmp_core.i */,
@@ -143,6 +144,7 @@
 				ACA5A15D24046D3A00EFFC13 /* tmp_typedefs.i */,
 				ACA5A14E24046D3A00EFFC13 /* tmp_utils.i */,
 				ACA5A15A24046D3A00EFFC13 /* tmp_vars.i */,
+				AC69202B240FF3FF007F3DB4 /* lib.cpp */,
 			);
 			name = "cpp files";
 			sourceTree = "<group>";

@@ -13,29 +13,41 @@ NamedGen* NextGenerator(NamedGen* G) {
 }
 
 
-static void FindSpikesAndLowest (uSample* Results, int Count, BookHitter& B) {
+static void FindLowest (uSample* Results, int Count, BookHitter& B) {
 	u32 Lowest = -1;
 	for_ (Count)
 		Lowest = min(Lowest, (u32)Results[i]);
-
-	u32 MaxTime = (Lowest + 2) * 5;
 	
 	uSample* Write = Results;
-	u32 Spikes = 0;
 	for_ (Count) {
 		u32 V = *Results++;
 		*Write++ = V - Lowest;
-		Spikes += (V > MaxTime);
 	}
-
-	B.Stats.Spikes += Spikes;
 } 
 
 
-static void* GenerateWrapper (void* arg) {
+static void TemporalHeart (BookHitter& B) {
+	GenApproach& A     = *B.App;	
+	auto Out           = B.Out();
+	int Space		   = B.GenSpace();
+	uSample* OutEnd    = Out + Space;
+	uSample* WarmUp    = Out + 2048;
+
+	if (OutEnd < WarmUp)
+		OutEnd = WarmUp;
+
+	B.Timing.SamplesGenerated += (OutEnd - Out);
+	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
+	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
+	FindLowest(Out,  Space,  B);	
+}
+
+
+static int FIFOError = 0;
+static void* HighTemporalHeart (void* arg) {
 	BookHitter& B = *((BookHitter*)arg);
-	static int FIFOError = 0;
 	static sched_param sch = {};
+
 	if (!FIFOError) {
 		auto Priority = sch.sched_priority;
 		if (!Priority)
@@ -49,21 +61,8 @@ static void* GenerateWrapper (void* arg) {
 			printf( "    :: (Hint: Run 'TemporalLib' with higher priority (sudo) to get better randomness.) ::\n");
 	}
 	
+	TemporalHeart(B);
 
-	GenApproach& A     = *B.App;	
-	auto Out           = B.Out();
-	int Space		   = B.GenSpace();
-	uSample* OutEnd    = Out + Space;
-	uSample* WarmUp    = Out + 2048;
-	
-	if (OutEnd < WarmUp)
-		OutEnd = WarmUp;
-	
-	B.Stats.SamplesGenerated += (OutEnd - Out);
-	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
-	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
-	FindSpikesAndLowest(Out,  Space,  B);	
-	
 	return 0;
 }
 
@@ -173,23 +172,32 @@ static void PreProcess (BookHitter& B) {
 }
 
 
+static void GenerateWrapper(BookHitter& B) {
+	if (FIFOError) {
+		TemporalHeart(B); // just single-thread it.
+	} else {
+		int Err = pthread_create(&B.GeneratorThread, NULL, &HighTemporalHeart, &B);
+		if (!Err) Err = pthread_join(B.GeneratorThread, 0);
+		if (Err)  B.Timing.Err = Err;
+	}
+}
+
+
 static float TemporalGeneration(BookHitter& B, GenApproach& App) {
 	auto t_Start = Now();
 	B.App = &App;
-	B.Stats = {};
+	B.Timing.Err = 0;
 	App.Stats = {};
 
-	int Err = pthread_create(&B.GeneratorThread, NULL, &GenerateWrapper, &B);
-	if (!Err) Err = pthread_join(B.GeneratorThread, 0);
-	if (Err)  B.Stats.Err = Err;
+	GenerateWrapper(B);
 
-	auto& T = B.Stats;
+	auto& T = B.Timing;
 	float Time = ChronoLength(t_Start);
 	App.GenTime = Time;
 	T.GenerateTime += Time;
 	
 	if (T.Err) {
-		fprintf( stderr,  "temporal generation err for '%s': %i\n",  App.Gen->Name,  B.Stats.Err);
+		fprintf( stderr,  "temporal generation err for '%s': %i\n",  App.Gen->Name,  B.Timing.Err);
 	} else {
 		t_Start = Now();
 		App.UseCount++;

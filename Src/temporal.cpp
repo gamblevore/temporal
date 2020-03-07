@@ -11,10 +11,10 @@ Uses WAndoMness in "hoW loNg" da instruction taykes.
 )";
 
 
-static int ScoreAction (int argc, const char* argv[]) {
-	if (argc!=3)
+static int ScoreAction (StringVec& Args) {
+	if (Args.size()!=3)
 		return ArgError;
-	int Chan = argv[2] ? atoi(argv[2]) : 0;
+	int Chan = Num(Args[1]);
 
 	const int NumBytes = 16*1024; 
 	ByteArray D(NumBytes, 0);
@@ -25,8 +25,8 @@ static int ScoreAction (int argc, const char* argv[]) {
 	auto& Conf = *bh_config(F); 
 	Conf.Log = true;
 	F->SetChannel( Chan );
-//	Conf.DontSortRetro = true;
-//	Conf.AutoRetest = 1;
+	Conf.DontSortRetro = true;
+//	Conf.AutoReScore = 1;
 
 	auto Result = bh_hitbooks(F, &D[0], 1);
 	auto html = F->HTML("temporal.html",  "Randomness Test");
@@ -55,26 +55,26 @@ static int ScoreAction (int argc, const char* argv[]) {
 
 
 
-// temporal 1    1024000 file.rnd 
-// temporal chan size    fileout
+// temporal dump   1    1024000 file.rnd hex
 
-int DumpAction (int argc, const char* argv[]) {
-	if (argc < 4)
+int DumpAction (StringVec& Args, bool Hex) {
+	if (Args.size() < 4)
 		return ArgError;
 	
 	auto F = bh_create();
 	bh_config(F)->Log = -1; // no log even debug
-	F->SetChannel(atoi(argv[2]));
-	int          Remain   = ParseLength(argv[3]);
-	string       FileOut  = argv[4] ? argv[4] : "";
-	if (!Remain) return errno;
+	F->SetChannel(Num(Args[1]));
+	
+	int          Remain   = ParseLength(Args[2]);
+	string       FileOut  = Args[3];
 	FILE*        Dest     = CmdArgFile(FileOut);
+	if (!Remain) return errno;
 	if (!Dest)   return errno;
 
 	auto TStart = Now();
 	u32 Written = 0;
 	int OldSeconds = 0;
-	int DSize = 256 * 1024;
+	int DSize = 64 * 1024;
 	ByteArray D(DSize, 0);
 	
 	printf( "Steve is writing randomness to: %s\n", FileOut.c_str() );
@@ -83,7 +83,11 @@ int DumpAction (int argc, const char* argv[]) {
 		u32 This = min(DSize, Remain);
 		bh_stats* Result = bh_hitbooks(F, &D[0], This);
 		if (Result->Err) return Result->Err;
-		fwrite(&D[0], 1, This, Dest);
+		if (Hex) for_(This)
+			fhex(D[i], Dest);
+		  else
+			fwrite(&D[0], 1, This, Dest);
+
 		Remain  -= This;
 		Written += This;
 
@@ -104,20 +108,23 @@ int DumpAction (int argc, const char* argv[]) {
 
 int main (int argc, const char* argv[]) {
 	auto RestoreDir = getcwd(0, 0);
-	auto Action = argv[1];
+	auto Args = ArgArray(argc, argv);
 	int Err = ArgError;
 
-	if ( matchi(Action, "dump") )
-		Err = DumpAction(argc, argv);
-	  else if ( matchi(Action, "score") )
-		Err = ScoreAction(argc, argv);
-	
+	if ( matchi(Args[0], "dump") )
+		Err = DumpAction(Args, false);
+	  else if ( matchi(Args[0], "hexdump") )
+		Err = DumpAction(Args, true);
+	  else if ( matchi(Args[0], "score") )
+		Err = ScoreAction(Args);
+
 	if (Err == ArgError)
 		printf(
-"Usage: temporal dump  (channel) (amount) (file)\n"
+"Usage: temporal dump     (-50 to 50) (1KB to 100MB) (file.txt)\n"
 "  (or)\n"
-"       temporal score (channel)\n");
-
+"       temporal hexdump  (-50 to 50) (1KB to 100MB) (file.txt)\n"
+"  (or)\n"
+"       temporal score    (-50 to 50)\n");
 
 	printf("\n");
 	IgnoredError = chdir(RestoreDir);

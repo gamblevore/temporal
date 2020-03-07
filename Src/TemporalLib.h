@@ -44,7 +44,6 @@ struct bh_stats {
 // stats, can be ignored
 	float	GenerateTime;
 	float	ProcessTime;
-	float	WorstScore;
 	int		Spikes;
 	int		SamplesGenerated;
 	int		BytesOut; // BytesOut is equal to amount requested in bh_hitbooks.
@@ -58,7 +57,7 @@ struct bh_conf {
 	         char  	Channel;
 	unsigned char   Log;
 	unsigned char   DontSortRetro;
-	unsigned char   AutoRetest;
+	unsigned char   AutoReScore;
 };
 
 }

@@ -15,6 +15,24 @@ Ooof char lower (char a) {
 }
 
 
+Ooof void fhex(u8 c, FILE* F) {
+	static const char* map = "0123456789abcdef";
+	fputc(map[c>>4], F);
+	fputc(map[c&15], F);
+}
+
+
+Ooof std::vector<string> ArgArray(int argc, const char* argv[]) {
+	std::vector<string> Result;
+	int i = 1;
+	while (argv[i]) {
+		Result.push_back(argv[i]);
+		i++;
+	}
+	return Result;
+}
+
+
 Ooof bool matchi(const char* a, const char* b) {
 	if (!a or !b)
 		return a==b;
@@ -29,6 +47,10 @@ Ooof bool matchi(const char* a, const char* b) {
 	}
 	
 	return true;
+}
+
+Ooof bool matchi(string a, string b) {
+	return matchi(a.c_str(), b.c_str());
 }
 
 
@@ -79,3 +101,6 @@ Ooof FILE* CmdArgFile (string FileOut) {
 	return 0;
 }
 
+Ooof int Num(string s) {
+	return atoi(s.c_str());
+}

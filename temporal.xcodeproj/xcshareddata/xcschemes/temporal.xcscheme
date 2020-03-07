@@ -47,7 +47,7 @@
       disableMainThreadChecker = "YES"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/theodore/Speedie/theories/temporal_steve"
+      customWorkingDirectory = "/Users/theodore/Speedie/temporal_steve"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
@@ -65,23 +65,27 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "score"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "dump"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "1"
+            argument = "hexdump"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "256kb"
-            isEnabled = "NO">
+            argument = "0"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "64kb"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "rand.txt"
-            isEnabled = "NO">
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "hex"
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>

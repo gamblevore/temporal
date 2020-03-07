@@ -90,11 +90,12 @@ int bh_extract_perform(BookHitter* B_, uSample* Samples, int N, bh_stats* Out) {
 	GenApproach App = {};
 	B.App = &App;
 	
-	FindSpikesAndLowest(B.Out(),  N,  B);	
+	FindLowest(B.Out(),  N,  B);	
 	PreProcess(B);
 	
 	return B.UseApproach();
 }
+
 
 #pragma GCC visibility pop
 

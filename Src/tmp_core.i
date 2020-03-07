@@ -37,8 +37,7 @@ float BookHitter::FinalExtractAndDetect (int Mod) {
 static int FinishApproach(BookHitter& B, float Time) {
 	auto& App = *B.App;
 	App.Fails += App.Stats.FailedCount;
-	B.Stats.ProcessTime += Time;
-	B.Stats.WorstScore = max(B.Stats.WorstScore, App.Stats.Worst);
+	B.Timing.ProcessTime += Time;
 	return App.Stats.Length;
 }
 
@@ -63,14 +62,14 @@ int BookHitter::UseApproach () {
 }
 
 
-NamedGen* BookHitter::NextApproachOK(GenApproach& app, NamedGen* LastGen) {
+NamedGen* BookHitter::NextApproachOK(GenApproach& app,  NamedGen* LastGen) {
 	this->App = &app;
-	if ( app.Gen != LastGen and LogOrDebug() )
+	if ( app.Gen != LastGen  and  LogOrDebug() )
 		printf( "\n:: %s gen :: \n", app.Gen->Name );
 	LastGen = app.Gen;
 	
 	float T = TemporalGeneration(self, app);
-	require(!Stats.Err);
+	require(!Timing.Err);
 	if (LogOrDebug())
 		printf( "	:: %03i    \t(took %.3fs) ::\n", app.Reps, T );
 	return LastGen;
@@ -123,14 +122,14 @@ static void XorCopy(u8* Src, u8* Dest, int N) {
 
 bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 	B.Chan = ViewChannel();
-	require(!Stats.Err);
+	require(!Timing.Err);
 	u32 Least = -1; 
 	
 	while (B.KeepGoing()) {
 		OnlyNeedSize(B.Remaining);
 		TemporalGeneration(self, *B.Chan);
-		require(!Stats.Err);
-		
+		require(!Timing.Err);
+
 		int ActualBytes = UseApproach(); 
 		u32 N = min(ActualBytes, B.Remaining);
 		Least = min(Least, N);
@@ -143,7 +142,7 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 
 	RequestLimit = 0; // cleanup.
 	B.OutgoingData += Least;
-	Stats.BytesOut += Least;
+	Timing.BytesOut += Least;
 	B.Remaining -= Least;
 	if (B.Remaining > 0) return true;
 
@@ -168,15 +167,15 @@ bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
 
 	memset(Data, 0, DataLength);
 	RandomBuildup B = {Data, DataLength, IsRetro()};
-	Stats = {};
+	Timing = {};
 
 	while (CollectPieceOfRandom(B))
 		B.Reset();
 
-	if (Conf.AutoRetest)
-		Retest();
+	if (Conf.AutoReScore)
+		ReScore();
 		
-	return &Stats;
+	return &Timing;
 }
 
 
