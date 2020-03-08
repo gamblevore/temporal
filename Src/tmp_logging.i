@@ -159,10 +159,7 @@ img {
 
 		HTMLImg(ofs, B->MinMaxes[0].get());
 		HTMLImg(ofs, B->MinMaxes[1].get());
-		ofs << Row;
-		
 		HTMLImg(ofs, B->MinMaxes[2].get());
-		HTMLImg(ofs, B->MinMaxes[3].get());
 		ofs << Row;
 	}
 

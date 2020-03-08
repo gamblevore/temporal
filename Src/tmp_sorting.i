@@ -38,7 +38,7 @@ static void RemoveSudo(ApproachVec& L) {
 
 
 void BookHitter::BestApproachCollector(ApproachVec& L) {
-	if (LogOrDebug()) printf( "\n:: Locating Temporal Randomness in %li approaches! :: \n", L.size() );
+	if (LogOrDebug()) printf( "\n:: Locating Temporal Randomness in %li locations! :: \n", L.size() );
 	
 	NamedGen* LastGen = 0;
 	for (auto app : L) {
@@ -103,7 +103,7 @@ ApproachVec& BookHitter::FindBestApproach(ApproachVec& V) {
 	ResetMinMaxes();
 	auto Name = ViewChannel()->Name();
 	if (LogOrDebug() and !Timing.Err)
-		printf(":: Temporal choice: '%s'  ::\n", Name.c_str());
+		printf(":: Steve chose '%s' ::\n", Name.c_str());
 	return V;
 }
 

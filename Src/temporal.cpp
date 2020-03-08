@@ -3,13 +3,13 @@
 #include "temporal_root.i"
 
 
-static const char* WelcomeMsg = R"(teMpOwAl resurtch!! Uses WAndoMness in "hoW loNg" instructions tayke.
+static const char* WelcomeMsg = R"(teMpOwAl resurtch!!
 
-(Get Steve to divulge magical temporal randomness from the brain of your device.)
+Steve is about to divulge magical temporal randomness from the brain of your device.
 )";
 
 
-static int ParseWarmup(StringVec& Args) {
+Ooof int ParseWarmup(StringVec& Args) {
 	if (Args.size() >= 3) {
 		auto S = Args[2];
 		return Num(S);

@@ -9,9 +9,13 @@
 
 
 // todo:
-// tweak stuff till the visualiser looks nice!
-// retro looks better with more data... increase retrocount?
-// or can we visualise the last half or so?
+// * "temporal score -1" gives bad result for html...
+// * chaotic gen seems slower than should be?
+// * tweak stuff till the visualiser looks nice!
+	// float3 used to give really nice output. Now not. Why? Different compilation sure...
+	// but I made all the settings the same :( So its something out of my control!
+
+
 //  NEW ALGORITHM:
 //  * (An opt. Do for later vers, once people like the existing code.)
 //  * histogram debiaser should use sliding window, and be single-pass...

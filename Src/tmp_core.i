@@ -4,16 +4,23 @@ void BookHitter::FindMinMax() {
 	GenApproach& S = *App;
 	if (DuringTesting and S.Stats.FailedCount) return;
 
-	int Su = S.IsSudo() * 2;
-	auto& Min = *MinMaxes[0 + Su];
-	auto& Max = *MinMaxes[1 + Su];
-	
-	Min.UseCount++;
-	Max.UseCount++;
-	
-	for_(5) {
-		Max[i] = max(S[i], Max[i]);
-		Min[i] = min(S[i], Min[i]);
+	if (S.IsSudo()) {
+		auto& P = *MinMaxes[2];
+		P.UseCount++;
+		for_(5) {
+			P[i] = max(S[i], P[i]);
+		}
+	} else {
+		auto& Min = *MinMaxes[0];
+		auto& Max = *MinMaxes[1];
+		
+		Min.UseCount++;
+		Max.UseCount++;
+		
+		for_(5) {
+			Max[i] = max(S[i], Max[i]);
+			Min[i] = min(S[i], Min[i]);
+		}
 	}
 }
 
@@ -124,16 +131,13 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 	B.Chan = ViewChannel();
 	require(!Timing.Err);
 	u32 Least = -1; 
-	
-//	printf("collecting %i\n", B.Remaining);
-	
+		
 	while (B.KeepGoing()) {
 		OnlyNeedSize(B.Remaining);
 		TemporalGeneration(self, *B.Chan);
 		require(!Timing.Err);
 
 		int ActualBytes = UseApproach(); 
-//		printf("    got %i\n", ActualBytes);
 		B.BytesUsed += ActualBytes;
 		u32 N = min(ActualBytes, B.Remaining);
 		Least = min(Least, N);
@@ -144,7 +148,6 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 		B.AllWorst = max(B.AllWorst, B.Worst());
 	}
 
-//	printf("Removed %i\n", Least);
 	RequestLimit = 0;			// cleanup.
 	B.OutgoingData += Least;
 	B.Remaining -= Least;
@@ -189,9 +192,9 @@ Ooof void ReportStuff (bh_stats* Result) {
 	float M = ((float)(Result->SamplesGenerated))/1000000.0;
 	float K = ((float)(Result->SamplesGenerated))/1000.0;
 	
-	if (M > 0.1)
+	if (M >= 0.5)
 		printf(":: %.2fMB", M);
 	  else
 		printf(":: %.2fKB", K);
-	printf("⇝%iKB ::\n", (Result->BytesUsed/1024));
+	printf(" ⇝ %iKB ::\n", (Result->BytesUsed/1024));
 }

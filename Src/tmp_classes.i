@@ -107,6 +107,7 @@ struct GenApproach {
 		return FileName_(this, s);
 	}
 	static string Name_(GenApproach* App) {
+		if (App->Stats.Type>3) debugger; 
 		if (App and App->Stats.Type)   return MaxNames[App->Stats.Type];
 		if (!App or !App->Gen) return "unknown_";
 		return App->NameSub();
@@ -175,10 +176,14 @@ struct RandomBuildup {
 		Loops++;
 		if (!Chan->Stats.FailedCount)
 			AnyOK = true;
+
+		if (IsRetro)
+			return Loops <= 1;
+
 		int Double = (AnyOK) ? 1 : 3;
-		if (Chan->IsChaotic() or IsRetro)
-			return Loops <= (2*Double);
-		return Loops <= (3*Double);
+		int IsChaotic = Chan->IsChaotic(); 
+
+		return Loops <= (2+IsChaotic) * Double;
 	}
 };
 
@@ -300,9 +305,9 @@ struct BookHitter {
 	
 	void ResetMinMaxes() {
 		MinMaxes = {};
-		float Signs[] = {1.0, -1.0};
-		for_(4)
-			AddM(copysign(100000000, Signs[i%2]), i + 1);
+		AddM( 100000000, 1);
+		AddM(-100000000, 2);
+		AddM(-100000000, 3);
 	}
 
 	uSample* Out() {
