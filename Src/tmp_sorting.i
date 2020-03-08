@@ -103,7 +103,7 @@ ApproachVec& BookHitter::FindBestApproach(ApproachVec& V) {
 	ResetMinMaxes();
 	auto Name = ViewChannel()->Name();
 	if (LogOrDebug() and !Timing.Err)
-		printf(":: Steve chose '%s' ::\n", Name.c_str());
+		printf(":: Let use '%s' ::\n", Name.c_str());
 	return V;
 }
 
