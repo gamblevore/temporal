@@ -3,8 +3,10 @@
 #include "temporal_root.i"
 
 
+static const char* WelcomeMsg = R"(teMpOwAl resurtch!! Uses WAndoMness in "hoW loNg" instructions tayke.
 
-static const char* WelcomeMsg = R"(teMpOwAl resurtch!! Uses WAndoMness in "hoW loNg" instructions tayke.)";
+(Get Steve to divulge magical temporal randomness from the brain of your device.)
+)";
 
 
 static int ParseWarmup(StringVec& Args) {
