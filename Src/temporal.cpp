@@ -19,21 +19,20 @@ static int ParseWarmup(StringVec& Args) {
 
 static int ScoreAction (StringVec& Args) {
 	if (Args.size() < 2) return ArgError;
-	int Chan = GetNum(Args, 1);
-	if (errno) return errno;
 	const int NumBytes = 16 * 1024; 
 	ByteArray D(NumBytes, 0);
-
-	puts(WelcomeMsg);
 	
 	auto F = bh_create();
 	auto& Conf = *bh_config(F); 
 
 	Conf.Log = true;
-	F->SetChannel( Chan );
+	F->SetChannel( GetNum(Args, 1) );
+	if (errno) return errno;
 	Conf.DontSortRetro = true;
 	Conf.AutoReScore = 0;
 //	Conf.WarmupMul = 1;//ParseWarmup(Args);
+
+	puts(WelcomeMsg);
 
 	auto Result = bh_hitbooks(F, &D[0], 1);
 	auto html = F->HTML("temporal.html",  "Randomness Test");

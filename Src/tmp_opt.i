@@ -39,7 +39,7 @@ Ooof std::vector<string> ArgArray(int argc, const char* argv[]) {
 }
 
 
-Ooof bool matchi(const char* a, const char* b) {
+Ooof bool cmatchi(const char* a, const char* b) {
 	if (!a or !b)
 		return a==b;
 
@@ -56,7 +56,7 @@ Ooof bool matchi(const char* a, const char* b) {
 }
 
 Ooof bool matchi(string a, string b) {
-	return matchi(a.c_str(), b.c_str());
+	return cmatchi(a.c_str(), b.c_str());
 }
 
 

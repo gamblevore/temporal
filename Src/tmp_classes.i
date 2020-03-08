@@ -175,10 +175,10 @@ struct RandomBuildup {
 		Loops++;
 		if (!Chan->Stats.FailedCount)
 			AnyOK = true;
-		int Double = 2 - AnyOK;   
+		int Double = (AnyOK) ? 1 : 3;
 		if (Chan->IsChaotic() or IsRetro)
 			return Loops <= (2*Double);
-		return Loops <= (3+Double);
+		return Loops <= (3*Double);
 	}
 };
 
