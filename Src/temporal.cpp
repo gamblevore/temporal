@@ -64,11 +64,10 @@ static int ListAction (BookHitter* B, StringVec& Args) {
 static int ReadMemoryAction (BookHitter* B, u8* Addr, u32 Len, std::ostream& ofs) {
 	GenApproach R = {};
 
-	FullHistogramDetect(R, Addr, Len);
+	FullRandomnessDetect(R, Addr, Len);
 	
 	
 	int F = R.Stats.FailedIndexes;
-	ofs << ((F) ? " ❌" : "");
 	for_ (5) {
 		ofs << "\n" + ScoreNames[i].substr(0,4) + ": ";
 		ofs << std::fixed << std::setprecision(3) << R[i];
@@ -83,7 +82,7 @@ static int ReadMemoryAction (BookHitter* B, u8* Addr, u32 Len, std::ostream& ofs
 static int ReadAction (BookHitter* B, StringVec& Args) {
 	if (Args.size() < 2) return ArgError;
 	
-	printf("Non-randomness in file: %s (lower is better)\n", Args[1].c_str());
+	printf("Non-randomness in file: %s\n(lower is better)\n", Args[1].c_str());
 	auto FileData = ReadFile(Args[1], 100*1024*1024);
 	if (errno) {
 		printf("Can't read: %s (%s)\n", Args[1].c_str(), strerror(errno));
@@ -95,6 +94,7 @@ static int ReadAction (BookHitter* B, StringVec& Args) {
 
 	return ReadMemoryAction( B, Addr, Len, std::cout );
 }
+
 
 // temporal dump   1    1024000 file.rnd
 
@@ -178,7 +178,7 @@ int main (int argc, const char* argv[]) {
 	if (Err == ArgError)
 		printf(
 "Usage: temporal dump     (-50 to 50) (1KB to 1000MB) (file.txt)\n"
-"       temporal hexdump  (-50 to 50) (1KB to 1000MB) (file.txt)\n""  (or)\n"
+"       temporal hexdump  (-50 to 50) (1KB to 1000MB) (file.txt)\n"
 "       temporal list     (-50 to 50)\n\n"
 "       temporal read     (file.txt)\n\n"
 "  About: http://randonauts.com/s/temporal \n");

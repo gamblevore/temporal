@@ -201,7 +201,7 @@ Ooof void PrintProbabilities() {
 
 
 
-Ooof void FullHistogramDetect (GenApproach& R,  u8* Addr,  u32 Len) {
+Ooof void FullRandomnessDetect (GenApproach& R,  u8* Addr,  u32 Len) {
 	R.Stats.Length = Len;
 	BitView V = {Addr, Len};
 	ByteArray D(Len*8+1, 0);
