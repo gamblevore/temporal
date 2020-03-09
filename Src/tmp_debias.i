@@ -94,9 +94,9 @@ static BitView Do_Histo (BookHitter& B, BitView R, Shrinkers Flags) {
 	if (n < 64)  return R;
 		
 	auto Sections = R.Convert(B.BitSections());
-	#if DEBUG
-		VerifyBSL(Sections, R);
-	#endif
+//	#if DEBUG
+//		VerifyBSL(Sections, R);
+//	#endif
 	
 	Histogram H = CollectHistogram(Sections);
 	B.App->Stats.Hist = HistoInputRandomness(H);

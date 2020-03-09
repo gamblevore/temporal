@@ -95,7 +95,7 @@ int bh_extract_perform(BookHitter* B_, uSample* Samples, int N, bh_stats* Out) {
 	FindLowest(B.Out(),  N,  B);	
 	PreProcess(B);
 	
-	return B.UseApproach();
+	return B.UseApproach(true);
 }
 
 

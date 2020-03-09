@@ -44,7 +44,7 @@ void BookHitter::BestApproachCollector(ApproachVec& L) {
 	for (auto app : L) {
 		LastGen = NextApproachOK(*app, LastGen);
 		if (!LastGen) return;
-		UseApproach();
+		UseApproach(true);
 	}
 	
 	if (!IsRetro() or !Conf.DontSortRetro)
@@ -76,7 +76,7 @@ void BookHitter::ReScore() {
 	float OldWorst = App->Stats.Worst;
 
 	TemporalGeneration(self, *App);
-	UseApproach();
+	UseApproach(false);
 	ApproachSort(self, L);
 
 	if (LogOrDebug())

@@ -5,10 +5,9 @@ bool MakePath(const std::vector<string>& Pieces) {
 	for (auto& Item : Pieces) {
 		FullPath += "/" + Item;
 		auto P = FullPath.c_str();
-		IgnoredError = mkdir(P, UnixMode);
+		mkdir(P, UnixMode);
 		struct stat sb;
-		IgnoredError = stat(P, &sb); 
-		if (IgnoredError) {
+		if (stat(P, &sb)) {
 			printf("Path %s can't be accessed.\n", P);
 			return false;
 		}

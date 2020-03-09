@@ -5,7 +5,7 @@ void OpenFile(string Path) {
 	printf("Take a look at output file: %s\n", Path.c_str());
 #else
 	Path = string("open \"") + Path + "\"";
-	IgnoredError = system(Path.c_str());
+	system(Path.c_str());
 #endif
 }
 
@@ -230,11 +230,11 @@ void BookHitter::CreateDirs() {
 	CreatedDirs = true;
 	int UnixMode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH; // oof unix.
 #ifndef WIN32
-	IgnoredError = chdir("/tmp/");
+	chdir("/tmp/");
 #endif
-	IgnoredError = mkdir("temporal_scoring",  UnixMode);
-	IgnoredError = chdir("temporal_scoring");
-	IgnoredError = mkdir("time_imgs",	      UnixMode);
+	mkdir("temporal_scoring",  UnixMode);
+	chdir("temporal_scoring");
+	mkdir("time_imgs",	      UnixMode);
 }
 
 

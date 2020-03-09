@@ -125,25 +125,28 @@ int main (int argc, const char* argv[]) {
 	int Err = ArgError;
 
 	if (Args.size() <= 0)
-		Err = ArgError; // 
+		Err = ArgError; 
+	  
 	  else if ( matchi(Args[0], "dump") )
 		Err = DumpAction(Args, false);
+	  
 	  else if ( matchi(Args[0], "hexdump") )
 		Err = DumpAction(Args, true);
+		
 	  else if ( matchi(Args[0], "score") )
 		Err = ScoreAction(Args);
 
 	if (Err == ArgError)
 		printf(
-"Usage: temporal dump     (-50 to 50) (1KB to 100MB) (file.txt)\n"
+"Usage: temporal dump     (-50 to 50) (1KB to 1000MB) (file.txt)\n"
 "  (or)\n"
-"       temporal hexdump  (-50 to 50) (1KB to 100MB) (file.txt)\n"
+"       temporal hexdump  (-50 to 50) (1KB to 1000MB) (file.txt)\n"
 "  (or)\n"
 "       temporal score    (-50 to 50)\n\n"
-"  About: http://randonauts.com/s/temporal\n");
+"  About: http://randonauts.com/s/temporal \n");
 
 	printf("\n");
-	IgnoredError = chdir(RestoreDir);
+	chdir(RestoreDir);
 	return Err;
 }
 

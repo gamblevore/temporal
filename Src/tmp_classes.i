@@ -158,6 +158,7 @@ struct RandTest {
 struct RandomBuildup {
 	u8*				OutgoingData;
 	int				Remaining;
+	int				TotalLoops;
 	int				BytesUsed;
 	bool			IsRetro;
 	bool			AnyOK;
@@ -177,6 +178,7 @@ struct RandomBuildup {
 	
 	bool KeepGoing() {
 		Loops++;
+		TotalLoops++;
 		if (!Chan->Stats.FailedCount)
 			AnyOK = true;
 
@@ -186,7 +188,7 @@ struct RandomBuildup {
 		int Double = (AnyOK) ? 1 : 3;
 		int IsChaotic = Chan->IsChaotic(); 
 
-		return Loops <= (2+IsChaotic) * Double;
+		return Loops <= (2-IsChaotic) * Double;
 	}
 };
 
@@ -226,12 +228,12 @@ struct BookHitter {
 	void			FindMinMax();
 	ref(HTML_Random) HTML(string s, string n);	
 	void			CreateApproaches();
-	int				UseApproach ();
+	int				UseApproach (bool IsFirst);
 	NamedGen*		NextApproachOK(GenApproach& App, NamedGen* LastGen);	
 	bool			CollectPieceOfRandom (RandomBuildup& B);
 	void			BestApproachCollector(ApproachVec& L);
 	ApproachVec&	FindBestApproach(ApproachVec& L);
-	float			FinalExtractAndDetect (int Mod);
+	float			FinalExtractAndDetect (int Mod, bool IsFirst);
 	void			TryLogApproach(string name);
 
 

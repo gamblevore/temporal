@@ -8,11 +8,13 @@
 */
 
 
+
 // todo:
-// * "temporal score -1" gives bad result for html...
 // * chaotic gen seems slower than should be?
 // * tweak stuff till the visualiser looks nice!
-	// float3 used to give really nice output. Now not. Why? Different compilation sure...
+	// * What can I tweak even? I think it's the raw ASM.
+		// * what about compiling the code in diferent ways and naming it different?
+	// * float3 used to give really nice output. Now not. Why? Different compilation sure...
 	// but I made all the settings the same :( So its something out of my control!
 
 
@@ -46,6 +48,4 @@ extern "C" {
 #include "tmp_core.i"
 #include "tmp_api.i"
 }
-
-
 

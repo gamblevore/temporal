@@ -25,16 +25,21 @@ void BookHitter::FindMinMax() {
 }
 
 
-float BookHitter::FinalExtractAndDetect (int Mod) {
+float BookHitter::FinalExtractAndDetect (int Mod, bool IsFirst) {
 	if (IsRetro()) {
-		ExtractRetro(self);
+		ExtractRetro(self, IsFirst);
 	 } else {
 		ExtractRandomness(self, 0, {});
 		App->Stats.Length /= 32;             // for style. less is more.
-		TryLogApproach();
+		if (IsFirst)
+			TryLogApproach();
 		
-		ExtractRandomness(self, Mod, App->FinalFlags());
-		TryLogApproach("p");
+		auto F = App->FinalFlags();
+		if (!IsFirst) F.Log = false;
+		
+		ExtractRandomness(self, Mod, F);
+		if (IsFirst)
+			TryLogApproach("p");
 	}
 	
 	return DetectRandomness();
@@ -49,7 +54,7 @@ static int FinishApproach(BookHitter& B, float Time) {
 }
 
 
-int BookHitter::UseApproach () {
+int BookHitter::UseApproach (bool IsFirst) {
 	auto  t_Start = Now();
 	int   BestMod = 0;
 	float BestScore = 1000000.0;
@@ -63,7 +68,7 @@ int BookHitter::UseApproach () {
 		}
 	}
 	
-	FinalExtractAndDetect(BestMod);
+	FinalExtractAndDetect(BestMod, IsFirst);
 	FindMinMax();
 	return FinishApproach(self, ChronoLength(t_Start));
 }
@@ -131,23 +136,23 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 	B.Chan = ViewChannel();
 	require(!Timing.Err);
 	u32 Least = -1; 
-		
+	
 	while (B.KeepGoing()) {
 		OnlyNeedSize(B.Remaining);
 		TemporalGeneration(self, *B.Chan);
 		require(!Timing.Err);
-
-		int ActualBytes = UseApproach(); 
+		
+		int ActualBytes = UseApproach(B.TotalLoops == 1); 
 		B.BytesUsed += ActualBytes;
 		u32 N = min(ActualBytes, B.Remaining);
 		Least = min(Least, N);
 		if (IsRetro())
-			XorRetro( OoferSpace(), B.OutgoingData,  N);
+			XorRetro( OoferSpace(),  B.OutgoingData,  N);
 		  else
-			XorCopy ( Extracted(),  B.OutgoingData,  N);
+			XorCopy ( Extracted(),   B.OutgoingData,  N);
 		B.AllWorst = max(B.AllWorst, B.Worst());
 	}
-
+	
 	RequestLimit = 0;			// cleanup.
 	B.OutgoingData += Least;
 	B.Remaining -= Least;

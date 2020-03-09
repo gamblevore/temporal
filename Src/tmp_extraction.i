@@ -107,12 +107,12 @@ static BitView BuildOofers(u32* In, u64* Oofers) {
 }
 
 
-static void ExtractRetro (BookHitter& B) {
+static void ExtractRetro (BookHitter& B, bool IsFirst) {
 	auto Bits = BuildOofers(&B.Samples[0], B.OoferSpace());	
 	B.App->Stats = {}; // stats is written to by do_histo, so clear here.
 	B.App->Stats.Length = Bits.ByteLength();
 
-	if (B.LogOrDebug() and !B.NoImgs()) {
+	if (IsFirst and B.LogOrDebug() and !B.NoImgs()) {
 		B.TryLogApproach("p");
 		
 		u32 DummyLength = 1<<14; // should have more than that many bytes avail in samples.
