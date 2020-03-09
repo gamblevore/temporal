@@ -22,6 +22,5 @@ struct NamedGen {
 	GenFunc		Func;
 	const char*	Name;
 	u8       	Slowness;
-	u8       	GenType;
 };
 

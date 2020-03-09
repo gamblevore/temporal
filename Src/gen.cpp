@@ -244,14 +244,14 @@ Gen(Sudo) { // just to test our numerical strength.
 
 
 NamedGen TmpGenList[] = {
-	{FloatSameGenerator,	"float",	10				},
-	{SudoGenerator,			"pseudo",	10,	kSudo 		},
-	{AtomicGenerator,		"atomic",	40				}, // 4x slower
-	{BoolGenerator,			"bool",		10				},
-	{BitOpsGenerator,		"bitops",	10				},
-	{MemoryGenerator,		"memory",	10				},
-	{TimeGenerator,			"time",		10				},
-	{ChaoticGenerator,		"chaotic",	10, kChaotic	},
+	{	FloatSameGenerator,		"float",	10	},
+	{	SudoGenerator,			"pseudo",	10	},
+	{	AtomicGenerator,		"atomic",	40	}, // 4x slower
+	{	BoolGenerator,			"bool",		10	},
+	{	BitOpsGenerator,		"bitops",	10	},
+	{	MemoryGenerator,		"memory",	10	},
+	{	TimeGenerator,			"time",		10	},
+	{	ChaoticGenerator,		"chaotic",	10	},
 	{},
 };
 

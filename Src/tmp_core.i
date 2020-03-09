@@ -84,7 +84,7 @@ NamedGen* BookHitter::NextApproachOK(GenApproach& app,  NamedGen* LastGen) {
 
 
 static IntVec& RepListFor(BookHitter& B, NamedGen* G) {
-	if (G->GenType == kChaotic) {
+	if (matchi(G->Name, "chaotic")) {
 		B.ChaoticRepList = {};
 		for_(15) B.ChaoticRepList.push_back(i+1);
 		return B.ChaoticRepList;
@@ -151,6 +151,10 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 	RequestLimit = 0;			// cleanup.
 	B.OutgoingData += Least;
 	B.Remaining -= Least;
+	if (!Least) {
+		Timing.Err = GenerationError;
+		return false;
+	}
 	if (B.Remaining > 0) return true;
 
 	return false;

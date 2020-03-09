@@ -30,6 +30,7 @@ extern "C" {
 #include "tmp_typedefs.i"
 #include "tmp_defines.i"
 #include "tmp_vars.i"
+#include "tmp_opt.i"
 #include "tmp_shared.i"
 #include "tmp_math.i"
 #include "tmp_classes.i"
@@ -44,7 +45,6 @@ extern "C" {
 #include "tmp_sorting.i"
 #include "tmp_core.i"
 #include "tmp_api.i"
-#include "tmp_opt.i"
 }
 
 

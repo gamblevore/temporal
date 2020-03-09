@@ -9,3 +9,4 @@ const string		MaxNames[]		= {"",        "min",   "max",  "pseudo"};
 StringVec 			FilesToOpenLater;
 
 
+typedef u64 (*GenFunc) (uSample* Data, uSample* DataEnd, u32 Input, int Reps);

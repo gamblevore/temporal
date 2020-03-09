@@ -87,14 +87,22 @@ void BookHitter::ReScore() {
 }
 
 
+static bool ShouldAddApproach(BookHitter& B, GenApproach& oof) {
+	// Atomics don't fit except into retro
+	if (oof.IsAtomic() and !B.IsRetro())  return false;
+	if (B.IsChaotic() == oof.IsChaotic()) return true;
+	if (oof.IsSudo()) return true; // We remove sudo later anyhow.
+	return false;
+}
+
+
 ApproachVec& BookHitter::FindBestApproach(ApproachVec& V) {
 	if (V.size())
 		return V;
 
-	bool Chaotic = IsChaotic();
 	for (auto oof: ApproachList)
-		if (Chaotic == oof->IsChaotic() or oof->IsSudo())
-			V.push_back(oof); // We remove sudo later anyhow.
+		if (ShouldAddApproach(self, *oof))
+			V.push_back(oof);
 
 	DuringTesting = true;
 	BestApproachCollector(V);
@@ -103,7 +111,7 @@ ApproachVec& BookHitter::FindBestApproach(ApproachVec& V) {
 	ResetMinMaxes();
 	auto Name = ViewChannel()->Name();
 	if (LogOrDebug() and !Timing.Err)
-		printf(":: Let use '%s' ::\n", Name.c_str());
+		printf(":: Lets use '%s' ::\n", Name.c_str());
 	return V;
 }
 

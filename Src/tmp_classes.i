@@ -84,10 +84,13 @@ struct GenApproach {
 		return (&Stats.Entropy)[i];
 	}
 	bool IsSudo() {
-		return Gen and (Gen->GenType == kSudo);
+		return Gen and matchi(Gen->Name, "pseudo");
 	}
 	bool IsChaotic() {
-		return Gen and (Gen->GenType == kChaotic);
+		return Gen and matchi(Gen->Name, "chaotic");
+	}
+	bool IsAtomic() {
+		return Gen and matchi(Gen->Name, "atomic");
 	}
 	u64 StablePRndSeed(u64 i = 0) { // Stable-pRnd that changes between runs.
 		return (UseCount + 1 + i) * (100 + Reps);

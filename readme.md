@@ -1,11 +1,11 @@
 
-# SteveLib
+# TemporalLib (codename SteveLib)
 
-SteveLib can generate random numbers, using time() instruction. (`rtdsc`?) 
+TemporalLib can generate random numbers, using time() instruction. (`rtdsc`?) 
 
 Time() is interesting, its a physical sensor, like microphone, that can get physical entropy.
 
-This is research to play around with! Don't expect anything more! Have fun experimenting or don't bother opening.
+This is research to play around with! Don't expect anything more! Have fun experimenting or don't use.
 
 ![Temporal Randomness](screenshot.png)
 
@@ -27,6 +27,8 @@ This project was inspired by the fatum project, a totally cool project about: No
 * Uses histograms, von-neuman and XOR.
 * We use some defines to make code more consistant. `Time_`, `for_`, `Gen`
 * A lot more design is going on, inside... to make it work and be nice...
+
+![Temporal Randomness](screenshot2.jpg)
 
 
 # theory
