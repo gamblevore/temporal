@@ -104,3 +104,4 @@ float BookHitter::DetectRandomness () {
 	return App->Stats.Worst;
 }
 
+

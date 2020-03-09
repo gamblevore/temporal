@@ -198,3 +198,16 @@ Ooof void PrintProbabilities() {
 	}
 	printf("\n");
 }
+
+
+
+Ooof void FullHistogramDetect (GenApproach& R,  u8* Addr,  u32 Len) {
+	R.Stats.Length = Len;
+	BitView V = {Addr, Len};
+	ByteArray D(Len*8+1, 0);
+	auto Sections = V.Convert(&D[0]);
+	Histogram H = CollectHistogram(Sections);
+	R.Stats.Hist = HistoInputRandomness(H);
+	DetectRandomness_(R, Addr, Len);
+}
+

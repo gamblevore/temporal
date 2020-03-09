@@ -30,7 +30,7 @@ float BookHitter::FinalExtractAndDetect (int Mod, bool IsFirst) {
 		ExtractRetro(self, IsFirst);
 	 } else {
 		ExtractRandomness(self, 0, {});
-		App->Stats.Length /= 32;             // for style. less is more.
+		App->Stats.Length = max(min(App->Stats.Length,2048), App->Stats.Length / 32);             // for style. less is more.
 		if (IsFirst)
 			TryLogApproach();
 		

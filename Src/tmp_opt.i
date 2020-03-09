@@ -89,7 +89,7 @@ Ooof int ParseLength (string L) {
 }
 
 
-Ooof FILE* CmdArgFile (string FileOut) {
+Ooof FILE* CmdArgFile (string FileOut, FILE* Default) {
 	if (FileOut == "")  {
 		std::cerr << "No file specified.\n\n";
 		errno = ArgError;
@@ -97,7 +97,7 @@ Ooof FILE* CmdArgFile (string FileOut) {
 	}
 	
 	if (FileOut == "-")
-		return stdout;
+		return Default;
 
 	auto Dest = fopen(FileOut.c_str(), "w");
 	if (Dest)

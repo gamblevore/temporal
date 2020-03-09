@@ -7,9 +7,9 @@ ORIG="$( pwd )"
 mkdir -p "$DIR/build"
 mkdir -p "$DIR/result"
 cd "$DIR/build"
-g++  -std=c++0x  -O0  -c  "$DIR/Src/gen.cpp"
-g++  -std=c++0x  -Os  -c  "$DIR/Src/temporal.cpp"
-g++  -std=c++0x  -Os  -c  "$DIR/Src/lib.cpp"
+g++  -fPIC  -std=c++0x  -O0  -c  "$DIR/Src/gen.cpp"
+g++  -fPIC  -std=c++0x  -Os  -c  "$DIR/Src/temporal.cpp"
+g++  -fPIC  -std=c++0x  -Os  -c  "$DIR/Src/lib.cpp"
 cd ..
 g++  -pthread build/gen.o build/temporal.o -o result/temporal
 ar   rcs      result/TemporalLib.a build/gen.o build/lib.o

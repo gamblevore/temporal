@@ -64,7 +64,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "score"
+            argument = "read"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -73,7 +73,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "1"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "2"
@@ -84,8 +84,8 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "rand.txt"
-            isEnabled = "NO">
+            argument = "/Users/theodore/Desktop/steve.txt"
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>

@@ -42,7 +42,7 @@ static void HTMLImg(std::ofstream& ofs, GenApproach* V) {
 	if (R.Stats.Length and !R.Stats.Type) {
 		ofs << "<div class='img_ontop'>\n";
 		ofs << "<img class='behind'  src='" + R.FileName()    + "' />\n";
-		ofs << "<a target='_' href='" + R.FileName("p") + "'>";
+		ofs << "<a target='_' href='"       + R.FileName("p") + "'>";
 		ofs << "<img class='main' src='"    + R.FileName("p") + "' />";
 		ofs << "</a>\n";
 		ofs << "<img class='histo' src='"   + R.FileName("h") + "' />\n";
