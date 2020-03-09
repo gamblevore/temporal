@@ -158,9 +158,9 @@ struct RandTest {
 struct RandomBuildup {
 	u8*				OutgoingData;
 	int				Remaining;
+	bool			IsRetro;
 	int				TotalLoops;
 	int				BytesUsed;
-	bool			IsRetro;
 	bool			AnyOK;
 	u8				Loops;
 	float			AllWorst;
@@ -182,13 +182,11 @@ struct RandomBuildup {
 		if (!Chan->Stats.FailedCount)
 			AnyOK = true;
 
-		if (IsRetro)
+		int IsChaotic = Chan->IsChaotic(); 
+		if (IsRetro or (IsChaotic and AnyOK))
 			return Loops <= 1;
 
-		int Double = (AnyOK) ? 1 : 3;
-		int IsChaotic = Chan->IsChaotic(); 
-
-		return Loops <= (2-IsChaotic) * Double;
+		return Loops <= 4;
 	}
 };
 

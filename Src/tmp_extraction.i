@@ -100,6 +100,7 @@ static BitView BuildOofers(u32* In, u64* Oofers) {
 		FOR_(b, 8)
 			Oof = (Oof << 8) ^ (*In++&255); // prettier colors?
 //		Oof = rotl(Oof, 8) ^ (*In++&255);
+//		Oof = rotl(Oof, 8) ^ (*In++);
 		*Oofers++ = Oof; 
 	}
 	
