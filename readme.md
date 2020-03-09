@@ -16,7 +16,7 @@ This project was inspired by the fatum project, a totally cool project about: No
 
 	./make.sh
 		(or)	
-	./make.sh install
+	./make.sh noinstall
 
 
 # Efforts made
