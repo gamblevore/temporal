@@ -61,12 +61,10 @@ static int ListAction (BookHitter* B, StringVec& Args) {
 }
 
 
-static int ReadMemoryAction (BookHitter* B, u8* Addr, u32 Len, std::ostream& ofs) {
-	GenApproach R = {};
+static void ReportStats(GenApproach &R,  string Name,  std::ostream &ofs) {
+	if (Name.length())
+		printf( "Non-randomness in: %s\n(lower is better)\n", Name.c_str() );
 
-	FullRandomnessDetect(R, Addr, Len);
-	
-	
 	int F = R.Stats.FailedIndexes;
 	for_ (5) {
 		ofs << "\n" + ScoreNames[i].substr(0,4) + ": ";
@@ -74,6 +72,13 @@ static int ReadMemoryAction (BookHitter* B, u8* Addr, u32 Len, std::ostream& ofs
 		ofs << (((1<<i) & F) ? " ❌" : "");
 	}
 	ofs << "\n";
+}
+
+static int ReadMemoryAction (BookHitter* B, u8* Addr, u32 Len, std::ostream& ofs, string Name) {
+	GenApproach R = {};
+
+	FullRandomnessDetect(R, Addr, Len);
+	ReportStats(R, Name, ofs);
 	
 	return 0;
 }
@@ -82,7 +87,6 @@ static int ReadMemoryAction (BookHitter* B, u8* Addr, u32 Len, std::ostream& ofs
 static int ReadAction (BookHitter* B, StringVec& Args) {
 	if (Args.size() < 2) return ArgError;
 	
-	printf("Non-randomness in file: %s\n(lower is better)\n", Args[1].c_str());
 	auto FileData = ReadFile(Args[1], 100*1024*1024);
 	if (errno) {
 		printf("Can't read: %s (%s)\n", Args[1].c_str(), strerror(errno));
@@ -92,11 +96,12 @@ static int ReadAction (BookHitter* B, StringVec& Args) {
 	u8* Addr = (u8*)FileData.c_str();
 	u32 Len  = (u32)FileData.length();
 
-	return ReadMemoryAction( B, Addr, Len, std::cout );
+	return ReadMemoryAction( B, Addr, Len, std::cout, Args[1] );
 }
 
 
 // temporal dump   1    1024000 file.rnd
+
 
 int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {
 	if (Args.size() < 4)
@@ -120,13 +125,22 @@ int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {
 	auto Chan = B->ViewChannel();
 	auto ChanName = Chan->Name();
  
-	if (Dest != stdout)
+	if (Dest == stdout) {
+		FileOut = "output";
+	} else {
 		printf( "Steve is sending %s randomness to: %s\n", ChanName.c_str(), FileOut.c_str() );
+	}
+
+	RandTest RT = {};	
+	Histogram H = {};
 	
 	while (Remain > 0) {
 		u32 This = min(DSize, Remain);
 		bh_stats* Result = bh_hitbooks(B, &D[0], This);
-		if (Result->Err) return Result->Err;
+		if (Result->Err)
+			return Result->Err;
+
+		RandStatsAccum(RT, H, &D[0], This);
 		if (Hex)
 			fhexwrite(&D[0], This, Dest);
 		  else
@@ -143,11 +157,16 @@ int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {
 			} 
 		}
 	}
-
-	if (Hex) fputc('\n', Dest);
 	
-
+	GenApproach App = {};
+	RT.end(App);
+	App.Stats.Hist = HistoInputRandomness(H);
+	if (Dest != stdout)
+		ReportStats(App, FileOut, std::cout);
+	
+	if (Hex) fputc('\n', Dest);
 	fclose(Dest);
+
 	return 0;
 }
 

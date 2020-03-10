@@ -77,13 +77,19 @@ struct Histogram {
 	Histo				Slot[BarCount];
 	float				Expected[BarCount];
 	int					LostBits;
-	int					NMax;
 	int					HalfIndex;
 	
-	Histogram (int n) {
+	Histogram () {
 		HalfIndex = 0;
 		LostBits = 0;
-		NMax = n;
+	}
+	
+	int BitCount() {
+		return self[0][0] + self[0][1];
+	}
+	
+	void FillStats() {
+		int n = BitCount();
 		for (int i = BarCount - 1; i >= 1; i--) {
 			Expected[i] = HistoProbSlot(n, i);
 			if (Expected[i] < 0.5)
@@ -133,26 +139,38 @@ struct Histogram {
 
 
 static void HistogramVerify (Histogram& H) {
-	// Verify histogram
-	int Expected = H.NMax; 
-	int Found = H[0][0] + H[0][1];
-	test(Expected == Found);
+// Verify histogram
+	int Found = H.BitCount();
 	int Total = H.LostBits;
 	for (int i = 1; i < BarCount; i++)
 		Total += (H[i][0] + H[i][1])*i;
 
-	test(Total == H.NMax);
+	test(Total == Found);
 }
 
 
 static Histogram CollectHistogram (BitSections X) {
-	Histogram H(X.BitLength);
+	Histogram H;
 
 	for_(X.Length)
 		H.Add(X[i], i&1);
 	
+	H.FillStats();
 	HistogramVerify(H);
 	return H;
+}
+
+
+Ooof void RandStatsAccum (RandTest& RT,  Histogram& H,  u8* Addr,  u32 Len) {
+	for_(Len)
+		RT.add_byte(Addr[i]);
+
+	BitView V = {Addr, Len};
+	ByteArray D(Len*8+1, 0);
+	auto X = V.Convert(&D[0]);
+
+	for_(X.Length)
+		H.Add(X[i], i&1);
 }
 
 
@@ -175,6 +193,7 @@ static float HistoInputRandoOne(Histogram& H, int i, bool b) {
 
 
 static float HistoInputRandomness(Histogram& H) {
+	H.FillStats();
 	float Result = 0;
 	for_(BarCount-1) {
 		Result += HistoInputRandoOne(H, i+1, true);
@@ -202,7 +221,6 @@ Ooof void PrintProbabilities() {
 
 
 Ooof void FullRandomnessDetect (GenApproach& R,  u8* Addr,  u32 Len) {
-	R.Stats.Length = Len;
 	BitView V = {Addr, Len};
 	ByteArray D(Len*8+1, 0);
 	auto Sections = V.Convert(&D[0]);

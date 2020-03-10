@@ -65,15 +65,15 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "read"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "hexdump"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "1"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "2"
@@ -81,7 +81,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "64kb"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/theodore/Desktop/steve.txt"
