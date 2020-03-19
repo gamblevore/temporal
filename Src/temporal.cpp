@@ -63,7 +63,7 @@ static int ListAction (BookHitter* B, StringVec& Args) {
 
 static void ReportStats(GenApproach &R,  string Name,  std::ostream &ofs) {
 	if (Name.length())
-		printf( "Non-randomness in: %s\n(lower is better)\n", Name.c_str() );
+		printf( "Non-randomness in: %s (lower is better)\n", Name.c_str() );
 
 	int F = R.Stats.FailedIndexes;
 	for_ (5) {
