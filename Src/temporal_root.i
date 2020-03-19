@@ -12,10 +12,13 @@
 // todo:
 // * chaotic gen seems slower than should be?
 // * tweak stuff till the visualiser looks nice!
-	// * What can I tweak even? I think it's the raw ASM.
+	// * What can I tweak even?
+		// * Need tweak raw ASM!
 		// * what about compiling the code in diferent ways and naming it different?
+			// * how?
 	// * float3 used to give really nice output. Now not. Why? Different compilation sure...
 	// but I made all the settings the same :( So its something out of my control!
+	// * images look better when compiled from Xcode rather than the terminal. BUT WHY?
 
 
 //  NEW ALGORITHM:
