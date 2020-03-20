@@ -36,7 +36,7 @@ This project was inspired by the fatum project, a totally cool project about: No
 
 Compiling should build a lib, and a shell-tool.
 
-The shell-tool can dump randomness into a file, or just test various approaches and graphically display them in an HTML file.
+The shell-tool can dump randomness into a file, or just test various approaches and graphically display them in an HTML file (like the pics above!)
 
 to dump randomness:
 
