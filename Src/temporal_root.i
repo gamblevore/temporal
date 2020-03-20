@@ -10,7 +10,9 @@
 
 
 // todo:
-// * chaotic gen seems slower than should be?
+// * histogram fails for generating big files.
+	// * temporal hexdump 1 100mb /dev/null/
+
 // * tweak stuff till the visualiser looks nice!
 	// * What can I tweak even?
 		// * Need tweak raw ASM!

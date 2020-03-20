@@ -31,6 +31,20 @@ This project was inspired by the fatum project, a totally cool project about: No
 ![Temporal Randomness](screenshot2.jpg)
 
 
+# Channels
+
+What are "channels"? Well, basically I want my lib to be like watching TV, so you flip between TV-channels, trying to find the best signal.
+
+Channel 0 is used for my chaotic-generator. Thye are so good they don't need much debiasing, just XOR/Neuman.
+
+Channel 1 upwards use non-chaotic-generators, but then hash them, otherwise the randomness isn't good enough. This also makes them much faster, as XOR/Neuman lose a lot of bits.
+
+So basically, Channel 1 is faster and more random, but might have less intention-driven results.
+
+Channel 0 is slower and less random (but still extremely random!), but may have stronger intention-driven results.
+
+
+
 # theory
 
 The aim is to see if we can get a computer to "Feel" things, or even just feel itself.
