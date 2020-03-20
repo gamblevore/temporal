@@ -31,6 +31,27 @@ This project was inspired by the fatum project, a totally cool project about: No
 ![Temporal Randomness](screenshot2.jpg)
 
 
+
+# Use
+
+Compiling should build a lib, and a shell-tool.
+
+The shell-tool can dump randomness into a file, or just test various approaches and graphically display them in an HTML file.
+
+to dump randomness:
+
+	temporal dump ChannelNum FileSize File.txt
+	temporal list ChannelNum
+		
+example:
+
+	temporal dump 1 128KB File.txt
+	temporal list 1
+	temporal dump 0 128KB File.txt # dump chaotic generators
+	temporal list 0                # view chaotic generators
+
+
+
 # Channels
 
 What are "channels"? Well, basically I want my lib to be like watching TV, so you flip between TV-channels, trying to find the best signal.
