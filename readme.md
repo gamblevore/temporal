@@ -40,16 +40,16 @@ The shell-tool can dump randomness into a file, or just test various approaches 
 
 to dump randomness:
 
-	temporal dump ChannelNum FileSize File.txt
+	temporal dump    ChannelNum FileSize File.txt
 	temporal hexdump ChannelNum FileSize File.txt # to get hex instead of a binary
-	temporal list ChannelNum
+	temporal list    ChannelNum
 		
 example:
 
-	temporal dump 1 128KB File.txt
-	temporal list 1
+	temporal dump    1 128KB File.txt
+	temporal list    1
 	temporal hexdump 0 128KB File.txt # dump chaotic generators
-	temporal list 0                   # view chaotic generators
+	temporal list    0                # view chaotic generators
 
 
 
