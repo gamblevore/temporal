@@ -55,9 +55,9 @@ example:
 
 # Channels
 
-What are "channels"? Well, basically I want my lib to be like watching TV, so you flip between TV-channels, trying to find the best signal.
+What are "channels"? Well, basically I want my lib to be like watching TV, so you flip between TV-channels, trying to find the best signal. Channels range from 0 to 127.
 
-Channel 0 is used for my chaotic-generator. Thye are so good they don't need much debiasing, just XOR/Neuman.
+Channel 0 is used for my chaotic-generator. They are so good they don't need much debiasing, just XOR/Neuman.
 
 Channel 1 upwards use non-chaotic-generators, but then hash them, otherwise the randomness isn't good enough. This also makes them much faster, as XOR/Neuman lose a lot of bits.
 
