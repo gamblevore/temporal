@@ -48,7 +48,7 @@ example:
 
 	temporal dump    1 128KB File.txt
 	temporal list    1
-	temporal hexdump 0 128KB File.txt # dump chaotic generators
+	temporal hexdump 0 128MB File.txt # dump chaotic generators
 	temporal list    0                # view chaotic generators
 
 
