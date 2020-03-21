@@ -46,16 +46,16 @@ to dump randomness:
 		
 example:
 
-	temporal dump    1 128KB File.txt
-	temporal list    1
-	temporal hexdump 0 128MB File.txt # dump chaotic generators
-	temporal list    0                # view chaotic generators
+	temporal dump        1      128KB    File.txt
+	temporal list        1
+	temporal hexdump     0      128MB    File.txt # dump chaotic generators
+	temporal list        0                        # view chaotic generators
 
 
 
 # Channels
 
-What are "channels"? Well, basically I want my lib to be like watching TV, so you flip between TV-channels, trying to find the best signal. Channels range from 0 to 127.
+What are "channels"? Well, I wanted my lib to be like watching TV, so you flip between TV-channels, trying to find the best signal. Channels range from 0 to 127.
 
 Channel 0 is used for my chaotic-generator. They are so good they don't need much debiasing, just XOR/Neuman.
 
