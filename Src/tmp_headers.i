@@ -2,7 +2,6 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
-#include <execinfo.h>
 #include <signal.h>
 #include <math.h>
 #include <stdlib.h>

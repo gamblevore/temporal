@@ -87,7 +87,7 @@ static int ReadMemoryAction (BookHitter* B, u8* Addr, u32 Len, std::ostream& ofs
 static int ReadAction (BookHitter* B, StringVec& Args) {
 	if (Args.size() < 2) return ArgError;
 	
-	auto FileData = ReadFile(Args[1], 1024*1024*1024);
+	auto FileData = ReadFile(Args[1], 0x7fffFFFF);
 	if (errno) {
 		printf("Can't read: %s (%s)\n", Args[1].c_str(), strerror(errno));
 		return ArgError;
@@ -99,8 +99,6 @@ static int ReadAction (BookHitter* B, StringVec& Args) {
 	return ReadMemoryAction( B, Addr, Len, std::cout, Args[1] );
 }
 
-
-// temporal dump   1    1024000 file.rnd
 
 
 int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {

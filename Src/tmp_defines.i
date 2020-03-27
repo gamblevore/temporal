@@ -15,7 +15,7 @@
 #define Now()				std::chrono::high_resolution_clock::now()
 #define self				(*this)
 #define ChronoLength(Start)	(std::chrono::duration_cast<std::chrono::duration<float>>(Now() - Start).count())
-#ifdef DEBUG
+#if defined(DEBUG) && !defined(__ANDROID__)
 	#define debugger asm("int3")
 	#define DEBUG_AS_NUM 1
 #else
@@ -23,11 +23,12 @@
 	#define DEBUG_AS_NUM 0
 #endif
 #define Ooof				[[maybe_unused]] static
-#define test(cond)	if (!(cond)) {debugger;}
-#define sizecheck(a,b)		if (sizeof(a)!=b) {asm("int3"); return 0;} // sizecheck
+#define test(cond)			if (!(cond)) {debugger;}
+#define sizecheck(a,b)		static_assert (sizeof(a)==b, "bad size!") // sizecheck
 
 
 #define		kSudo	 			1
 #define		kChaotic	  		2
 #define     ArgError			-5555
 #define		GenerationError		-5556
+

@@ -1,10 +1,10 @@
 
 
-typedef unsigned char		u8;
-typedef unsigned short		u16;
-typedef unsigned int		u32;
-typedef unsigned long int	u64;
-typedef long int			s64;
+typedef uint8_t				u8;
+typedef uint16_t			u16;
+typedef uint32_t			u32;
+typedef uint64_t			u64;
+typedef int64_t				s64;
 
 typedef u32					uSample;
 #define uSampleMax			(1ull<<(sizeof(uSample)*8))

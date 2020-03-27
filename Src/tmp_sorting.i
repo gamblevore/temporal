@@ -38,7 +38,7 @@ static void RemoveSudo(ApproachVec& L) {
 
 
 void BookHitter::BestApproachCollector(ApproachVec& L) {
-	if (LogOrDebug()) printf( "\n:: Locating Temporal Randomness in %li locations! :: \n", L.size() );
+	if (LogOrDebug()) printf( "\n:: Locating Temporal Randomness in %i locations! :: \n", (int)L.size() );
 	
 	NamedGen* LastGen = 0;
 	for (auto app : L) {
