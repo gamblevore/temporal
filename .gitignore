@@ -46,7 +46,7 @@ time_imgs
 *_out
 *_output
 XCBuildData
-result
+*result/
 rand.txt
 
 
