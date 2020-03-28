@@ -15,12 +15,12 @@ ORIG="$( pwd )"
 
 ### params ###
 if [ "$1" == "android64" ] || [ "$1" == "android" ]; then
-	echo "build android 64"
+	echo "building android 64"
 	cpp="$ANDROID/aarch64-linux-android29-clang++"
 	ar="$ANDROID/aarch64-linux-android-ar"
 	plat="android64_"
 elif [ "$1" == "android32"  ]; then
-	echo "build android 32"
+	echo "building android 32"
 	cpp="$ANDROID/armv7a-linux-androideabi29-clang++"
 	#ar="$ANDROID/arm-linux-androideabi-ar"
 	ar="$ANDROID/llvm-ar"
