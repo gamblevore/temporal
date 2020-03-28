@@ -15,36 +15,46 @@ ORIG="$( pwd )"
 
 ### params ###
 if [ "$1" == "android64" ] || [ "$1" == "android" ]; then
-	echo "building android 64"
 	cpp="$ANDROID/aarch64-linux-android29-clang++"
 	ar="$ANDROID/aarch64-linux-android-ar"
-	plat="android64_"
+	plat="android64"
 elif [ "$1" == "android32"  ]; then
-	echo "building android 32"
 	cpp="$ANDROID/armv7a-linux-androideabi29-clang++"
 	#ar="$ANDROID/arm-linux-androideabi-ar"
 	ar="$ANDROID/llvm-ar"
-	plat="android32_"
+	plat="android32"
 else
-	echo "building generic"
 	cpp="g++"
 	ar="ar"
-	plat=""
+	plat="Native" #whatever platform you happen to be using.
 fi
 
+BUILD="build/${plat}"
+RESULT="result/${plat}"
 
 
 
 ### START ### 
-mkdir -p "$DIR/${plat}build"
-mkdir -p "$DIR/${plat}result"
-cd "$DIR/${plat}build"
+
+echo "Building '${plat}'"
+echo "Creating folders"
+mkdir -p build
+mkdir -p result
+mkdir -p "$RESULT"
+mkdir -p "$BUILD"
+cd "$DIR/${BUILD}"
+echo "Compiling in: $( pwd )"
 $cpp  -fPIC  -std=c++0x  -O0  -c  "$DIR/Src/gen.cpp"
 $cpp  -fPIC  -std=c++0x  -Os  -c  "$DIR/Src/temporal.cpp"
 $cpp  -fPIC  -std=c++0x  -Os  -c  "$DIR/Src/lib.cpp"
-cd ..
-$cpp  -fPIC  -pthread ${plat}build/gen.o ${plat}build/temporal.o -o ${plat}result/temporal
-$ar   rcs      ${plat}result/TemporalLib.a ${plat}build/gen.o ${plat}build/lib.o
+cd ../..
+echo "Linking in: $( pwd )"
+$cpp  -fPIC  -pthread ${BUILD}/gen.o ${BUILD}/temporal.o -o ${RESULT}/temporal
+$ar   rcs      ${RESULT}/TemporalLib.a ${BUILD}/gen.o ${BUILD}/lib.o
+cp Src/TemporalLib.h ${RESULT}/TemporalLib.h # lets be nice... friendly 
+echo ""
+echo "Created Product at: $( pwd )/${RESULT}"
+echo ""
 ### FINISH ### 
 
 
