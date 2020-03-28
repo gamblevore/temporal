@@ -64,12 +64,12 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "read"
-            isEnabled = "NO">
+            argument = "list"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "hexdump"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "1"
@@ -81,11 +81,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "64kb"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/theodore/Desktop/steve.txt"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>

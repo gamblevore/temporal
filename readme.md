@@ -18,7 +18,9 @@ This project was inspired by the fatum project, a totally cool project about: No
 		(or)	
 	./make.sh noinstall
 		(or)	
-	./make.sh android # cross-compile for android on a Mac/PC. Needs android NDK.
+	./make.sh android64 # cross-compile for android on a Mac/PC. Needs android NDK.
+		(or)	
+	./make.sh android32 # same...
 
 
 # Efforts made
