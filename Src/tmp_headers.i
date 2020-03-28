@@ -6,6 +6,10 @@
 #include <math.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <limits.h>
+#if defined(__APPLE__)
+	#include <mach/mach_time.h>
+#endif
 #include <cmath>
 #include <fstream>
 #include <sstream>
