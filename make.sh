@@ -11,11 +11,19 @@ ORIG="$( pwd )"
 
 
 ### params ###
-if [ "$1" == "android" ]; then
-	cpp="$ANDROID/arm-linux-androideabi-g++"
-	ar="$ANDROID/arm-linux-androideabi-ar"
+if [ "$1" == "android64" ] || [ "$1" == "android" ]; then
+	echo "build android 64"
+	cpp="$ANDROID/aarch64-linux-android29-clang++"
+	ar="$ANDROID/aarch64-linux-androideabi-ar"
+	plat="android_"
+elif [ "$1" == "android32"  ]; then
+	echo "build android 32"
+	cpp="$ANDROID/armv7a-linux-androideabi29-clang++"
+	#ar="$ANDROID/arm-linux-androideabi-ar"
+	ar="$ANDROID/llvm-ar"
 	plat="android_"
 else
+	echo "building generic"
 	cpp="g++"
 	ar="ar"
 	plat=""
