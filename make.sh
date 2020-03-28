@@ -1,7 +1,10 @@
 #!/bin/bash
 
 ### conf ##
-ANDROID="/Developer/android-chain/bin"
+ANDROID="$2"
+if [ "$ANDROID" == "" ]; then
+	ANDROID="/Developer/android-chain/bin"
+fi
 
 
 set -e #exit on error
@@ -14,7 +17,7 @@ ORIG="$( pwd )"
 if [ "$1" == "android64" ] || [ "$1" == "android" ]; then
 	echo "build android 64"
 	cpp="$ANDROID/aarch64-linux-android29-clang++"
-	ar="$ANDROID/aarch64-linux-androideabi-ar"
+	ar="$ANDROID/aarch64-linux-android-ar"
 	plat="android64_"
 elif [ "$1" == "android32"  ]; then
 	echo "build android 32"
