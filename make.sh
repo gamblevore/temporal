@@ -18,11 +18,13 @@ if [ "$1" == "android64" ] || [ "$1" == "android" ]; then
 	cpp="$ANDROID/aarch64-linux-android29-clang++"
 	ar="$ANDROID/aarch64-linux-android-ar"
 	plat="android64"
+	plat_exe_flags="-static -lc++_static"
 elif [ "$1" == "android32"  ]; then
 	cpp="$ANDROID/armv7a-linux-androideabi29-clang++"
 	#ar="$ANDROID/arm-linux-androideabi-ar"
 	ar="$ANDROID/llvm-ar"
 	plat="android32"
+	plat_exe_flags="-static -lc++_static"
 else
 	cpp="g++"
 	ar="ar"
@@ -49,7 +51,7 @@ $cpp  -fPIC  -std=c++0x  -Os  -c  "$DIR/Src/temporal.cpp"
 $cpp  -fPIC  -std=c++0x  -Os  -c  "$DIR/Src/lib.cpp"
 cd ../..
 echo "Linking in: $( pwd )"
-$cpp  -fPIC  -pthread ${BUILD}/gen.o ${BUILD}/temporal.o -o ${RESULT}/temporal
+$cpp  -fPIC  -pthread ${plat_exe_flags} ${BUILD}/gen.o ${BUILD}/temporal.o -o ${RESULT}/temporal
 $ar   rcs      ${RESULT}/TemporalLib.a ${BUILD}/gen.o ${BUILD}/lib.o
 cp Src/TemporalLib.h ${RESULT}/TemporalLib.h # lets be nice... friendly 
 echo ""
