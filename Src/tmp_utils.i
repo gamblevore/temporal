@@ -4,17 +4,24 @@ Ooof bool chduuhh(const char* s) {
 	// avoid stupid warnings... sigh.
 	int Error = chdir(s);
 	if (Error) {
-		printf("Can't chdir to: %s (error %s)\n", s, strerror(errno));
+		Error = errno;
+		printf("Can't chdir to: %s (error %s)\n", s, strerror(Error));
 	}
 	return !Error;
 }
 
 Ooof bool mkduuhh(const char* s) {
-	const int UnixMode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH; // oof unix.
 	// avoid stupid warnings... sigh.
-	int Error = mkdir(s, UnixMode);
+	const int UnixMode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH; // oof unix.
+	struct stat sb;
+
+	int Error = stat(s, &sb);
+	if ((Error and errno==ENOENT) or !S_ISDIR(sb.st_mode)) {
+		Error = mkdir(s, UnixMode);
+	}
 	if (Error) {
-		printf("Can't mkdir: %s (error %s)\n", s, strerror(errno));
+		Error = errno;
+		printf("Can't mkdir: %s (error %s)\n", s, strerror(Error));
 	}
 	return !Error;
 }

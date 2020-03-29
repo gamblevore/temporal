@@ -170,25 +170,37 @@ int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {
 
 
 int main (int argc, const char* argv[]) {
-	auto RestoreDir = getcwd(0, 0);
 	auto Args = ArgArray(argc, argv);
-	int Err = ArgError;
+	if (Args.size()) {
+		printf("Starting Temporal...\n");
+	}
 
+	auto RestoreDir = getcwd(0, 0);
+	int Err = ArgError;
 	auto B = bh_create();
-	if (Args.size() <= 0)
-		Err = ArgError; 
+
+	if (Args.size() <= 0) {
 	  
-	  else if ( matchi(Args[0], "dump") )
+	} else if ( matchi(Args[0], "dump") ) {
+		printf("Dumping...\n");
 		Err = DumpAction(B, Args, false);
 	  
-	  else if ( matchi(Args[0], "hexdump") )
+	} else if ( matchi(Args[0], "hexdump") ) {
+		printf("HexDumping...\n");
 		Err = DumpAction(B, Args, true);
 		
-	  else if ( matchi(Args[0], "list") )
+	} else if ( matchi(Args[0], "list") ) {
+		printf("Listing...\n");
 		Err = ListAction(B, Args);
 	  
-	  else if ( matchi(Args[0], "read") )
+	} else if ( matchi(Args[0], "read") ) {
+		printf("Reading...\n");
 		Err = ReadAction(B, Args);
+	}
+
+	if (Args.size()) {
+		printf("Cleaning Up...\n");
+	}
 
 	bh_free(B);
 
