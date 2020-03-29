@@ -364,10 +364,7 @@ struct BookHitter {
 	}
 	void CreateReps(int* Reps) {
 		if (!Reps) {
-			RepList = {3, 5,  9,  17,  25, 31};
-		#if DEBUG
-			RepList = {3, 5,  9,  17,  25};
-		#endif
+			RepList = {3, 5, 9,  17,  25, 31, 63, 85};
 		} else {
 			RepList = {};
 			while (*Reps)

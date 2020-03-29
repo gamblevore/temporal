@@ -89,9 +89,10 @@ void BookHitter::ReScore() {
 
 static bool ShouldAddApproach(BookHitter& B, GenApproach& oof) {
 	// Atomics don't fit except into retro
-	if (oof.IsAtomic() and !B.IsRetro())  return false;
-	if (B.IsChaotic() == oof.IsChaotic()) return true;
-	if (oof.IsSudo()) return true; // We remove sudo later anyhow.
+	if (oof.Reps >= 32 and !B.IsRetro())	return false;
+	if (oof.IsAtomic() and !B.IsRetro())	return false;
+	if (B.IsChaotic() == oof.IsChaotic())	return true;
+	if (oof.IsSudo())						return true; // We remove sudo later anyhow.
 	return false;
 }
 

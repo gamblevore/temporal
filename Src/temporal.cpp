@@ -201,7 +201,7 @@ int main (int argc, const char* argv[]) {
 "  About: http://randonauts.com/s/temporal \n");
 
 	printf("\n");
-	chdir(RestoreDir);
+	chduuhh(RestoreDir);
 	return Err;
 }
 

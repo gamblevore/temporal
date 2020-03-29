@@ -228,13 +228,12 @@ void BookHitter::CreateDirs() {
 	if (CreatedDirs or !LogOrDebug()) return;
 
 	CreatedDirs = true;
-	int UnixMode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH; // oof unix.
 #ifndef WIN32
-	chdir("/tmp/");
+	chduuhh("/tmp/");
 #endif
-	mkdir("temporal_scoring",  UnixMode);
-	chdir("temporal_scoring");
-	mkdir("time_imgs",	      UnixMode);
+	mkduuhh("temporal_scoring");
+	chduuhh("temporal_scoring");
+	mkduuhh("time_imgs");
 }
 
 
