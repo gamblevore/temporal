@@ -149,12 +149,14 @@ img {
 <tr>
 )";
 
-		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr>\n"; 
+		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr><td>\n"; 
 		auto t = std::time(nullptr);
 		auto tm = *std::localtime(&t);
 		
 		ofs << "<p>Created on: ";
 		ofs << std::put_time(&tm, "%d %b %y, %H:%M:%S");
+		ofs << "&nbsp;&nbsp;<a href='scoring.html'>Scoring</a>&nbsp;&nbsp;<a href='temporal.html'>Temporal</a>&nbsp;&nbsp;<a href='http://github.com/gamblevore/temporal'>github</a>";
+		ofs << "</p>";
 		ofs << Row;
 
 		HTMLImg(ofs, B->MinMaxes[0].get());
