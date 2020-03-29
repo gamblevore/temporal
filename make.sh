@@ -28,7 +28,13 @@ elif [ "$1" == "android32"  ]; then
 else
 	cpp="g++"
 	ar="ar"
-	plat="Native" #whatever platform you happen to be using.
+	INSTALL="/usr/local/bin/temporal"
+	plat="`uname`"
+	if [ "$plat" == "Darwin"  ]; then
+		plat="MacOSX"
+	elif [ "$plat" == ""  ]; then
+		plat="Native"
+	fi
 fi
 
 BUILD="build/${plat}"
@@ -63,6 +69,7 @@ echo ""
 
 cd "$ORIG"
 
-if [ "$1" != "noinstall" ] && [ plat == "" ]; then
-	sudo cp "$DIR/result/temporal" "/usr/local/bin/temporal"
+if [ "$1" != "noinstall" ] && [ "$INSTALL" != "" ]; then
+	echo "Installing temporal at: ${INSTALL}" 
+	sudo cp "${RESULT}/temporal" "$INSTALL"
 fi
