@@ -28,9 +28,9 @@ extern "C" {
 	#define TSC TSC_mach		// mach_absolute_time
 #elif defined(ARM_ASM) && (__ARM_ARCH >= 6)
 	#if ( __WORDSIZE == 32 )
-		#define TSC TSC_MRC		// arm asm
+		#define TSC TSC_MRC		// arm32 asm
 	#else
-		#define TSC TSC_MRS		// arm asm
+		#define TSC TSC_MRS		// arm64 asm
 	#endif
 #else
 	#define TSC TSC_timespec	// clock_gettime
