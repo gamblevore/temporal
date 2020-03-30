@@ -177,6 +177,7 @@ int main (int argc, const char* argv[]) {
 		printf("Starting Temporal...\n");
 		auto RestoreDir = getcwd(0, 0);
 		auto B = bh_create();
+		errno = 0;
 
 		if ( matchi(Args[0], "dump") ) {
 			printf("Dumping...\n");
@@ -206,8 +207,9 @@ int main (int argc, const char* argv[]) {
 		printf(
 "Usage: temporal dump     (-50 to 50) (1KB to 1000MB) (file.txt)\n"
 "       temporal hexdump  (-50 to 50) (1KB to 1000MB) (file.txt)\n"
-"       temporal list     (-50 to 50)\n\n"
-"       temporal read     (file.txt)\n\n"
+"       temporal list     (-50 to 50)\n"
+"       temporal read     (file.txt)\n"
+"\n"
 "  About: http://randonauts.com/s/temporal \n");
 
 	printf("\n");

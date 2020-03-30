@@ -15,39 +15,65 @@
 
 extern "C" {
 
+#define ARM_ASM // disable ARM_ASM if its not working on android!
+#define TSC_RD			1
+#define TSC_mach		2
+#define TSC_MRC			3
+#define TSC_MRS			4
+#define TSC_timespec	5
+
+#if defined(__i386__) || defined(__x86_64__) || defined(__amd64__)
+	#define TSC TSC_RD        	// rdtsc
+#elif defined(__APPLE__)
+	#define TSC TSC_mach		// mach_absolute_time
+#elif defined(ARM_ASM) && (__ARM_ARCH >= 6)
+	#if ( __WORDSIZE == 32 )
+		#define TSC TSC_MRC		// arm asm
+	#else
+		#define TSC TSC_MRS		// arm asm
+	#endif
+#else
+	#define TSC TSC_timespec	// clock_gettime
+#endif
+
 
 static inline u32 Time32 () {
-	#if defined(__i386__) || defined(__x86_64__) || defined(__amd64__)
-		u64 rax;
-		asm volatile ( "rdtscp\n" : "=a" (rax));
-		return (u32)rax;
-	#elif defined(UseARM_ASM) && (__ARM_ARCH >= 6)
-		#if ( __WORDSIZE == 32 )
-			volatile unsigned cc;
-			__asm__ __volatile__ ("mrc p15, 0, %0, c9, c13, 0" : "=r"(cc));
-			return cc;
-		#else
-			int64_t virtual_timer_value;
-			asm volatile("mrs %0, cntvct_el0" : "=r"(virtual_timer_value));
-			return virtual_timer_value;
-		#endif
-	#elif defined(__APPLE__)
-		return mach_absolute_time();
-	#else
-		struct timespec TimeData;
-		clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &TimeData);
-		return TimeData.tv_nsec;
-	#endif
+#if TSC == TSC_RD
+	u64 rax;
+	asm volatile ( "rdtscp\n" : "=a" (rax));
+	return (u32)rax;
+#elif TSC == TSC_mach
+	return mach_absolute_time();
+#elif TSC == TSC_MRC
+	volatile unsigned cc;
+	__asm__ __volatile__ ("mrc p15, 0, %0, c9, c13, 0" : "=r"(cc));
+	return cc;
+#elif TSC == TSC_MRS
+	int64_t virtual_timer_value;
+	asm volatile("mrs %0, cntvct_el0" : "=r"(virtual_timer_value));
+	return virtual_timer_value;
+#else
+	// GIVES POOR TIMINGS! I DON't KNOW WHY.
+	// But... the graphical view looks bad using clock_gettime.
+	struct timespec TimeData;
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &TimeData);
+	return TimeData.tv_nsec;
+#endif
 }
 
 
+static inline void TimeFinish () {
+#if (TSC == TSC_MRC)
+	__asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 2" :: "r"(1<<31)); /* stop the cc */
+#endif
+}
+
 static inline void TimeInit () {
-	#if (__ARM_ARCH >= 6 && __WORDSIZE == 32 )
-		volatile unsigned cc;
-		  __asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 2" :: "r"(1<<31)); /* stop the cc */
-		  __asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 0" :: "r"(5));     /* initialize */
-		  __asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 1" :: "r"(1<<31)); /* start the cc */
-	#endif
+#if (TSC == TSC_MRC)
+	__asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 2" :: "r"(1<<31)); /* stop the cc */
+	__asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 0" :: "r"(5));     /* initialize */
+	__asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 1" :: "r"(1<<31)); /* start the cc */
+#endif
 }
 
 
@@ -173,7 +199,7 @@ Gen(Chaotic) {
 	const void* ChaosTable[] = {&&Floats, &&Time, &&Bool, &&Floats2, &&Atomic2, &&BitOps, &&Atomic, &&Memory};
 
 	Time_ (Reps) {
-		u32 Index = TimeFinish >> ((i^x)%32); 
+		u32 Index = Finish >> ((i^x)%32); 
 		goto* ChaosTable[(Index^i)%8];
 
 Floats:

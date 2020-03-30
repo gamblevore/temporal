@@ -155,7 +155,7 @@ img {
 		
 		ofs << "<p>Created on: ";
 		ofs << std::put_time(&tm, "%d %b %y, %H:%M:%S");
-		ofs << "&nbsp;&nbsp;<a href='scoring.html'>Scoring</a>&nbsp;&nbsp;<a href='temporal.html'>Temporal</a>&nbsp;&nbsp;<a href='http://github.com/gamblevore/temporal'>github</a>";
+		ofs << "<br/>&nbsp;&nbsp;<a href='scoring.html'>Scoring</a>&nbsp;&nbsp;<a href='temporal.html'>Temporal</a>&nbsp;&nbsp;<a href='http://github.com/gamblevore/temporal'>github</a>";
 		ofs << "</p>";
 		ofs << Row;
 
@@ -230,9 +230,9 @@ void BookHitter::CreateDirs() {
 	if (CreatedDirs or !LogOrDebug()) return;
 
 	CreatedDirs = true;
-#ifndef WIN32
-	chduuhh("/tmp/");
-#endif
+	if (fexists("/tmp/")) {
+		chduuhh("/tmp/");
+	}
 	mkduuhh("temporal_scoring");
 	chduuhh("temporal_scoring");
 	mkduuhh("time_imgs");
