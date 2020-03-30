@@ -29,17 +29,14 @@ static int ListAction (BookHitter* B, StringVec& Args) {
 	Conf.Log = true;
 	B->SetChannel( GetNum(Args, 1) );
 	if (errno) return errno;
-	Conf.DontSortRetro = true;
+//	Conf.DontSortRetro = true; // better to sort?
 	Conf.AutoReScore = 0;
 	
-//	Conf.WarmupMul = 1; // ParseWarmup(Args);
-
 	puts(WelcomeMsg);
 
 	auto Result = bh_hitbooks(B, &D[0], 1);
 	auto html = B->HTML("temporal.html",  "Randomness Test");
-//	printf(":: Warmupmul: %i ::\n", Conf.WarmupMul);
-	
+
 	for_(16) {
 		if (Result->Err) break;
 		B->DebugLoopCount = i + 1;
@@ -206,9 +203,9 @@ int main (int argc, const char* argv[]) {
 
 	if (Err == ArgError)
 		printf(
-"Usage: temporal dump     (-50 to 50) (1KB to 1000MB) (file.txt)\n"
-"       temporal hexdump  (-50 to 50) (1KB to 1000MB) (file.txt)\n"
-"       temporal list     (-50 to 50)\n"
+"Usage: temporal dump     (0 to 127) (1KB to 1000MB) (file.txt)\n"
+"       temporal hexdump  (0 to 127) (1KB to 1000MB) (file.txt)\n"
+"       temporal list     (0 to 127)\n"
 "       temporal read     (file.txt)\n"
 "\n"
 "  About: http://randonauts.com/s/temporal \n");

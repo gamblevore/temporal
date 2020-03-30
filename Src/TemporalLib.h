@@ -46,10 +46,10 @@ struct bh_stats {
 	float	ProcessTime;
 	int		Spikes;
 	int		SamplesGenerated;
-	int		BytesUsed; // not bytes output, but throughput... including wasted bytes.
+	int		BytesUsed;  // not bytes output, but throughput... including wasted bytes.
 	int		BytesGiven; // not bytes output, but throughput... including wasted bytes.
 	
-// Error number incase of error.
+// Error number. 0 means no error.
 	int		Err;
 };
 

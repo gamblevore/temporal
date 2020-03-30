@@ -9,8 +9,9 @@ BookHitter* bh_create() {
 
 	auto& F = *G;
 	F = {};
-	F.Conf.WarmupMul = 2; // retro only... makes graphics look better? (experimentally only... there is no reason behind it and finding good generators for graphical output is an art not a science.)
-	F.Conf.Channel = 1;   // faster and better for most people.
+	F.Conf.WarmupMul = 2;	// retro only... makes graphics look better? (experimentally only... there is no reason behind it and finding good generators for graphical output is an art not a science.)
+	F.Conf.Channel = 1;   	// faster and better for most people.
+	F.Conf.AutoReScore = 1; // Keep intention-detection strong. Shouldn't affect randomness...
 
 	try {
 		StopStrip(F); // for debugging
