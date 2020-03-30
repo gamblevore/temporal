@@ -24,14 +24,15 @@ static int ListAction (BookHitter* B, StringVec& Args) {
 	const int NumBytes = 16 * 1024; 
 	ByteArray D(NumBytes, 0);
 	
-	auto& Conf = *bh_config(B); 
+	auto& Conf = *bh_config(B);
 
 	Conf.Log = true;
 	B->SetChannel( GetNum(Args, 1) );
 	if (errno) return errno;
 	Conf.DontSortRetro = true;
 	Conf.AutoReScore = 0;
-//	Conf.WarmupMul = 1;//ParseWarmup(Args);
+	
+//	Conf.WarmupMul = 1; // ParseWarmup(Args);
 
 	puts(WelcomeMsg);
 
