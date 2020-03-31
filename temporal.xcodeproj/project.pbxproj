@@ -63,7 +63,7 @@
 		AC50FC242404297400AB4285 /* libgenerators.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgenerators.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC69201E240FF302007F3DB4 /* libTemporal.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTemporal.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC69202B240FF3FF007F3DB4 /* lib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lib.cpp; path = Src/lib.cpp; sourceTree = "<group>"; };
-		AC6AF80B24114F6900014F31 /* tmp_opt.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_opt.i; path = Src/tmp_opt.i; sourceTree = "<group>"; };
+		AC6AF80B24114F6900014F31 /* tmp_options.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_options.i; path = Src/tmp_options.i; sourceTree = "<group>"; };
 		ACA5A14D24046D3A00EFFC13 /* tmp_gen_proc.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_gen_proc.i; path = Src/tmp_gen_proc.i; sourceTree = "<group>"; };
 		ACA5A14E24046D3A00EFFC13 /* tmp_utils.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_utils.i; path = Src/tmp_utils.i; sourceTree = "<group>"; };
 		ACA5A14F24046D3A00EFFC13 /* tmp_api.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_api.i; path = Src/tmp_api.i; sourceTree = "<group>"; };
@@ -87,6 +87,7 @@
 		ACA5A16424046D3A00EFFC13 /* tmp_math.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_math.i; path = Src/tmp_math.i; sourceTree = "<group>"; };
 		ACA5A16524046D3A00EFFC13 /* tmp_sorting.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_sorting.i; path = Src/tmp_sorting.i; sourceTree = "<group>"; };
 		ACD54ACF2299957800526848 /* temporal */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = temporal; sourceTree = BUILT_PRODUCTS_DIR; };
+		ACF89D8324338518006A9448 /* tmp_funcs.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_funcs.i; path = Src/tmp_funcs.i; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +163,7 @@
 				ACA5A14F24046D3A00EFFC13 /* tmp_api.i */,
 				ACA5A16124046D3A00EFFC13 /* tmp_classes.i */,
 				ACA5A15B24046D3A00EFFC13 /* tmp_core.i */,
+				ACF89D8324338518006A9448 /* tmp_funcs.i */,
 				ACA5A15224046D3A00EFFC13 /* tmp_debias.i */,
 				ACA5A15F24046D3A00EFFC13 /* tmp_defines.i */,
 				ACA5A16024046D3A00EFFC13 /* tmp_drawhisto.i */,
@@ -175,7 +177,7 @@
 				ACA5A16524046D3A00EFFC13 /* tmp_sorting.i */,
 				ACA5A15424046D3A00EFFC13 /* tmp_stats.i */,
 				ACA5A15524046D3A00EFFC13 /* tmp_stb.i */,
-				AC6AF80B24114F6900014F31 /* tmp_opt.i */,
+				AC6AF80B24114F6900014F31 /* tmp_options.i */,
 				ACA5A15D24046D3A00EFFC13 /* tmp_typedefs.i */,
 				ACA5A14E24046D3A00EFFC13 /* tmp_utils.i */,
 				ACA5A15A24046D3A00EFFC13 /* tmp_vars.i */,

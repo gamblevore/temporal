@@ -72,6 +72,7 @@ static void ReportStats(GenApproach &R,  string Name,  std::ostream &ofs) {
 	ofs << "\n";
 }
 
+
 static int ReadMemoryAction (BookHitter* B, u8* Addr, u32 Len, std::ostream& ofs, string Name) {
 	GenApproach R = {};
 
@@ -203,7 +204,7 @@ int main (int argc, const char* argv[]) {
 
 	if (Err == ArgError)
 		printf(
-"Usage: temporal dump     (0 to 127) (1KB to 1000MB) (file.txt)\n"
+"Usage: temporal dump     (0 to 127) (1KB to 1000MB) (file.bin)\n"
 "       temporal hexdump  (0 to 127) (1KB to 1000MB) (file.txt)\n"
 "       temporal list     (0 to 127)\n"
 "       temporal read     (file.txt)\n"

@@ -214,6 +214,7 @@ struct BookHitter {
 	u8				DuringTesting;
 	bool			RescoreSelf;
 	bool			CreatedDirs;
+	bool			TimingIsPoor;
 
 // // Funcs
 	bh_stats*		Hit (u8* Data, int DataLength);
@@ -322,11 +323,15 @@ struct BookHitter {
 	u8* Extracted() {
 		return &(Buff[0]);
 	}
-	u64* OoferSpace() {
+	u64* OoferExtracted() {
 		return (u64*)Extracted();
 	}
 
 	int Space() {
+		if (IsRetro() and TimingIsPoor) {
+			return GenSpace()/8;
+		}
+		
 		int N = (int)Samples.size();
 		
 		if (ChaosTesting())
@@ -341,15 +346,13 @@ struct BookHitter {
 		return N;
 	}
 	int GenSpace() {
-		if (IsRetro()) // half extra, for temporal cohesion...
-			return (RetroCount*8)+(RetroCount/2);
+		if (IsRetro()) { // half extra, for temporal cohesion...
+			int N = (RetroCount*8)+(RetroCount/2);
+			if (TimingIsPoor)
+				N *= 8;
+			return N;
+		}
 		return Space();
-	}
-	int WarmupSize() {
-		int S = GenSpace();
-		if (IsRetro() and DuringTesting)
-			S *= max((int)Conf.WarmupMul,1);
-		return min(S, (int)Samples.size());
 	}
 	void AddM (float Default, int Type) {
 		auto M = GenApproach::neww(this);

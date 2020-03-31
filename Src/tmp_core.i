@@ -147,7 +147,7 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 		u32 N = min(ActualBytes, B.Remaining);
 		Least = min(Least, N);
 		if (IsRetro())
-			XorRetro( OoferSpace(),  B.OutgoingData,  N);
+			XorRetro( OoferExtracted(),  B.OutgoingData,  N);
 		  else
 			XorCopy ( Extracted(),   B.OutgoingData,  N);
 		B.AllWorst = max(B.AllWorst, B.Worst());

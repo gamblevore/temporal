@@ -92,7 +92,7 @@ static BitView DoModToBit (BookHitter& B, int Mod) {
 }
 
 
-static BitView BuildOofers(u32* In, u64* Oofers) {
+static BitView BuildOofers(uSample* In, u64* Oofers) {
 	BitView Result = {(u8*)Oofers, RetroCount*8}; 
 
 	for_(RetroCount) {
@@ -109,7 +109,7 @@ static BitView BuildOofers(u32* In, u64* Oofers) {
 
 
 static void ExtractRetro (BookHitter& B, bool IsFirst) {
-	auto Bits = BuildOofers(&B.Samples[0], B.OoferSpace());	
+	auto Bits = BuildOofers(&B.Samples[0], B.OoferExtracted());	
 	B.App->Stats = {}; // stats is written to by do_histo, so clear here.
 	B.App->Stats.Length = Bits.ByteLength();
 
@@ -119,8 +119,8 @@ static void ExtractRetro (BookHitter& B, bool IsFirst) {
 		u32 DummyLength = 1<<14; // should have more than that many bytes avail in samples.
 		u8* DummyDest = (u8*)(&B.Samples[0]);
 		BitView BV = {DummyDest, DummyLength};
-
-		XorRetro(B.OoferSpace(),  BV.Data,  BV.ByteLength());
+		
+		XorRetro(B.OoferExtracted(),  BV.Data,  BV.ByteLength());
 		Shrinkers Retro = {};
 		Retro.Log = 1;
 		Do_Histo(B, BV, Retro);

@@ -36,9 +36,10 @@
 extern "C" {
 #include "tmp_typedefs.i"
 #include "tmp_defines.i"
+#include "tmp_funcs.i"
 #include "tmp_vars.i"
 #include "tmp_utils.i"
-#include "tmp_opt.i"
+#include "tmp_options.i"
 #include "tmp_shared.i"
 #include "tmp_math.i"
 #include "tmp_classes.i"

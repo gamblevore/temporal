@@ -22,7 +22,11 @@ extern "C" {
 #define TSC_MRS			4
 #define TSC_timespec	5
 
-#if defined(__i386__) || defined(__x86_64__) || defined(__amd64__)
+// #define TSC TSC_timespec	// force clock_gettime(very bad one but its for testing)
+
+#if defined(TSC)
+	// don't redefine!
+#elif defined(__i386__) || defined(__x86_64__) || defined(__amd64__)
 	#define TSC TSC_RD        	// rdtsc
 #elif defined(__APPLE__)
 	#define TSC TSC_mach		// mach_absolute_time
@@ -37,6 +41,7 @@ extern "C" {
 #endif
 
 
+
 static inline u32 Time32 () {
 #if TSC == TSC_RD
 	u64 rax;
@@ -45,20 +50,25 @@ static inline u32 Time32 () {
 #elif TSC == TSC_mach
 	return mach_absolute_time();
 #elif TSC == TSC_MRC
-	volatile unsigned cc;
+	volatile u32 cc;
 	__asm__ __volatile__ ("mrc p15, 0, %0, c9, c13, 0" : "=r"(cc));
 	return cc;
 #elif TSC == TSC_MRS
 	int64_t virtual_timer_value;
 	asm volatile("mrs %0, cntvct_el0" : "=r"(virtual_timer_value));
-	return virtual_timer_value;
+	return (u32)virtual_timer_value;
 #else
 	// GIVES POOR TIMINGS! I DON't KNOW WHY.
 	// But... the graphical view looks bad using clock_gettime.
 	struct timespec TimeData;
 	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &TimeData);
-	return TimeData.tv_nsec;
+	return (u32)(TimeData.tv_nsec);
 #endif
+}
+
+
+bool TmpTimingStartsPoor() {
+	return (TSC == TSC_timespec) or (TSC == TSC_MRC) or (TSC == TSC_MRS);
 }
 
 
@@ -75,7 +85,6 @@ static inline void TimeInit () {
 	__asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 1" :: "r"(1<<31)); /* start the cc */
 #endif
 }
-
 
 
 static int TimeDiff (s64 A, s64 B) {

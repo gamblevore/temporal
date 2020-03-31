@@ -1,4 +1,5 @@
 
+Ooof void DebugSamples (BookHitter& B);
 
 extern NamedGen TmpGenList[];
 
@@ -25,19 +26,23 @@ static void FindLowest (uSample* Results, int Count, BookHitter& B) {
 	}
 } 
 
-
 static void TemporalHeart (BookHitter& B) {
-	GenApproach& A     = *B.App;	
-	auto Out           = B.Out();
-	int Space		   = B.GenSpace();
-	int WarmupSize     = B.WarmupSize();
-	uSample* OutEnd    = Out + Space;
-	uSample* WarmUp    = Out + WarmupSize;
+	B.TimingIsPoor		= TmpTimingStartsPoor();
+	GenApproach& A		= *B.App;	
+	auto Out			= B.Out();
+	int Space			= B.GenSpace();
+	int Warm			= min(Space, 4096);
+	uSample* OutEnd		= Out + Space;
+	uSample* WarmUp		= Out + Warm;
                                               
 	B.Timing.SamplesGenerated += Space;
-	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // warmup
+	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // Warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
-	FindLowest(Out,  Space,  B);	
+	FindLowest(Out,  Space,  B);
+	
+	
+//	if (TmpTimingStartsPoor() and B.IsRetro)
+//		N *= 8; // we need to use 8x the amount... and then put it back together. like 1 bit per sample.
 }
 
 
@@ -95,14 +100,15 @@ static void GroupHisto (BookHitter& B) {
 
 
 static bool CanDivide (BookHitter& B, const int oof) {
-	int CantDivRemain = (B.Space() / 128);					// 1%
+	int CantDivRemain = (B.GenSpace() / 128);					// 1%
 	int n = (int)B.SampleHisto.size();
 	for_(n) {
 		if (!(i % oof)) continue; // indivisible
 
 		int V = B.SampleHisto[i];
 		CantDivRemain -= V;
-		if (CantDivRemain <= 0) return 0;
+		if (CantDivRemain <= 0)
+			return 0;
 	}
 	
 	return true;
@@ -112,7 +118,7 @@ static bool CanDivide (BookHitter& B, const int oof) {
 static bool DoDivide (BookHitter& B, const int oof) {
 	auto Data = B.Out();
 	auto Write = Data;
-	int n = B.Space();
+	int n = B.GenSpace();
 	for_(n)
 		*Write++ = *Data++ / oof;
 
@@ -139,7 +145,7 @@ static bool DoDivide (BookHitter& B, const int oof) {
 static void RawHisto (BookHitter& B) {
 	auto& H = B.SampleHisto;
 	auto Data = B.Out();
-	int n = B.Space();
+	int n = B.GenSpace();
 	
 	for_(n) {
 		u32 s = Data[i];
@@ -152,21 +158,49 @@ static void RawHisto (BookHitter& B) {
 
 
 static void Divide(BookHitter &B) {
-	const int List[] = {4, 2, 13, 11, 7, 5, 3};
+	const int List[] = {100, 10, 4, 2, 13, 11, 7, 5, 3};
 	for (auto oof : List)
 		if (CanDivide(B, oof))
 			DoDivide(B, oof);
 }
 
 
+static void TemporalEnrichment(BookHitter& B) {
+	// clock_gettime returns multiples of 1000!!!! TERRIBLE! Absolutely useless. 
+	int N		= B.GenSpace();
+	auto Read	= B.Out();
+	auto Write	= Read;
+	
+	for_(N/8) {
+		auto ReadEnd = Read + 8;
+		uSample Result = 0;
+		while (Read < ReadEnd) {
+			auto Oof = *Read++;
+			Result = rotl32(Result, 1) ^ (Oof);
+		}
+		*Write++ = Result;
+	}
+	B.TimingIsPoor = false;
+}
+
+
 static void PreProcess (BookHitter& B) {
+	if (B.IsRetro() and !B.TimingIsPoor) return;
 	B.App->Highest = 0;
 	B.SampleHisto.assign(HistoMax, 0);
 	if (B.App->IsSudo()) return;
 	
 	RawHisto(B);
 	Divide(B);
+
+	if (B.TimingIsPoor) {
+		TemporalEnrichment(B);
+		Divide(B);
+	}
+	
 	GroupHisto(B);
+	
+//	DebugSamples(B);
 }
 
 
@@ -179,6 +213,7 @@ static void GenerateWrapper(BookHitter& B) {
 		if (Err)  B.Timing.Err = Err;
 	}
 }
+
 
 
 static float TemporalGeneration(BookHitter& B, GenApproach& App) {
@@ -199,8 +234,7 @@ static float TemporalGeneration(BookHitter& B, GenApproach& App) {
 	} else {
 		t_Start = Now();
 		App.UseCount++;
-		if (!B.IsRetro())
-			PreProcess(B);
+		PreProcess(B);
 		float PTime = ChronoLength(t_Start);
 		Time += PTime;
 		T.ProcessTime += PTime;
