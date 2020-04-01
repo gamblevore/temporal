@@ -172,7 +172,8 @@ img {
 		ofs << "<p>Created on: ";
 		ofs << std::put_time(&tm, "%d %b %y, %H:%M:%S");
 		if (FileName == "scoring.html" or FileName == "temporal.html")
-			ofs << "<br/>&nbsp;&nbsp;<a href='scoring.html'>Scoring</a>&nbsp;&nbsp;<a href='temporal.html'>Temporal</a>&nbsp;&nbsp;<a href='http://github.com/gamblevore/temporal'>github</a>";
+			ofs << "<br/>&nbsp;&nbsp;<a href='scoring.html'>Scoring</a>&nbsp;&nbsp;<a href='temporal.html'>Temporal</a>";
+		ofs << "&nbsp;&nbsp;<a href='http://github.com/gamblevore/temporal'>github</a>";
 		ofs << "</p>";
 		ofs << Row;
 
