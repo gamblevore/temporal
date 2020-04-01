@@ -12,8 +12,9 @@ void			bh_free				(BookHitter* B);
 
 
 // visualisation
-int				bh_view_colorisedsamples(BookHitter* B, unsigned char* Out, int OutLength);
-int				bh_view_rawsamples		(BookHitter* B, unsigned char* Out, int OutLength);
+int				bh_colorise_external		(u8* Data, int N, u8* WriteTo);
+int				bh_view_colorised_samples	(BookHitter* B, unsigned char* Out, int OutLength);
+int				bh_view_rawsamples			(BookHitter* B, unsigned char* Out, int OutLength);
 
 
 // config

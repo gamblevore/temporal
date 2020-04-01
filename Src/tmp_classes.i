@@ -1,6 +1,11 @@
 
 
 
+struct BH_String {
+	u8* Data;
+	int Length;
+};
+
 
 struct RandoStats {
 	float		Entropy;
