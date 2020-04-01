@@ -22,7 +22,7 @@ extern "C" {
 #define TSC_MRS			4
 #define TSC_timespec	5
 
-// #define TSC TSC_timespec	// force clock_gettime(very bad one but its for testing)
+//#define TSC TSC_timespec	// force clock_gettime(very bad one but its for testing)
 
 #if defined(TSC)
 	// don't redefine!

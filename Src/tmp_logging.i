@@ -73,8 +73,9 @@ static void HTMLImg(std::ofstream& ofs, GenApproach* V) {
 	if (R.Stats.Length and !R.Stats.Type) {
 		ofs << "<div class='img_ontop'>\n";
 		ofs << "<img class='behind'  src='" + R.FileName()    + "' />\n";
-		ofs << "<a target='_' href='"       + R.FileName("p") + "'>";
-		ofs << "<img class='main' src='"    + R.FileName("p") + "' />";
+//		ofs << "<a target='_' href='"       + R.FileName("p") + "'>";
+		if (!R.IsExternal())
+			ofs << "<img class='main' src='"    + R.FileName("p") + "' />";
 		ofs << "</a>\n";
 		ofs << "<img class='histo' src='"   + R.FileName("h") + "' />\n";
 		ofs << "</div><br/>\n";
@@ -87,7 +88,7 @@ static void HTMLImg(std::ofstream& ofs, GenApproach* V) {
 		ofs << ((F) ? " ❌" : "");
 		for_ (5) {
 			if (i == W)  ofs << "<b>";
-			ofs << "<br/>" + ScoreNames[i].substr(0,4) + " ";
+			ofs << "<br/>" + ScoreNames[i].substr(0,5) + " ";
 			ofs << std::fixed << std::setprecision(3) << R[i];
 			ofs << (((1<<i) & F) ? " ❌" : "");
 			if (i == W)  ofs << "</b>";

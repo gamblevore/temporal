@@ -65,15 +65,15 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "list"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "hexdump"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "0"
-            isEnabled = "NO">
+            argument = "1"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "64kb"
@@ -81,7 +81,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "view"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/theodore/Desktop/steves/"
@@ -89,11 +89,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "asdasdasdasd asd asd as da"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>

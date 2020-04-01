@@ -46,6 +46,9 @@ struct GenApproach {
 	bool		DisableReport;
 	
 	
+	bool IsExternal() {
+		return _name_.length();
+	}
 	static Shrinkers ShrinkFlags_(GenApproach* App) {
 		Shrinkers Result = {16, 1, 1};
 		if (App and App->IsChaotic())
@@ -385,7 +388,11 @@ struct BookHitter {
 	}
 	void CreateReps(int* Reps) {
 		if (!Reps) {
+		#if DEBUG
+			RepList = {3, 5, 9,  17,  25, 31};
+		#else
 			RepList = {3, 5, 9,  17,  25, 31, 63, 85};
+		#endif
 		} else {
 			RepList = {};
 			while (*Reps)

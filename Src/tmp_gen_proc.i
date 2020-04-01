@@ -26,6 +26,7 @@ static void FindLowest (uSample* Results, int Count, BookHitter& B) {
 	}
 } 
 
+
 static void TemporalHeart (BookHitter& B) {
 	B.TimingIsPoor		= TmpTimingStartsPoor();
 	GenApproach& A		= *B.App;	
@@ -39,10 +40,6 @@ static void TemporalHeart (BookHitter& B) {
 	(A.Gen->Func)(Out, WarmUp, 0, A.Reps); // Warmup
 	(A.Gen->Func)(Out, OutEnd, 0, A.Reps);
 	FindLowest(Out,  Space,  B);
-	
-	
-//	if (TmpTimingStartsPoor() and B.IsRetro)
-//		N *= 8; // we need to use 8x the amount... and then put it back together. like 1 bit per sample.
 }
 
 
@@ -166,7 +163,7 @@ static void Divide(BookHitter &B) {
 
 
 static void TemporalEnrichment(BookHitter& B) {
-	// clock_gettime returns multiples of 1000!!!! TERRIBLE! Absolutely useless. 
+	// clock_gettime returns multiples of 1000!!!! TERRIBLE! Needs enriching. 
 	int N		= B.GenSpace();
 	auto Read	= B.Out();
 	auto Write	= Read;
@@ -176,7 +173,7 @@ static void TemporalEnrichment(BookHitter& B) {
 		uSample Result = 0;
 		while (Read < ReadEnd) {
 			auto Oof = *Read++;
-			Result = rotl32(Result, 1) ^ (Oof);
+			Result = rotr32(Result, 1) ^ (Oof);
 		}
 		*Write++ = Result;
 	}
@@ -213,7 +210,6 @@ static void GenerateWrapper(BookHitter& B) {
 		if (Err)  B.Timing.Err = Err;
 	}
 }
-
 
 
 static float TemporalGeneration(BookHitter& B, GenApproach& App) {

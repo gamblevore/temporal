@@ -68,7 +68,7 @@ static void ReportStats(GenApproach &R,  string Name,  std::ostream &ofs) {
 	int F = R.Stats.FailedIndexes;
 	for_ (5) {
 		ofs << "\t";
-		ofs << ScoreNames[i].substr(0,4) + ": ";
+		ofs << ScoreNames[i].substr(0,5) + ": ";
 		ofs << std::fixed << std::setprecision(3) << R[i];
 		ofs << (((1<<i) & F) ? " ❌" : "");
 		ofs << "\n";
@@ -255,6 +255,7 @@ int main (int argc, const char* argv[]) {
 "       temporal list     (0 to 127)\n"
 "       temporal read     (file.txt)\n"
 "       temporal view     (/path/to/folder/)\n"
+"       cat file.txt | temporal view -       # temporal can read from stdin.\n"
 "\n"
 "  About: http://randonauts.com/s/temporal \n");
 
