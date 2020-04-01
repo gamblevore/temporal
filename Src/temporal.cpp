@@ -93,54 +93,50 @@ static int ReadStrAction (GenApproach& R, string S, std::ostream& ofs, string Na
 }
 
 
-static int ReadAction (BookHitter* B, StringVec& Args) {
-	if (Args.size() < 2) return ArgError;
-	
-	auto FileData = ReadFile(Args[1], 0x7fffFFFF);
-	if (errno)
-		return ArgError;
-		
-	GenApproach R = {};
-	R.DisableReport = true;
-	return ReadStrAction( R, FileData, std::cout, Args[1] );
-}
 
-
-static int ViewAction (BookHitter* B, StringVec& Args) {
+static int ViewAction (BookHitter* B, StringVec& Args, bool Visualise) {
 	if (Args.size() < 2) return ArgError;
-	auto Path   = ResolvePath(Args[1]);
-	if (!fisdir(Path.c_str())) {
-		fprintf(stderr, "Expected a directory at: %s", Path.c_str());
+	auto Path = ResolvePath(Args[1]);
+	if (Path == "-") {
+		; // 
+	} else if (!fisdir(Path.c_str())) {
+		fprintf(stderr, "Expected a directory at: %s\n", Path.c_str());
 		return ArgError;
 	}
 
 	B->ExternalReports();
-	DirReader D = Path;
 	ApproachVec Reports;
 	
-	while (D.Next()) {
-		auto Item = D.Name();
-		auto FullPath = Path + "/" + Item;
-		auto FileData = ReadFile(FullPath, 0x7fffFFFF);
-		if (!FileData.length()) continue;
-		
-		auto R = B->ExternalGen(Item);
+	if (Path == "-") {
+		auto R = B->ExternalGen("stdin", Visualise);
 		Reports.push_back(R);
-		ReadStrAction( *R, FileData, std::cout, Item );
+		string StdIn = (Args.size() >= 3) ? Args[2] : ReadStdin();
+		ReadStrAction( *R, StdIn, std::cout, "stdin" );
+	} else {
+		DirReader D = Path;
+		while (D.Next()) {
+			auto Item = D.Name();
+			auto FullPath = Path + "/" + Item;
+			auto FileData = ReadFile(FullPath, 0x7fffFFFF);
+			if (!FileData.length()) continue;
+			
+			auto R = B->ExternalGen(Item, Visualise);
+			Reports.push_back(R);
+			ReadStrAction( *R, FileData, std::cout, Item );
+		}
 	}
-
 	
 	ApproachSort(Reports);
-	auto html = B->HTML( "external_scoring.html",  "External Test" );
-	for (auto R:Reports) {
-		html->WriteOne(R.get());
+	if (Visualise) {
+		auto html = B->HTML( "external_scoring.html",  "External Test" );
+		for (auto R:Reports) {
+			html->WriteOne(R.get());
+		}
+		html->Finish();
+		bh_logfiles(B);
 	}
-	
-	html->Finish();
-	bh_logfiles(B);
 
-
-	return errno;
+	return 0;
 }
 
 
@@ -219,7 +215,7 @@ int main (int argc, const char* argv[]) {
 
 	if (Args.size()) {
 		//printf("Starting Temporal...\n");
-		OrigPath = getcwd(0, 0);
+		OrigPath = GetCWD();
 		auto B = bh_create();
 		errno = 0;
 
@@ -237,11 +233,11 @@ int main (int argc, const char* argv[]) {
 		  
 		} else if ( matchi(Args[0], "read") ) {
 			//printf("Reading...\n");
-			Err = ReadAction(B, Args);
+			Err = ViewAction(B, Args, false);
 			
 		} else if ( matchi(Args[0], "view") ) {
 			//printf("Viewing...\n");
-			Err = ViewAction(B, Args);
+			Err = ViewAction(B, Args, true);
 			
 		} else {
 			fprintf(stderr, "Unrecognised! %s\n", Args[0].c_str());

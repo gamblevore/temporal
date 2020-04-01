@@ -244,18 +244,19 @@ struct BookHitter {
 		return GenApproach::FileName_(App, s);
 	}
 	
-	ref(GenApproach) ExternalGen (string Name) {
+	ref(GenApproach) ExternalGen (string Name, bool Report) {
 		auto R = New(GenApproach);
 		R->_name_ = Name;
 		R->Owner = this;
 		R->UseCount = 1;
+		R->DisableReport = !Report;
 		return R;
 	}
 	
 	void ExternalReports() {
-		CreateDirs();
 		Conf.Log = true;
 		Conf.Channel = 0; // if we are marked as "Retro"... reporting doesn't add scores.
+		CreateDirs();
 	}
 	
 	void SetChannel(int i) {

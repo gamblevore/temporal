@@ -6,7 +6,8 @@ static void WriteImg (u8* Data, u32 N, int Comp, string Name) {
 	errno = 0;
 	stbi_write_png(Name.c_str(), W, W, Comp, Data, W*Comp);
 	if (errno) {
-		fprintf(stderr, "Can't write png to: %s (%s)", Name.c_str(), strerror(errno));
+		string c = GetCWD();
+		fprintf(stderr, "Can't write png to: '%s' (cwd='%s') (%s)\n", Name.c_str(), c.c_str(), strerror(errno));
 		errno = 0;
 	}
 }

@@ -85,6 +85,14 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/theodore/Desktop/steves/"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "asdasdasdasd asd asd as da"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

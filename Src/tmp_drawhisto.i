@@ -1,6 +1,6 @@
 
 
-static void DrawRect(u8* Image, int ImageWidth, int ImageHeight, int RectX, int RectWidth, int RectY, int RectHeight, int Value) {
+Ooof void DrawRect(u8* Image, int ImageWidth, int ImageHeight, int RectX, int RectWidth, int RectY, int RectHeight, int Value) {
 	Image += RectY*ImageWidth;
 	int RectXEnd = min(RectX + RectWidth,  ImageWidth );
 	int RectYEnd = min(RectY + RectHeight, ImageHeight);
@@ -17,7 +17,7 @@ static void DrawRect(u8* Image, int ImageWidth, int ImageHeight, int RectX, int 
 }
 
 
-static float HScale(float Value, float Height, float Expected) {
+Ooof float HScale(float Value, float Height, float Expected) {
 	Expected = std::round(Expected);
 	float Answer = 1.0;
 	if (!Expected and !Value) {
@@ -31,7 +31,7 @@ static float HScale(float Value, float Height, float Expected) {
 }
 
 
-static void DrawHistogramSub (GenApproach* App, Histogram& H, float N, string ExtraName) {
+Ooof void DrawHistogramSub (GenApproach* App, Histogram& H, float N, string ExtraName) {
 	int BarWidth = 7; // px
 	int BarGap = 2;
 	int MyBarCount = 8;   MyBarCount = min(MyBarCount, BarCount);
@@ -61,7 +61,7 @@ static void DrawHistogramSub (GenApproach* App, Histogram& H, float N, string Ex
 }
 
 
-static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraName) {
+Ooof void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraName) {
 	if (B.NoImgs()) return;
 	DrawHistogramSub(B.App, H, N, ExtraName);
 }

@@ -10,7 +10,17 @@ void OpenFile(string Path) {
 }
 
 
+Ooof string GetCWD() {
+	const char* c = getcwd(0, 0);
+	string s = c;
+	free((void*)c);
+	return s;
+}
+
+
 Ooof string ResolvePath(string S) {
+	if (S=="-")
+		return S;
 	auto P = realpath(S.c_str(), 0);
 	if (P) {
 		string Result = P;
@@ -20,6 +30,11 @@ Ooof string ResolvePath(string S) {
 	return "";
 }
 
+
+Ooof string ReadStdin () {
+	std::string goddamnit_cpp(std::istreambuf_iterator<char>(std::cin), {}); // C++ is so baaad
+	return goddamnit_cpp;
+}
 
 Ooof string ReadFile (string name, int MaxLength) {
 	struct stat sb;
@@ -106,7 +121,7 @@ struct HTML_Random {
 	
 	void Start() {
 		if (Started) return; Started = true;
-		Path = string(getcwd(0, 0)) + string("/") + FileName;
+		Path = GetCWD() + string("/") + FileName;
 		ofs.open (Path);
 	
 		ofs << R"(<html>
