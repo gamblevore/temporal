@@ -127,7 +127,7 @@ static int ViewAction (BookHitter* B, StringVec& Args) {
 		auto R = B->ExternalGen(Item);
 		Reports.push_back(R);
 		ReadStrAction( *R, FileData, std::cout, Item );
-	};
+	}
 
 	
 	ApproachSort(Reports);

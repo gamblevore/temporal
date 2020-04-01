@@ -47,6 +47,7 @@ to dump randomness:
 	temporal dump    ChannelNum FileSize File.txt
 	temporal hexdump ChannelNum FileSize File.txt # to get hex instead of a binary
 	temporal list    ChannelNum
+	temporal view    Directory
 		
 example:
 
@@ -54,6 +55,7 @@ example:
 	temporal list        1
 	temporal hexdump     0      128MB    File.txt # dump chaotic generators
 	temporal list        0                        # view chaotic generators
+	temporal view        ~/Desktop/Rands		  # view the randomness in the files.
 
 
 
