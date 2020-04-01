@@ -16,9 +16,61 @@ Ooof char lower (char a) {
 
 
 Ooof void fhex(u8 c, FILE* F) {
-	static const char* map = "0123456789abcdef";
-	fputc(map[c>>4], F);
-	fputc(map[c&15], F);
+	const char* HexChars  =  "0123456789abcdef";
+	fputc(HexChars[c>>4], F);
+	fputc(HexChars[c&15], F);
+}
+
+
+// why am i forever doing this low-level shit?
+Ooof const u8* HexCharsInit() {
+	static u8 HexTest[256] = {};
+	u8* T = HexTest;
+	if (T['9']!=9) {
+		memset(T, 255, 256);
+		for_(10) {
+			T[i+'0'] = i;
+		}
+		for_(6) {
+			T[i+'a'] = i+10;
+			T[i+'A'] = i+10;
+		}
+		T[' ' ] = 32;
+		T['\t'] = 32;
+		T['\n'] = 32;
+	}
+	return T;
+}
+
+
+Ooof int HexCleanup(u8* Addr, u32 Len) {
+	// and this low-level shit too?
+	auto T = HexCharsInit();
+	int Count = 0;
+	u32 Byte = 0;
+	u8* Write = Addr;
+	
+	for_(Len) {
+		u8 Value = T[Addr[i]];
+		if (Value < 16) {
+			Byte = (Byte << 4) | Value;
+			Count++;
+		}
+		if (!(Count % 2)) {
+			*Write++ = Byte;
+		}
+	}
+	
+	return Count/2;
+}
+
+
+Ooof bool AllHex(u8* Addr, u32 Len) {
+	auto T = HexCharsInit();
+	
+	for_(Len)
+		require (T[Addr[i]] != 255);
+	return true;
 }
 
 

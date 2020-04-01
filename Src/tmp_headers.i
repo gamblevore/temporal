@@ -7,9 +7,14 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <limits.h>
-#if defined(__APPLE__)
+#ifdef __APPLE__
 	#include <mach/mach_time.h>
 #endif
+#ifdef __SHELL_TOOL__
+	#include <fcntl.h>
+	#include <dirent.h>
+#endif
+
 #include <cmath>
 #include <fstream>
 #include <sstream>

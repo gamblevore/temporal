@@ -1,0 +1,90 @@
+<html>
+<head>
+	<title>External Test</title>
+	<style>
+body {
+	background: black;
+	color: white;
+}
+img {
+	height:	128px;
+	width:	128px;
+	border:	0px;
+}
+/*CSS*/
+.img_ontop {
+	position: relative;
+	height:	128px;
+	width:	128px;
+	top:	0;
+	left:	0;
+}
+.main {
+	position: absolute;
+	top:	0;
+	left:	0;
+}
+.histo {
+	position: absolute;
+	bottom:	0px;
+	right:	0px;
+	height:	32px;
+	width:	32px;
+}
+.behind {
+	position: absolute;
+	top:	0;
+	left:	0;
+}
+.main:hover {
+	opacity: 0.0;
+	transition: 0.25s;
+}
+.histo:hover {
+	height: 128px;
+	width:	128px;
+	transition: 0.25s;
+}
+	</style>
+</head>
+<body>
+<table>
+<tr>
+<p>Created on: 01 Apr 20, 12:33:12</p></tr>
+
+<tr><td><br/></td></tr><tr><td>
+</tr>
+
+<tr><td><br/></td></tr><tr><td>
+</tr>
+
+<tr><td><br/></td></tr><tr>
+<td><div class='img_ontop'>
+<img class='behind'  src='time_imgs/4.hex.png' />
+<a target='_' href='time_imgs/4.hexp.png'><img class='main' src='time_imgs/4.hexp.png' /></a>
+<img class='histo' src='time_imgs/4.hexh.png' />
+</div><br/>
+4.hex</td>
+<td><div class='img_ontop'>
+<img class='behind'  src='time_imgs/1.hex.png' />
+<a target='_' href='time_imgs/1.hexp.png'><img class='main' src='time_imgs/1.hexp.png' /></a>
+<img class='histo' src='time_imgs/1.hexh.png' />
+</div><br/>
+1.hex</td>
+<td><div class='img_ontop'>
+<img class='behind'  src='time_imgs/2.hex.png' />
+<a target='_' href='time_imgs/2.hexp.png'><img class='main' src='time_imgs/2.hexp.png' /></a>
+<img class='histo' src='time_imgs/2.hexh.png' />
+</div><br/>
+2.hex</td>
+<td><div class='img_ontop'>
+<img class='behind'  src='time_imgs/3.hex.png' />
+<a target='_' href='time_imgs/3.hexp.png'><img class='main' src='time_imgs/3.hexp.png' /></a>
+<img class='histo' src='time_imgs/3.hexh.png' />
+</div><br/>
+3.hex</td>
+
+</tr>
+</table>
+</body>
+</html>

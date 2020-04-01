@@ -12,7 +12,7 @@ static float SpeedScore(float b, float a) {
 }
 
 
-static void ApproachSort(BookHitter& B, ApproachVec& V) {
+static void ApproachSort(ApproachVec& V) {
 	auto Comparer = [] (ref(GenApproach) a, ref(GenApproach) b) {
 		if ((b->Stats.FailedCount) and !(a->Stats.FailedCount))
 			return true;
@@ -48,7 +48,7 @@ void BookHitter::BestApproachCollector(ApproachVec& L) {
 	}
 	
 	if (!IsRetro() or !Conf.DontSortRetro)
-		ApproachSort(self, L);
+		ApproachSort(L);
 	if (LogOrDebug())
 		CreateHTMLRandom(L,  "scoring.html",  "Fatum Temporal Randomness Test");
 	RemoveSudo(L);
@@ -77,7 +77,7 @@ void BookHitter::ReScore() {
 
 	TemporalGeneration(self, *App);
 	UseApproach(false);
-	ApproachSort(self, L);
+	ApproachSort(L);
 
 	if (LogOrDebug())
 		printf("    %.3f⇝%.3f ::\n", OldWorst, App->Stats.Worst );

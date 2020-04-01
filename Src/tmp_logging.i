@@ -10,19 +10,35 @@ void OpenFile(string Path) {
 }
 
 
+Ooof string ResolvePath(string S) {
+	auto P = realpath(S.c_str(), 0);
+	if (P) {
+		string Result = P;
+		free(P);
+		return P;
+	}
+	return "";
+}
+
+
 Ooof string ReadFile (string name, int MaxLength) {
 	struct stat sb;
-	require (stat(name.c_str(), &sb)==0);
-	if (sb.st_size > MaxLength) {
-		fprintf( stderr, "File too big: %s\n", name.c_str());
-		return "";
-	}
+	if (stat(name.c_str(), &sb)==0) {
+		if (sb.st_size > MaxLength) {
+			fprintf( stderr, "File too big: %s\n", name.c_str());
+			return "";
+		}
 
-	std::ifstream inFile;
-	inFile.open(name);
-	std::stringstream strStream;
-	strStream << inFile.rdbuf();
-	return strStream.str();
+		errno = 0;
+		std::ifstream inFile;
+		inFile.open(name);
+		std::stringstream strStream;
+		strStream << inFile.rdbuf();
+		if (!errno)
+			return strStream.str();
+	}
+	fprintf(stderr, "Can't read: %s (%s)\n", name.c_str(), strerror(errno));
+	return "";
 }
 
 
@@ -155,7 +171,8 @@ img {
 		
 		ofs << "<p>Created on: ";
 		ofs << std::put_time(&tm, "%d %b %y, %H:%M:%S");
-		ofs << "<br/>&nbsp;&nbsp;<a href='scoring.html'>Scoring</a>&nbsp;&nbsp;<a href='temporal.html'>Temporal</a>&nbsp;&nbsp;<a href='http://github.com/gamblevore/temporal'>github</a>";
+		if (FileName == "scoring.html" or FileName == "temporal.html")
+			ofs << "<br/>&nbsp;&nbsp;<a href='scoring.html'>Scoring</a>&nbsp;&nbsp;<a href='temporal.html'>Temporal</a>&nbsp;&nbsp;<a href='http://github.com/gamblevore/temporal'>github</a>";
 		ofs << "</p>";
 		ofs << Row;
 

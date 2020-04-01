@@ -1,24 +1,29 @@
 
 
-static void WriteImg (u8* Data, u32 N, string Name) {
+static void WriteImg (u8* Data, u32 N, int Comp, string Name) {
 	stbi_write_png_compression_level = 9;
 	u32 W = sqrt(N);
-	stbi_write_png(Name.c_str(), W, W, 1, Data, W);
+	errno = 0;
+	stbi_write_png(Name.c_str(), W, W, Comp, Data, W*Comp);
+	if (errno) {
+		fprintf(stderr, "Can't write png to: %s (%s)", Name.c_str(), strerror(errno));
+		errno = 0;
+	}
 }
 
 
+
 Ooof void WriteBitsImg (u8* Data, u32 N, string Name) {
-	stbi_write_png_compression_level = 9;
 	BitView V = {Data, N};
 	ByteArray Img2 = ByteArray(V.Length+100, 0);
 	while (V) {
 		int i = V.Pos;
-		Img2[i] = 255*V.Read();
+		Img2[i] = 255 * V.Read();
 	}
 
-	int W = sqrt(V.Length);
-	stbi_write_png(Name.c_str(), W, W, 1, &Img2[0], W);
+	WriteImg(Data, N, 1, Name);
 }
+
 
 
 Ooof void ColoriseSamples (u8* In, u8* Out, u32 N) {
@@ -35,11 +40,12 @@ Ooof void ColoriseSamples (u8* In, u8* Out, u32 N) {
 }
 
 
+
 Ooof void WriteColorImg (u8* Data, u32 N, string Name) {
 	// just 1 byte per color... makes more sense.
+	N = min(N, 40000u);
 	ByteArray G = ByteArray(N*4, 0);
 	ColoriseSamples(Data, &G[0], N);
-	int W = sqrt(N);
-	stbi_write_png(Name.c_str(), W, W, 4, &G[0], W*4);
+	WriteImg(&G[0], N, 4, Name);
 }
 

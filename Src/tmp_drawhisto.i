@@ -31,9 +31,7 @@ static float HScale(float Value, float Height, float Expected) {
 }
 
 
-static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraName) {
-	if (B.NoImgs()) return;
-	
+static void DrawHistogramSub (GenApproach* App, Histogram& H, float N, string ExtraName) {
 	int BarWidth = 7; // px
 	int BarGap = 2;
 	int MyBarCount = 8;   MyBarCount = min(MyBarCount, BarCount);
@@ -57,8 +55,13 @@ static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraNam
 		x += BarWidth;
 		x += BarGap;
 	}
-	
-	auto name = B.FileName(ExtraName + "h");
-	WriteImg(Start, Size, name);
+
+	string name = GenApproach::FileName_(App, ExtraName + "h");
+	WriteImg(Start, Size, 1, name);
 }
 
+
+static void DrawHistogram (BookHitter& B, Histogram& H, float N, string ExtraName) {
+	if (B.NoImgs()) return;
+	DrawHistogramSub(B.App, H, N, ExtraName);
+}

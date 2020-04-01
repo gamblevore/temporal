@@ -87,6 +87,7 @@ void RandTest::end(GenApproach& App) {
 
 
 static void DetectRandomness_ (GenApproach& App, u8* Start, int n) {
+	App.Stats.Length = n;
 	bool binary = false;
 	RandTest RT = {};  RT.AsBits = binary;
 

@@ -35,6 +35,7 @@ struct Shrinkers {
 struct GenApproach {
 	BookHitter*	Owner;
 	NamedGen*	Gen;
+	string		_name_;
 	RandoStats  Stats;
 	float		Mean;
 	float		GenTime;
@@ -42,6 +43,7 @@ struct GenApproach {
 	u16			Fails;
 	u16			Reps;
 	u16			UseCount;
+	bool		DisableReport;
 	
 	
 	static Shrinkers ShrinkFlags_(GenApproach* App) {
@@ -110,6 +112,8 @@ struct GenApproach {
 		return FileName_(this, s);
 	}
 	static string Name_(GenApproach* App) {
+		if (App->_name_.length())
+			return App->_name_;
 		if (App->Stats.Type>3) debugger; 
 		if (App and App->Stats.Type)   return MaxNames[App->Stats.Type];
 		if (!App or !App->Gen) return "unknown_";
@@ -240,6 +244,19 @@ struct BookHitter {
 		return GenApproach::FileName_(App, s);
 	}
 	
+	ref(GenApproach) ExternalGen (string Name) {
+		auto R = New(GenApproach);
+		R->_name_ = Name;
+		R->Owner = this;
+		R->UseCount = 1;
+		return R;
+	}
+	
+	void ExternalReports() {
+		CreateDirs();
+		Conf.Log = true;
+		Conf.Channel = 0; // if we are marked as "Retro"... reporting doesn't add scores.
+	}
 	
 	void SetChannel(int i) {
 		char s = i;

@@ -6,7 +6,7 @@ Ooof bool chduuhh(const char* s) {
 	int Error = chdir(s);
 	if (Error) {
 		Error = errno;
-		printf("Can't chdir to: %s (%s)\n", s, strerror(Error));
+		fprintf(stderr, "Can't chdir to: %s (%s)\n", s, strerror(Error));
 	}
 	return !Error;
 }
@@ -23,6 +23,13 @@ Ooof bool fexists(const char* s) {
 }
 
 
+Ooof bool fisdir(const char* s) {
+	struct stat sb;
+	int Error = stat(s, &sb);
+	return !Error and S_ISDIR(sb.st_mode);
+}
+
+
 Ooof bool mkduuhh(const char* s) {
 	// avoid stupid warnings... sigh.
 	struct stat sb;
@@ -35,7 +42,7 @@ Ooof bool mkduuhh(const char* s) {
 
 	if (Error) {
 		Error = errno;
-		printf("Can't mkdir: %s (%s)\n", s, strerror(Error));
+		fprintf(stderr, "Can't mkdir: %s (%s)\n", s, strerror(Error));
 	}
 	return !Error;
 }
@@ -49,7 +56,7 @@ Ooof bool MakePath(const std::vector<string>& Pieces) {
 		mkduuhh(P);
 		struct stat sb;
 		if (stat(P, &sb)) {
-			printf("Path %s can't be accessed.\n", P);
+			fprintf(stderr, "Path %s can't be accessed.\n", P);
 			return false;
 		}
 	}

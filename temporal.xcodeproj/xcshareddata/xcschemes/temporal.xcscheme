@@ -72,11 +72,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-1"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "1"
+            argument = "0"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -84,7 +80,11 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/theodore/Desktop/steve.txt"
+            argument = "view"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/theodore/Desktop/steves/"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>

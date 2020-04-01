@@ -1,5 +1,6 @@
 
 
+#define  __SHELL_TOOL__
 #include "temporal_root.i"
 
 
@@ -8,6 +9,7 @@ static const char* WelcomeMsg = R"(teMpOwAl resurtch!!
 Steve is about to divulge magical temporal randomness from the brain of your device.
 )";
 
+string OrigPath;
 
 Ooof int ParseWarmup(StringVec& Args) {
 	if (Args.size() >= 3) {
@@ -65,21 +67,29 @@ static void ReportStats(GenApproach &R,  string Name,  std::ostream &ofs) {
 
 	int F = R.Stats.FailedIndexes;
 	for_ (5) {
-		ofs << "\n" + ScoreNames[i].substr(0,4) + ": ";
+		ofs << "\t";
+		ofs << ScoreNames[i].substr(0,4) + ": ";
 		ofs << std::fixed << std::setprecision(3) << R[i];
 		ofs << (((1<<i) & F) ? " ❌" : "");
+		ofs << "\n";
 	}
 	ofs << "\n";
 }
 
 
-static int ReadMemoryAction (BookHitter* B, u8* Addr, u32 Len, std::ostream& ofs, string Name) {
-	GenApproach R = {};
-
+static int ReadMemoryAction (GenApproach& R, u8* Addr, u32 Len, std::ostream& ofs, string Name) {
+	if (AllHex(Addr, Len))
+		Len = HexCleanup(Addr, Len);
 	FullRandomnessDetect(R, Addr, Len);
 	ReportStats(R, Name, ofs);
-	
 	return 0;
+}
+
+
+static int ReadStrAction (GenApproach& R, string S, std::ostream& ofs, string Name) {
+	u8* Addr = (u8*)S.c_str();
+	u32 Len  = (u32)S.length();
+	return ReadMemoryAction( R, Addr, Len, ofs, Name );
 }
 
 
@@ -87,15 +97,50 @@ static int ReadAction (BookHitter* B, StringVec& Args) {
 	if (Args.size() < 2) return ArgError;
 	
 	auto FileData = ReadFile(Args[1], 0x7fffFFFF);
-	if (errno) {
-		printf("Can't read: %s (%s)\n", Args[1].c_str(), strerror(errno));
+	if (errno)
+		return ArgError;
+		
+	GenApproach R = {};
+	R.DisableReport = true;
+	return ReadStrAction( R, FileData, std::cout, Args[1] );
+}
+
+
+static int ViewAction (BookHitter* B, StringVec& Args) {
+	if (Args.size() < 2) return ArgError;
+	auto Path   = ResolvePath(Args[1]);
+	if (!fisdir(Path.c_str())) {
+		fprintf(stderr, "Expected a directory at: %s", Path.c_str());
 		return ArgError;
 	}
-		
-	u8* Addr = (u8*)FileData.c_str();
-	u32 Len  = (u32)FileData.length();
 
-	return ReadMemoryAction( B, Addr, Len, std::cout, Args[1] );
+	B->ExternalReports();
+	DirReader D = Path;
+	ApproachVec Reports;
+	
+	while (D.Next()) {
+		auto Item = D.Name();
+		auto FullPath = Path + "/" + Item;
+		auto FileData = ReadFile(FullPath, 0x7fffFFFF);
+		if (!FileData.length()) continue;
+		
+		auto R = B->ExternalGen(Item);
+		Reports.push_back(R);
+		ReadStrAction( *R, FileData, std::cout, Item );
+	};
+
+	
+	ApproachSort(Reports);
+	auto html = B->HTML( "external_scoring.html",  "External Test" );
+	for (auto R:Reports) {
+		html->WriteOne(R.get());
+	}
+	
+	html->Finish();
+	bh_logfiles(B);
+
+
+	return errno;
 }
 
 
@@ -173,33 +218,38 @@ int main (int argc, const char* argv[]) {
 	int Err = ArgError;
 
 	if (Args.size()) {
-		printf("Starting Temporal...\n");
-		auto RestoreDir = getcwd(0, 0);
+		//printf("Starting Temporal...\n");
+		OrigPath = getcwd(0, 0);
 		auto B = bh_create();
 		errno = 0;
 
 		if ( matchi(Args[0], "dump") ) {
-			printf("Dumping...\n");
+			//printf("Dumping...\n");
 			Err = DumpAction(B, Args, false);
 		  
 		} else if ( matchi(Args[0], "hexdump") ) {
-			printf("HexDumping...\n");
+			//printf("HexDumping...\n");
 			Err = DumpAction(B, Args, true);
 			
 		} else if ( matchi(Args[0], "list") ) {
-			printf("Listing...\n");
+			//printf("Listing...\n");
 			Err = ListAction(B, Args);
 		  
 		} else if ( matchi(Args[0], "read") ) {
-			printf("Reading...\n");
+			//printf("Reading...\n");
 			Err = ReadAction(B, Args);
+			
+		} else if ( matchi(Args[0], "view") ) {
+			//printf("Viewing...\n");
+			Err = ViewAction(B, Args);
+			
 		} else {
-			printf("Unrecognised! %s\n", Args[0].c_str());
+			fprintf(stderr, "Unrecognised! %s\n", Args[0].c_str());
 		}
 
-		printf("Cleaning Up...\n");
+		//printf("Cleaning Up...\n");
 		bh_free(B);
-		chduuhh(RestoreDir);
+		chduuhh(OrigPath.c_str());
 	}
 
 	if (Err == ArgError)
@@ -208,6 +258,7 @@ int main (int argc, const char* argv[]) {
 "       temporal hexdump  (0 to 127) (1KB to 1000MB) (file.txt)\n"
 "       temporal list     (0 to 127)\n"
 "       temporal read     (file.txt)\n"
+"       temporal view     (/path/to/folder/)\n"
 "\n"
 "  About: http://randonauts.com/s/temporal \n");
 

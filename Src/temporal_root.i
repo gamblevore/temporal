@@ -40,6 +40,7 @@ extern "C" {
 #include "tmp_vars.i"
 #include "tmp_utils.i"
 #include "tmp_options.i"
+#include "tmp_directory.i"
 #include "tmp_shared.i"
 #include "tmp_math.i"
 #include "tmp_classes.i"
