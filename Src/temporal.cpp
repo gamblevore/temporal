@@ -102,6 +102,13 @@ int ExpectedDir(const char* P) {
 }
 
 
+bool ViewAcceptFile(string Item, string FullPath) {
+	if (Item[0] == '.') return false;
+	if (fisdir(FullPath.c_str())) return false;
+	return true;
+}
+
+
 static int ViewAction (BookHitter* B, StringVec& Args, bool Visualise) {
 	if (Args.size() < 2) return ArgError;
 	auto Path = ResolvePath(Args[1]);
@@ -134,12 +141,14 @@ static int ViewAction (BookHitter* B, StringVec& Args, bool Visualise) {
 		while (D.Next()) {
 			auto Item = D.Name();
 			auto FullPath = Path + "/" + Item;
-			auto FileData = ReadFile(FullPath, 0x7fffFFFF);
-			if (!FileData.length()) continue;
-			
-			auto R = B->ExternalGen(Item, Visualise);
-			Reports.push_back(R);
-			ReadStrAction( *R, FileData, std::cout, Item );
+			if (ViewAcceptFile(Item, FullPath)) {
+				auto FileData = ReadFile(FullPath, 0x7fffFFFF);
+				if (!FileData.length()) continue;
+				
+				auto R = B->ExternalGen(Item, Visualise);
+				Reports.push_back(R);
+				ReadStrAction( *R, FileData, std::cout, Item );
+			}
 		}
 	}
 	

@@ -84,12 +84,12 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/theodore/Desktop/color/"
+            argument = "/Users/theodore/Desktop/color"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/theodore/Desktop/color/out"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-"
