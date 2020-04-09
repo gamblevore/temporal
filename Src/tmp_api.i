@@ -50,6 +50,16 @@ bh_stats* bh_hitbooks (BookHitter* B, u8* Data, int DataLength) {
 	return B->Hit(Data, DataLength);
 }
 
+//
+//struct bh_colorise_output {
+//	u8* colors;
+//	int	length;
+//	u8* description;
+//};
+//
+//
+//void bh_colorise_external(u8* data, int length, bh_colorise_output* output);
+//
 
 int bh_colorise_external(u8* Data, int N, u8* WriteTo) {
 	if (WriteTo and Data)

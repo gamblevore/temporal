@@ -4,6 +4,9 @@
 #include "temporal_root.i"
 
 
+
+
+
 static const char* WelcomeMsg = R"(teMpOwAl resurtch!!
 
 Steve is about to divulge magical temporal randomness from the brain of your device.
@@ -238,7 +241,11 @@ int main (int argc, const char* argv[]) {
 		} else if ( matchi(Args[0], "view") ) {
 			//printf("Viewing...\n");
 			Err = ViewAction(B, Args, true);
-			
+//			
+//		} else if ( matchi(Args[0], "color") ) {
+//			//printf("Viewing...\n");
+//			Err = ColorAction(B, Args, true);
+//			
 		} else {
 			fprintf(stderr, "Unrecognised! %s\n", Args[0].c_str());
 		}
