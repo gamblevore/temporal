@@ -233,7 +233,7 @@ struct BookHitter {
 	void			ReScore();
 	void 			SetCrashHandler();
 	float			DetectRandomness ();
-	void			CreateDirs();
+	void			CreateDirs(string path);
 	void			CreateHTMLRandom(ApproachVec& V, string Name, string Title);
 	void			DebugProcessFile(string Name);
 	void			FindMinMax();
@@ -261,10 +261,10 @@ struct BookHitter {
 		return R;
 	}
 	
-	void ExternalReports() {
+	void ExternalReports(string Path) {
 		Conf.Log = true;
 		Conf.Channel = 0; // if we are marked as "Retro"... reporting doesn't add scores.
-		CreateDirs();
+		CreateDirs(Path);
 	}
 	
 	void SetChannel(int i) {

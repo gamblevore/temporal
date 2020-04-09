@@ -179,7 +179,7 @@ Ooof void StopStrip(BookHitter&B) {
 bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
 	if (!Data) return 0; // wat?
 
-	CreateDirs();
+	CreateDirs("");
 
 	memset(Data, 0, DataLength);
 	RandomBuildup B = {Data, DataLength, IsRetro()};

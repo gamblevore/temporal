@@ -96,18 +96,32 @@ static int ReadStrAction (GenApproach& R, string S, std::ostream& ofs, string Na
 }
 
 
+int ExpectedDir(const char* P) {
+	fprintf(stderr, "Expected a directory at: %s\n", P);
+	return errno;
+}
+
 
 static int ViewAction (BookHitter* B, StringVec& Args, bool Visualise) {
 	if (Args.size() < 2) return ArgError;
 	auto Path = ResolvePath(Args[1]);
-	if (Path == "-") {
-		; // 
-	} else if (!fisdir(Path.c_str())) {
-		fprintf(stderr, "Expected a directory at: %s\n", Path.c_str());
-		return ArgError;
+	if (Path != "-" and !fisdir(Path.c_str())) {
+		return ExpectedDir(Path.c_str());
 	}
 
-	B->ExternalReports();
+	string OutFol = "";
+	if (Args.size() >= 3) {
+		auto S = Args[2].c_str();
+		if (!fexists(S)) {
+			mkduuhh(S);
+		}
+		OutFol = ResolvePath(S);
+		if (OutFol == "") {
+			return ExpectedDir(S);
+		}
+	}
+	
+	B->ExternalReports(OutFol);
 	ApproachVec Reports;
 	
 	if (Path == "-") {

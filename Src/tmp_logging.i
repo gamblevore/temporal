@@ -260,15 +260,24 @@ void BookHitter::CreateHTMLRandom(ApproachVec& V1, string FileName, string Title
 }
 
 
-void BookHitter::CreateDirs() {
+void BookHitter::CreateDirs(string path) {
 	if (CreatedDirs or !LogOrDebug()) return;
 
 	CreatedDirs = true;
-	if (fexists("/tmp/")) {
-		chduuhh("/tmp/");
+	const char* BasePath = "/tmp/";
+	if (path!="") {
+		BasePath = path.c_str();
 	}
-	mkduuhh("temporal_scoring");
-	chduuhh("temporal_scoring");
+	if (fexists(BasePath)) {
+		chduuhh(BasePath);
+	} else {
+		errno = 123;
+		return;
+	}
+	if (path=="") {
+		mkduuhh("temporal_scoring");
+		chduuhh("temporal_scoring");
+	}
 	mkduuhh("time_imgs");
 }
 
