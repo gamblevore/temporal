@@ -15,15 +15,24 @@ ORIG="$( pwd )"
 
 ### params ###
 if [ "$1" == "android64" ] || [ "$1" == "android" ]; then
-	cpp="$ANDROID/aarch64-linux-android29-clang++"
+	cpp="$ANDROID/aarch64-linux-android21-clang++"
 	ar="$ANDROID/aarch64-linux-android-ar"
 	plat="android64"
 	plat_exe_flags="-static -lc++_static"
 elif [ "$1" == "android32"  ]; then
-	cpp="$ANDROID/armv7a-linux-androideabi29-clang++"
-	#ar="$ANDROID/arm-linux-androideabi-ar"
-	ar="$ANDROID/llvm-ar"
+	cpp="$ANDROID/armv7a-linux-androideabi21-clang++"
+	ar="$ANDROID/arm-linux-androideabi-ar"
 	plat="android32"
+	plat_exe_flags="-static -lc++_static"
+elif [ "$1" == "android_x64"  ]; then
+	cpp="$ANDROID/x86_64-linux-android21-clang++"
+	ar="$ANDROID/x86_64-linux-android-ar"
+	plat="android_x64"
+	plat_exe_flags="-static -lc++_static"
+elif [ "$1" == "android_i686"  ]; then
+	cpp="$ANDROID/i686-linux-android21-clang++"
+	ar="$ANDROID/i686-linux-android-ar"
+	plat="android_i686"
 	plat_exe_flags="-static -lc++_static"
 else
 	cpp="g++"

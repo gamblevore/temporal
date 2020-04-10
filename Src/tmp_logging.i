@@ -126,6 +126,7 @@ body {
 	color: white;
 }
 img {
+	border-radius: 4.16666%;
 	height:	128px;
 	width:	128px;
 	border:	0px;
@@ -176,8 +177,8 @@ img {
 .full .img_ontop {
 	object-fit: contain;
 	position: relative;
-	height:	100%;
-	width:	100%;
+	height:	calc(min(100vw,100vh));
+	width:	calc(min(100vw,100vh));
 }
 .full .histo {
 	object-fit: contain;
@@ -323,7 +324,7 @@ void BookHitter::CreateDirs(string path) {
 	if (fexists(BasePath)) {
 		chduuhh(BasePath);
 	} else {
-		errno = 123;
+		errno = ENOENT;
 		return;
 	}
 	if (path=="") {

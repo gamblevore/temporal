@@ -97,7 +97,15 @@ static int ReadStrAction (GenApproach& R, string S, std::ostream& ofs, string Na
 
 
 int ExpectedDir(const char* P) {
-	fprintf(stderr, "Expected a directory at: %s\n", P);
+	debugger;
+	if (cmatchi(P, "")) {
+		if (!errno) {
+			errno = ENOENT;
+			fprintf(stderr, "Expected a directory, none specified.");
+		}
+	} else {
+		fprintf(stderr, "Expected a directory at: %s\n", P);
+	}
 	return errno;
 }
 
@@ -113,7 +121,7 @@ static int ViewAction (BookHitter* B, StringVec& Args, bool Visualise) {
 	if (Args.size() < 2) return ArgError;
 	auto Path = ResolvePath(Args[1]);
 	if (Path != "-" and !fisdir(Path.c_str())) {
-		return ExpectedDir(Path.c_str());
+		return ExpectedDir(Args[1].c_str());
 	}
 
 	string OutFol = "";
