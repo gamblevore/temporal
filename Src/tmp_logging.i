@@ -66,39 +66,6 @@ Ooof void WriteFile (u8* Data, int N, string Name) {
 }
 
 
-static void HTMLImg(std::ofstream& ofs, GenApproach* V) {
-	GenApproach& R = *V;
-	if (!R.UseCount) return;
-	ofs << "<td>";
-	if (R.Stats.Length and !R.Stats.Type) {
-		ofs << "<div class='img_ontop'>\n";
-		ofs << "<img class='behind'  src='" + R.FileName()    + "' />\n";
-//		ofs << "<a target='_' href='"       + R.FileName("p") + "'>";
-		if (!R.IsExternal())
-			ofs << "<img class='main' src='"    + R.FileName("p") + "' />";
-		ofs << "</a>\n";
-		ofs << "<img class='histo' src='"   + R.FileName("h") + "' />\n";
-		ofs << "</div><br/>\n";
-	}
-
-	ofs << R.Name();
-	if (!R.Owner->IsRetro()) {
-		int W = R.Stats.WorstIndex - 1;
-		int F = R.Stats.FailedIndexes;
-		ofs << ((F) ? " ❌" : "");
-		for_ (5) {
-			if (i == W)  ofs << "<b>";
-			ofs << "<br/>" + ScoreNames[i].substr(0,5) + " ";
-			ofs << std::fixed << std::setprecision(3) << R[i];
-			ofs << (((1<<i) & F) ? " ❌" : "");
-			if (i == W)  ofs << "</b>";
-		}
-		ofs << "<br/>";
-	}
-	
-	ofs << "</td>\n";
-}
-
 
 struct HTML_Random {
 	string			FileName;
@@ -119,17 +86,40 @@ struct HTML_Random {
 		B = b;
 	}
 	
-	
-	void Start() {
-		if (Started) return; Started = true;
-		Path = GetCWD() + string("/") + FileName;
-		ofs.open (Path);
-	
-		ofs << R"(<html>
+	void HTMLImg(GenApproach* V) {
+		GenApproach& R = *V;
+		if (!R.UseCount) return;
+		ofs << "<td>";
+		if (R.Stats.Length and !R.Stats.Type) {
+			auto N = FullScreenHTML(V);
+			HTMLImgSub(ofs, V, N);
+		}
+
+		ofs << R.Name();
+		if (!R.Owner->IsRetro()) {
+			int W = R.Stats.WorstIndex - 1;
+			int F = R.Stats.FailedIndexes;
+			ofs << ((F) ? " ❌" : "");
+			for_ (5) {
+				if (i == W)  ofs << "<b>";
+				ofs << "<br/>" + ScoreNames[i].substr(0,5) + " ";
+				ofs << std::fixed << std::setprecision(3) << R[i];
+				ofs << (((1<<i) & F) ? " ❌" : "");
+				if (i == W)  ofs << "</b>";
+			}
+			ofs << "<br/>";
+		}
+		
+		ofs << "</td>\n";
+	}
+
+
+	void HTMLOpen(std::ofstream& fs) {
+		fs << R"(<html>
 <head>
 	<title>)";
-	ofs << Title;
-	ofs << R"(</title>
+	fs << Title;
+	fs << R"(</title>
 	<style>
 body {
 	background: black;
@@ -174,13 +164,52 @@ img {
 	width:	128px;
 	transition: 0.25s;
 }
+
+
+.full img {
+	object-fit: contain;
+	image-rendering: pixelated;
+	height:	100%;
+	width:	100%;
+	filter: blur(calc(min(100vw,100vh)*0.005));
+}
+.full .img_ontop {
+	object-fit: contain;
+	position: relative;
+	height:	100%;
+	width:	100%;
+}
+.full .histo {
+	object-fit: contain;
+	height:	25%;
+	width:	25%;
+	filter: none;
+}
+
 	</style>
 </head>
 <body>
 <table>
 <tr>
 )";
+	}
 
+
+	void HTMLClose(std::ofstream& fs) {
+		fs << R"(
+</tr>
+</table>
+</body>
+</html>)";
+		fs.close();
+	}
+	
+	void Start() {
+		if (Started) return; Started = true;
+		Path = GetCWD() + string("/") + FileName;
+		ofs.open (Path);
+	
+		HTMLOpen(ofs);
 		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr><td>\n"; 
 		auto t = std::time(nullptr);
 		auto tm = *std::localtime(&t);
@@ -193,10 +222,40 @@ img {
 		ofs << "</p>";
 		ofs << Row;
 
-		HTMLImg(ofs, B->MinMaxes[0].get());
-		HTMLImg(ofs, B->MinMaxes[1].get());
-		HTMLImg(ofs, B->MinMaxes[2].get());
+		HTMLImg(B->MinMaxes[0].get());
+		HTMLImg(B->MinMaxes[1].get());
+		HTMLImg(B->MinMaxes[2].get());
 		ofs << Row;
+	}
+
+
+	string FullScreenHTML(GenApproach* V) {
+		GenApproach& R = *V;
+		std::ofstream	fs;
+		string html = R.Name() + "_view.html";
+		string Paeth = GetCWD() + string("/") + html;
+		fs.open (Paeth);
+		HTMLOpen(fs);
+		fs << "<div class='full'>";
+		HTMLImgSub(fs, V, "");
+		fs << "</div>";
+		HTMLClose(fs);
+		return html;
+	}
+	
+	
+	void HTMLImgSub(std::ofstream& fs, GenApproach* V, string Link) {
+		GenApproach& R = *V;
+		fs << "<div class='img_ontop'>\n";
+		if (Link!="")
+			fs << "<a href='"+Link+"' target='_'>";
+		fs << "<img class='behind'  src='" + R.FileName()    + "' />\n";
+		if (!R.IsExternal())
+			fs << "<img class='main' src='"+ R.FileName("p") + "' />";
+		if (Link!="")
+			fs << "</a>";
+		fs << "<img class='histo' src='"   + R.FileName("h") + "' />\n";
+		fs << "</div><br/>\n";
 	}
 
 
@@ -205,8 +264,7 @@ img {
 		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr>\n";
 		if (!App->Stats.Length) return;
 		if (Variations % 8 == 0) ofs << Row;
-		HTMLImg(ofs, App);
-
+		HTMLImg(App);
 		Variations++;
 	}
 	
@@ -215,13 +273,7 @@ img {
 		if (!Started) return;
 		printf("\n:: %i Randomness variations!  :: \n", Variations);
 		
-		ofs << R"(
-</tr>
-</table>
-</body>
-</html>)";
-		
-		ofs.close();
+		HTMLClose(ofs);
 		if (B->LogOrDebug())
 			FilesToOpenLater.push_back(Path);
 		  else
