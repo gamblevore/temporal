@@ -160,8 +160,8 @@ img {
 	transition: 0.25s;
 }
 .histo:hover {
-	height: 128px;
-	width:	128px;
+	height: 64px;
+	width:	64px;
 	transition: 0.25s;
 }
 
@@ -171,7 +171,7 @@ img {
 	image-rendering: pixelated;
 	height:	100%;
 	width:	100%;
-	filter: blur(calc(min(100vw,100vh)*0.005));
+	filter: blur(calc(min(100vw,100vh)*0.004));
 }
 .full .img_ontop {
 	object-fit: contain;
