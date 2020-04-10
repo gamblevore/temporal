@@ -114,11 +114,11 @@ struct HTML_Random {
 	}
 
 
-	void HTMLOpen(std::ofstream& fs) {
+	void HTMLOpen(std::ofstream& fs, string RealTitle) {
 		fs << R"(<html>
 <head>
 	<title>)";
-	fs << Title;
+	fs << RealTitle;
 	fs << R"(</title>
 	<style>
 body {
@@ -210,7 +210,7 @@ img {
 		Path = GetCWD() + string("/") + FileName;
 		ofs.open (Path);
 	
-		HTMLOpen(ofs);
+		HTMLOpen(ofs, Title);
 		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr><td>\n"; 
 		auto t = std::time(nullptr);
 		auto tm = *std::localtime(&t);
@@ -236,7 +236,7 @@ img {
 		string html = R.Name() + "_view.html";
 		string Paeth = GetCWD() + string("/") + html;
 		fs.open (Paeth);
-		HTMLOpen(fs);
+		HTMLOpen(fs, "🔎 " + R.Name() + " 🔎");
 		fs << "<div class='full'>";
 		HTMLImgSub(fs, V, "");
 		fs << "</div>";
@@ -253,9 +253,10 @@ img {
 		fs << "<img class='behind'  src='" + R.FileName()    + "' />\n";
 		if (!R.IsExternal())
 			fs << "<img class='main' src='"+ R.FileName("p") + "' />";
-		if (Link!="")
+		if (Link!="") {
 			fs << "</a>";
-		fs << "<img class='histo' src='"   + R.FileName("h") + "' />\n";
+			fs << "<img class='histo' src='"   + R.FileName("h") + "' />\n";
+		}
 		fs << "</div><br/>\n";
 	}
 
