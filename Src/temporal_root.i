@@ -50,6 +50,7 @@ extern "C" {
 #include "tmp_gen_proc.i"
 #include "tmp_stats.i"
 #include "tmp_img.i"
+#include "tmp_files.i"
 #include "tmp_logging.i"
 #include "tmp_histogram.i"
 #include "tmp_drawhisto.i"
@@ -58,5 +59,7 @@ extern "C" {
 #include "tmp_sorting.i"
 #include "tmp_core.i"
 #include "tmp_api.i"
+#include "tmp_actions.i"
+#include "tmp_runcommand.i"
 }
 

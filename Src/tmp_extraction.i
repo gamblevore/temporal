@@ -1,10 +1,29 @@
 
 
-static void XorRetro(u64* Oofers, u8* Dest, int N) {
-	u8* Write    = Dest;
-	u8* WriteEnd = Dest + N;
+
+struct FunWriter {
+	// absolutely no point to this class! 
+	u8*			Output;
+	u8*			OutEnd;
 	
-	while (Write < WriteEnd) {
+	u8 Curr() {
+		return *Output;
+	}
+	void operator << (u8 c) {
+		*Output++ = c;
+	}
+	FunWriter(u8* Dest, int Space) {
+		Output = Dest;
+		OutEnd = Dest + Space;
+	}
+	operator void*() {
+		return (void*)(Output < OutEnd);
+	}
+};
+
+
+static void XorRetro(u64* Oofers, FunWriter FW) {
+	while (FW) {
 		u64 Oof = 0;
 		for_(RetroCount) {
 			u64 Next = uint64_hash(Oofers[i]);
@@ -12,8 +31,8 @@ static void XorRetro(u64* Oofers, u8* Dest, int N) {
 			Oof ^= Next;
 		}
 		
-		for (int i = 0; i < 8 and Write < WriteEnd; i++) {
-			* Write++ = Oof & 255;
+		for (int i = 0; (i < 8) and FW; i++) {
+			FW << Oof;
 			Oof >>= 8;
 		}
 	}
@@ -120,7 +139,8 @@ static void ExtractRetro (BookHitter& B, bool IsFirst) {
 		u8* DummyDest = (u8*)(&B.Samples[0]);
 		BitView BV = {DummyDest, DummyLength};
 		
-		XorRetro(B.OoferExtracted(),  BV.Data,  BV.ByteLength());
+		FunWriter FW(BV.Data, BV.ByteLength());
+		XorRetro(B.OoferExtracted(),  FW);
 		Shrinkers Retro = {};
 		Retro.Log = 1;
 		Do_Histo(B, BV, Retro);

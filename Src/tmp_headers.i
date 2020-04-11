@@ -10,11 +10,10 @@
 #ifdef __APPLE__
 	#include <mach/mach_time.h>
 #endif
-#ifdef __SHELL_TOOL__
-	#include <fcntl.h>
+//#ifdef __SHELL_TOOL__
+	#include <fcntl.h> // just use them anyway
 	#include <dirent.h>
-#endif
-
+//#endif
 #include <cmath>
 #include <fstream>
 #include <sstream>

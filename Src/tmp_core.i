@@ -1,5 +1,6 @@
 
 
+
 void BookHitter::FindMinMax() {
 	GenApproach& S = *App;
 	if (DuringTesting and S.Stats.FailedCount) return;
@@ -125,10 +126,9 @@ void BookHitter::CreateApproaches() {
 }
 
 
-static void XorCopy(u8* Src, u8* Dest, int N) {
-	u8* Write = Dest;
-	while (N-- > 0)
-		*Write++ = *Src++ ^ *Dest++;
+static void XorCopy(u8* Src, FunWriter FW) {
+	while (FW)
+		FW << (*Src++ ^ FW.Curr());
 }
 
 
@@ -146,10 +146,13 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 		B.BytesUsed += ActualBytes;
 		u32 N = min(ActualBytes, B.Remaining);
 		Least = min(Least, N);
+		
+		FunWriter FW(B.OutgoingData, N);
+		
 		if (IsRetro())
-			XorRetro( OoferExtracted(),  B.OutgoingData,  N);
+			XorRetro( OoferExtracted(),  FW);
 		  else
-			XorCopy ( Extracted(),   B.OutgoingData,  N);
+			XorCopy( Extracted(),   FW);
 		B.AllWorst = max(B.AllWorst, B.Worst());
 	}
 	
@@ -193,13 +196,17 @@ bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
 		ReScore();
 	
 	Timing.BytesUsed = B.BytesUsed;
+	if (App and App->Gen) {
+		Timing.ApproachName = App->Gen->Name;
+		Timing.ApproachReps = App->Reps;
+	}
 	return &Timing;
 }
 
 
 Ooof void ReportStuff (bh_stats* Result) {
-	float M = ((float)(Result->SamplesGenerated))/1000000.0;
-	float K = ((float)(Result->SamplesGenerated))/1000.0;
+	float M = ((float)(Result->SamplesGenerated))/1048576.0;
+	float K = ((float)(Result->SamplesGenerated))/1024.0;
 	
 	if (M >= 0.5)
 		printf(":: %.2fMB", M);

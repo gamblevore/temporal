@@ -14,6 +14,7 @@ BookHitter* bh_create() {
 	F.Conf.AutoReScore = 1; // Keep intention-detection strong. Shouldn't affect randomness...
 
 	try {
+		HexCharsInit();
 		StopStrip(F); // for debugging
 		F.Allocate(1<<22);
 		F.CreateReps(0);
@@ -32,7 +33,7 @@ void bh_logfiles(BookHitter* f) {
 
 
 void bh_free (BookHitter* f) {
-	delete(f);
+	delete(f); // already checks for nil
 }
 
 
@@ -46,9 +47,16 @@ bh_conf* bh_config (BookHitter* f) {
 }
 
 
-bh_stats* bh_hitbooks (BookHitter* B, u8* Data, int DataLength) {
-	return B->Hit(Data, DataLength);
+bh_stats* bh_hitbooks (BookHitter* B, u8* Data, int DataLength, bool Hex) {
+	int N = DataLength;
+	if (Hex)
+		N /= 2;
+	auto Result = B->Hit(Data, N);
+	if (Hex)
+		InPlaceConvertToHex(Data, N);
+	return Result;
 }
+
 
 //
 //struct bh_colorise_output {

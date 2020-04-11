@@ -61,6 +61,9 @@
 		AC105AD8241459470001A7B2 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		AC105AD9241459470001A7B2 /* make.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = make.sh; sourceTree = "<group>"; };
 		AC50FC242404297400AB4285 /* libgenerators.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgenerators.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC5E1F082441FA6300E17828 /* tmp_runcommand.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_runcommand.i; path = Src/tmp_runcommand.i; sourceTree = "<group>"; };
+		AC5E1F092441FB4E00E17828 /* tmp_actions.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_actions.i; path = Src/tmp_actions.i; sourceTree = "<group>"; };
+		AC5E1F0A244201AB00E17828 /* tmp_files.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_files.i; path = Src/tmp_files.i; sourceTree = "<group>"; };
 		AC69201E240FF302007F3DB4 /* libTemporal.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTemporal.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC69202B240FF3FF007F3DB4 /* lib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lib.cpp; path = Src/lib.cpp; sourceTree = "<group>"; };
 		AC6AF80B24114F6900014F31 /* tmp_options.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_options.i; path = Src/tmp_options.i; sourceTree = "<group>"; };
@@ -157,13 +160,16 @@
 		ACD54AD12299957800526848 /* cpp files */ = {
 			isa = PBXGroup;
 			children = (
-				ACA5A15C24046D3A00EFFC13 /* temporal.cpp */,
 				ACA5A15124046D3A00EFFC13 /* gen.cpp */,
+				AC5E1F092441FB4E00E17828 /* tmp_actions.i */,
+				AC5E1F082441FA6300E17828 /* tmp_runcommand.i */,
+				ACA5A15C24046D3A00EFFC13 /* temporal.cpp */,
 				AC0D0B782413E18200E245C3 /* temporal_root.i */,
 				ACA5A15924046D3A00EFFC13 /* tmp_headers.i */,
 				ACA5A14F24046D3A00EFFC13 /* tmp_api.i */,
 				ACA5A16124046D3A00EFFC13 /* tmp_classes.i */,
 				ACA5A15B24046D3A00EFFC13 /* tmp_core.i */,
+				AC5E1F0A244201AB00E17828 /* tmp_files.i */,
 				ACF89D8324338518006A9448 /* tmp_funcs.i */,
 				ACA5A15224046D3A00EFFC13 /* tmp_debias.i */,
 				ACF89D852433965B006A9448 /* tmp_directory.i */,

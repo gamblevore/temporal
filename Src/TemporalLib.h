@@ -5,10 +5,11 @@ extern "C" {
 
 struct BookHitter; struct bh_stats; struct bh_conf;
 
-// You only need these 3 funcs
+// You only need these 4 funcs
 BookHitter*		bh_create			();
-bh_stats*		bh_hitbooks			(BookHitter* B,  unsigned char* Output,  int OutLen);
+bh_stats*		bh_hitbooks			(BookHitter* B,  unsigned char* Output,  int OutLen,  bool Hex);
 void			bh_free				(BookHitter* B);
+int				bh_run_command		(BookHitter* B,  char** argv, int Env);
 
 
 // visualisation
@@ -49,6 +50,8 @@ struct bh_stats {
 	int		SamplesGenerated;
 	int		BytesUsed;  // not bytes output, but throughput... including wasted bytes.
 	int		BytesGiven; // not bytes output, but throughput... including wasted bytes.
+	const char* ApproachName;
+	int 	ApproachReps;
 	
 // Error number. 0 means no error.
 	int		Err;

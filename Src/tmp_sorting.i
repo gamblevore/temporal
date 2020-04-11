@@ -56,7 +56,6 @@ void BookHitter::BestApproachCollector(ApproachVec& L) {
 
 
 void BookHitter::ReScore() {
-	if (IsRetro()) return;
 	if (RescoreFreq++ % 4) return;
 
 	DuringTesting = 2;

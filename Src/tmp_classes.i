@@ -1,12 +1,6 @@
 
 
 
-struct BH_String {
-	u8* Data;
-	int Length;
-};
-
-
 struct RandoStats {
 	float		Entropy;
 	float		ChiSq;
@@ -149,6 +143,8 @@ u64 Seed(GenApproach* A, u64 x) {
 
 
 struct RandTest {
+// improved version of "ent.c", a good project with bad code.
+// (what happens when you let scientists write code.)
 	constexpr static const int MONTEN = 6.0;
 	constexpr static const double BIGX = 20.0;
 

@@ -1,6 +1,22 @@
 
 
-Ooof int SplitUnit(string L) {
+
+static u8	HexTest[256];
+const char* HexChars  =  "0123456789abcdef";
+
+Ooof int InPlaceConvertToHex (u8* Data, int N) {
+	u8* Read = Data + N;
+	u8* Write = Data + N*2;
+	while (Read > Data) {
+		u8 c = *--Read;
+		*--Write = HexChars[c&15];
+		*--Write = HexChars[c>>4];
+	} 
+	return N*2;
+}
+
+
+Ooof int SplitUnit (string L) {
 	for_(L.size())
 		if (L[i] < '0' or L[i] > '9')
 			return i;
@@ -15,16 +31,14 @@ Ooof char lower (char a) {
 }
 
 
-Ooof void fhex(u8 c, FILE* F) {
-	const char* HexChars  =  "0123456789abcdef";
+Ooof void fhex (u8 c, FILE* F) {
 	fputc(HexChars[c>>4], F);
 	fputc(HexChars[c&15], F);
 }
 
 
 // why am i forever doing this low-level shit?
-Ooof const u8* HexCharsInit() {
-	static u8 HexTest[256] = {};
+Ooof const u8* HexCharsInit () {
 	u8* T = HexTest;
 	if (T['9']!=9) {
 		memset(T, 255, 256);
@@ -43,7 +57,13 @@ Ooof const u8* HexCharsInit() {
 }
 
 
-Ooof int HexCleanup(u8* Addr, u32 Len) {
+Ooof u8 HexRead (u8* Data) {
+	const u8* T = HexTest;
+	return (T[Data[0]] << 4) | (T[Data[1]]);
+}
+
+
+Ooof int HexCleanup (u8* Addr, u32 Len) {
 	// and this low-level shit too?
 	auto T = HexCharsInit();
 	int Count = 0;
@@ -65,7 +85,7 @@ Ooof int HexCleanup(u8* Addr, u32 Len) {
 }
 
 
-Ooof bool AllHex(u8* Addr, u32 Len) {
+Ooof bool AllHex (u8* Addr, u32 Len) {
 	auto T = HexCharsInit();
 	
 	for_(Len)
@@ -74,13 +94,13 @@ Ooof bool AllHex(u8* Addr, u32 Len) {
 }
 
 
-Ooof void fhexwrite(u8* D, int N, FILE* F) {
+Ooof void fhexwrite (u8* D, int N, FILE* F) {
 	for_(N)
 		fhex(D[i], F);
 }
 
 
-Ooof std::vector<string> ArgArray(int argc, const char* argv[]) {
+Ooof std::vector<string> ArgArray(const char* argv[]) {
 	std::vector<string> Result;
 	int i = 1;
 	while (argv[i]) {
@@ -91,7 +111,7 @@ Ooof std::vector<string> ArgArray(int argc, const char* argv[]) {
 }
 
 
-Ooof bool cmatchi(const char* a, const char* b) {
+Ooof bool cmatchi (const char* a, const char* b) {
 	if (!a or !b)
 		return a==b;
 
@@ -107,7 +127,7 @@ Ooof bool cmatchi(const char* a, const char* b) {
 	return true;
 }
 
-Ooof bool matchi(string a, string b) {
+Ooof bool matchi (string a, string b) {
 	return cmatchi(a.c_str(), b.c_str());
 }
 
@@ -160,7 +180,7 @@ Ooof FILE* CmdArgFile (string FileOut, FILE* Default) {
 }
 
 
-Ooof int Num(string s) {
+Ooof int Num (string s) {
 	return atoi(s.c_str());
 }
 
