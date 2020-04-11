@@ -34,13 +34,13 @@ static int ListAction (BookHitter* B, StringVec& Args) {
 	
 	puts(WelcomeMsg);
 
-	auto Result = bh_hitbooks(B, &D[0], 1, false);
+	auto Result = bh_hitbooks(B, &D[0], 1);
 	auto html = B->HTML("temporal.html",  "Randomness Test");
 
 	for_(16) {
 		if (Result->Err) break;
 		B->DebugLoopCount = i + 1;
-		Result = bh_hitbooks(B, &D[0], NumBytes, false);
+		Result = bh_hitbooks(B, &D[0], NumBytes);
 		
 		if (i == 0)
 			ReportStuff(Result);
@@ -206,7 +206,7 @@ int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {
 	
 	while (Remain > 0) {
 		u32 This = min(DSize, Remain);
-		bh_stats* Result = bh_hitbooks(B, &D[0], This, false);
+		bh_stats* Result = bh_hitbooks(B, &D[0], This);
 		Remain  -= This;
 		Written += This;
 		if (Result->Err)

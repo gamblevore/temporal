@@ -7,7 +7,8 @@ struct BookHitter; struct bh_stats; struct bh_conf;
 
 // You only need these 4 funcs
 BookHitter*		bh_create			();
-bh_stats*		bh_hitbooks			(BookHitter* B,  unsigned char* Output,  int OutLen,  bool Hex);
+bh_stats*		bh_hitbooks			(BookHitter* B,  unsigned char* Output,  int OutLen);
+bh_stats*		bh_hitbooks2		(BookHitter* B,  unsigned char* Output,  int OutLen,  bool Hex);
 void			bh_free				(BookHitter* B);
 int				bh_run_command		(BookHitter* B,  char** argv);
 

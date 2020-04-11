@@ -47,7 +47,7 @@ bh_conf* bh_config (BookHitter* f) {
 }
 
 
-bh_stats* bh_hitbooks (BookHitter* B, u8* Data, int DataLength, bool Hex) {
+bh_stats* bh_hitbooks2 (BookHitter* B, u8* Data, int DataLength, bool Hex) {
 	int N = DataLength;
 	if (Hex)
 		N /= 2;
@@ -55,6 +55,10 @@ bh_stats* bh_hitbooks (BookHitter* B, u8* Data, int DataLength, bool Hex) {
 	if (Hex)
 		InPlaceConvertToHex(Data, N);
 	return Result;
+}
+
+bh_stats* bh_hitbooks (BookHitter* B, u8* Data, int DataLength) {
+	return bh_hitbooks2(B, Data, DataLength, false); 
 }
 
 
