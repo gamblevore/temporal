@@ -60,6 +60,7 @@
 		AC0D0B782413E18200E245C3 /* temporal_root.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = temporal_root.i; path = Src/temporal_root.i; sourceTree = "<group>"; };
 		AC105AD8241459470001A7B2 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		AC105AD9241459470001A7B2 /* make.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = make.sh; sourceTree = "<group>"; };
+		AC4281CD24423F310065362E /* TemporalLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TemporalLib.h; path = Src/TemporalLib.h; sourceTree = "<group>"; };
 		AC50FC242404297400AB4285 /* libgenerators.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgenerators.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC5E1F082441FA6300E17828 /* tmp_runcommand.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_runcommand.i; path = Src/tmp_runcommand.i; sourceTree = "<group>"; };
 		AC5E1F092441FB4E00E17828 /* tmp_actions.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_actions.i; path = Src/tmp_actions.i; sourceTree = "<group>"; };
@@ -160,6 +161,7 @@
 		ACD54AD12299957800526848 /* cpp files */ = {
 			isa = PBXGroup;
 			children = (
+				AC4281CD24423F310065362E /* TemporalLib.h */,
 				ACA5A15124046D3A00EFFC13 /* gen.cpp */,
 				AC5E1F092441FB4E00E17828 /* tmp_actions.i */,
 				AC5E1F082441FA6300E17828 /* tmp_runcommand.i */,

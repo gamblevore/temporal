@@ -9,7 +9,7 @@ struct BookHitter; struct bh_stats; struct bh_conf;
 BookHitter*		bh_create			();
 bh_stats*		bh_hitbooks			(BookHitter* B,  unsigned char* Output,  int OutLen,  bool Hex);
 void			bh_free				(BookHitter* B);
-int				bh_run_command		(BookHitter* B,  char** argv, int Env);
+int				bh_run_command		(BookHitter* B,  char** argv);
 
 
 // visualisation
