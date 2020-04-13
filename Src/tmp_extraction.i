@@ -88,8 +88,7 @@ Ooof BitView DoXorShrink (BitView Bits, int Shrink) {
 }
 
 
-static BitView DoModToBit (BookHitter& B, int Mod) {
-	int n = B.GenSpace();
+static BitView DoModToBit (BookHitter& B, int Mod, int n) {
 	auto Data = B.Out();
 	BitView biv = {B.Extracted(), 0};
 
@@ -103,8 +102,7 @@ static BitView DoModToBit (BookHitter& B, int Mod) {
 			u32 V = Data[i]; // multiple bits
 			biv.Write((V & 1)^((V&2)>>1));
 		}
-	}
-	
+	}	
 	
 	biv.FinishWrite();
 	return biv;
@@ -159,7 +157,7 @@ static void ExtractRandomness (BookHitter& B,  int Mod,  Shrinkers Flags) {
 		Flags.PreXOR = 0;
 	}
 
-	auto bits = DoModToBit	(B, Mod);
+	auto bits = DoModToBit	(B, Mod, B.GenSpace());
 
 	if (Flags.PreXOR)
 		bits  = DoXorShrink	(bits, Flags.PreXOR); // 16 seems good?

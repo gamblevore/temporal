@@ -70,6 +70,7 @@ int BookHitter::UseApproach (bool IsFirst) {
 	}
 	
 	FinalExtractAndDetect(BestMod, IsFirst);
+	App->LastMod = BestMod;
 	FindMinMax();
 	return FinishApproach(self, ChronoLength(t_Start));
 }
@@ -146,19 +147,22 @@ bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
 		B.BytesUsed += ActualBytes;
 		u32 N = min(ActualBytes, B.Remaining);
 		Least = min(Least, N);
-		
-		FunWriter FW(B.OutgoingData, N);
-		
-		if (IsRetro())
-			XorRetro( OoferExtracted(),  FW);
-		  else
-			XorCopy( Extracted(),   FW);
 		B.AllWorst = max(B.AllWorst, B.Worst());
+		
+		if (B.OutgoingData) {
+			FunWriter FW(B.OutgoingData, N);
+			if (IsRetro()) {
+				XorRetro( OoferExtracted(),  FW);
+			} else {
+				XorCopy( Extracted(),   FW);
+			}
+		}
 	}
 	
 	RequestLimit = 0;			// cleanup.
-	B.OutgoingData += Least;
 	B.Remaining -= Least;
+	if (B.OutgoingData)
+		B.OutgoingData += Least;
 	if (!Least) {
 		Timing.Err = GenerationError;
 		return false;
@@ -180,11 +184,10 @@ Ooof void StopStrip(BookHitter&B) {
 
 
 bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
-	if (!Data) return 0; // wat?
-
 	CreateDirs("");
 
-	memset(Data, 0, DataLength);
+	if (Data)
+		memset(Data, 0, DataLength);
 	RandomBuildup B = {Data, DataLength, IsRetro()};
 	Timing = {};
 	Timing.BytesGiven = DataLength;
@@ -201,6 +204,28 @@ bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
 		Timing.ApproachReps = App->Reps;
 	}
 	return &Timing;
+}
+
+
+u8* bh_rand_ptr (BookHitter* B, int N) {
+	static BookHitter* Oof;
+	if (!B) { // allow call with nil.
+		if (!Oof) {
+			Oof = bh_create();
+			bh_config(Oof)->Log = -1; // no log even debug
+			bh_config(Oof)->Channel = 0;
+		}
+		B = Oof;
+	} 
+	
+	// just create like... 8KB at a time.
+	u32 C = B->Consumed;
+	if (B->Timing.BytesGiven < C+N) {
+		C = 0;
+		bh_hitbooks(B, 0, 8*1024);
+	}
+	B->Consumed = C + N;	
+	return B->Extracted() + C;
 }
 
 

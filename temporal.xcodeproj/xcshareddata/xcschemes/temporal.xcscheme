@@ -65,14 +65,22 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "list"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "hexdump"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "0"
+            argument = "hexdump"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "print"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "1000"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "1"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -85,7 +93,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/theodore/Desktop/color.txt"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/theodore/Desktop/color/outaksjdkajshdambdkjgdqwegansmbdmansbdqjwhgkjhgqwjkehdsjdfvmansbdvfansbdfvasnbdmvf"

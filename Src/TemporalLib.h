@@ -1,17 +1,25 @@
 
 // API
 
+#include <stdint.h>
+
 extern "C" {
 
 struct BookHitter; struct bh_stats; struct bh_conf;
 
-// You only need these 4 funcs
+// You only need these 3 funcs
 BookHitter*		bh_create			();
-bh_stats*		bh_hitbooks			(BookHitter* B,  unsigned char* Output,  int OutLen);
 bh_stats*		bh_hitbooks2		(BookHitter* B,  unsigned char* Output,  int OutLen,  bool Hex);
 void			bh_free				(BookHitter* B);
+
+// debugging
 int				bh_run_command		(BookHitter* B,  char** argv);
 
+// rnd
+uint64_t		bh_rand_u64			(BookHitter* B);
+double			bh_rand_double		(BookHitter* B);
+int				bh_rand_int			(BookHitter* B);
+float			bh_rand_float		(BookHitter* B);
 
 // visualisation
 int				bh_colorise_external		(unsigned char* Input, int InLength, unsigned char* WriteTo);
@@ -25,6 +33,9 @@ bh_conf*		bh_config			(BookHitter* B);
 
 // Tells the bookhitter to write the html debug-log-files to disk.
 void			bh_logfiles			(BookHitter* B);
+
+// outdated
+bh_stats*		bh_hitbooks			(BookHitter* B,  unsigned char* Output,  int OutLen);
 
 
 #ifdef LibUsageExample
@@ -64,7 +75,6 @@ struct bh_conf {
 	unsigned char   Log;
 	unsigned char   DontSortRetro;
 	unsigned char   AutoReScore;
-	unsigned char	WarmupMul;
 };
 
 }

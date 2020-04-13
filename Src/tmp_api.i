@@ -9,7 +9,6 @@ BookHitter* bh_create() {
 
 	auto& F = *G;
 	F = {};
-	F.Conf.WarmupMul = 2;	// retro only... makes graphics look better? (experimentally only... there is no reason behind it and finding good generators for graphical output is an art not a science.)
 	F.Conf.Channel = 1;   	// faster and better for most people.
 	F.Conf.AutoReScore = 1; // Keep intention-detection strong. Shouldn't affect randomness...
 
@@ -57,9 +56,27 @@ bh_stats* bh_hitbooks2 (BookHitter* B, u8* Data, int DataLength, bool Hex) {
 	return Result;
 }
 
+
 bh_stats* bh_hitbooks (BookHitter* B, u8* Data, int DataLength) {
 	return bh_hitbooks2(B, Data, DataLength, false); 
 }
+
+u64 bh_rand_u64 (BookHitter* B) {
+	return *((u64*)bh_rand_ptr(B, sizeof(u64)));
+}
+
+double bh_rand_double (BookHitter* B) {
+	return *((double*)bh_rand_ptr(B, sizeof(double)));
+}
+
+int bh_rand_int (BookHitter* B) {
+	return *((int*)bh_rand_ptr(B, sizeof(int)));
+}
+
+float bh_rand_float (BookHitter* B) {
+	return *((float*)bh_rand_ptr(B, sizeof(float)));
+}
+
 
 
 //

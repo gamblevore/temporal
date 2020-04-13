@@ -26,6 +26,9 @@ int bh_run_command (BookHitter* B_,  char** argv) {
 			
 		  Option ("view")
 			Err = ViewAction(B, Args, true);
+			
+		  Option ("print")
+			Err = PrintAction(B, Args);
 
 		} else {
 			fprintf(stderr, "Unrecognised action: '%s'\n", A_.c_str());

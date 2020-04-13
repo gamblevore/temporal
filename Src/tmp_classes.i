@@ -42,7 +42,8 @@ struct GenApproach {
 	u16			Fails;
 	u16			Reps;
 	u16			UseCount;
-	bool		DisableReport;
+	u8			LastMod;
+	bool		DisableHTMLGen;
 	
 	
 	bool IsExternal() {
@@ -216,6 +217,7 @@ struct BookHitter {
 	bh_stats		Timing;
 	bh_conf			Conf;
 	u32				RequestLimit;
+	u32				Consumed;
 	short			DebugLoopCount;
 	u8				RescoreFreq;
 	u8				RescoreIndex;
@@ -248,12 +250,12 @@ struct BookHitter {
 		return GenApproach::FileName_(App, s);
 	}
 	
-	ref(GenApproach) ExternalGen (string Name, bool Report) {
+	ref(GenApproach) ExternalGen (string Name, bool HtmlGen) {
 		auto R = New(GenApproach);
 		R->_name_ = Name;
 		R->Owner = this;
 		R->UseCount = 1;
-		R->DisableReport = !Report;
+		R->DisableHTMLGen = !HtmlGen;
 		return R;
 	}
 	

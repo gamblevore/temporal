@@ -220,7 +220,7 @@ Ooof void PrintProbabilities() {
 
 
 Ooof void FullRandomnessDetect (GenApproach& R,  u8* Addr,  u32 Len) {
-	if (!R.DisableReport)
+	if (!R.DisableHTMLGen)
 		WriteColorImg(Addr, Len, R.FileName());	
 
 	BitView		V = {Addr, Len};
@@ -228,7 +228,7 @@ Ooof void FullRandomnessDetect (GenApproach& R,  u8* Addr,  u32 Len) {
 
 	auto Sections = V.Convert(&D[0]);
 	Histogram H = CollectHistogram(Sections);
-	if (!R.DisableReport)
+	if (!R.DisableHTMLGen)
 		DrawHistogramSub(&R, H, Len, "");
 
 	R.Stats.Hist = HistoInputRandomness(H);

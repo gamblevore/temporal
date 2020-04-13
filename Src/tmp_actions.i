@@ -59,7 +59,7 @@ static int ListAction (BookHitter* B, StringVec& Args) {
 }
 
 
-static void ReportStats(GenApproach &R,  string Name,  std::ostream &ofs) {
+static void ReportStats(GenApproach& R,  string Name,  std::ostream& ofs) {
 	if (Name.length())
 		printf( "Non-randomness in: %s (lower is better)\n", Name.c_str() );
 
@@ -235,6 +235,34 @@ int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {
 	
 	if (Hex) fputc('\n', Dest);
 	fclose(Dest);
+
+	return 0;
+}
+
+
+static int PrintAction (BookHitter* B, StringVec& Args) {
+	// assume chaotic?
+	bh_config(B)->Log = -1; // no log even debug
+	bh_config(B)->Channel = 0;
+	string S = B->ViewChannel()->Name();
+	printf( "printing temporal %s\n", S.c_str() );
+
+	int N = ParseLength(Args[1]);
+//	std::vector<u64> asdas(N);
+
+	for_(N) {
+		if (i)
+			printf(", ");
+		u64 X = bh_rand_u64(B);
+		printf("%lli", X);
+//		asdas[i] = X;
+	}
+	printf("\n");
+
+//	u8* Data = (u8*)&asdas[0];
+//	auto R = B->ExternalGen("Steve", false);
+//	FullRandomnessDetect(*R, Data, N*8);
+//	ReportStats(*R, "Steve", std::cout);
 
 	return 0;
 }
