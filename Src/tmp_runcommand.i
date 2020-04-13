@@ -2,8 +2,8 @@
 
 #define OptionList(A) auto A_ = A; if (false)
 #define Option(B) } else if (matchi(A_,B)) {
-int bh_run_command (BookHitter* B_,  char** argv) {
-	auto Args = ArgArray((const char**)argv);
+int bh_run_command (BookHitter* B_,  const char** argv) {
+	auto Args = ArgArray(argv);
 	int Err = 0;
 
 	if (Args.size()) {

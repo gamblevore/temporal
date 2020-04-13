@@ -13,7 +13,7 @@ bh_stats*		bh_hitbooks2		(BookHitter* B,  unsigned char* Output,  int OutLen,  b
 void			bh_free				(BookHitter* B);
 
 // debugging
-int				bh_run_command		(BookHitter* B,  char** argv);
+int				bh_run_command		(BookHitter* B, const char** argv);
 
 // rnd
 uint64_t		bh_rand_u64			(BookHitter* B);
