@@ -101,13 +101,16 @@ struct Archive {
 	bool							Closed;
 	bool							GotStuff;
 	
-	void Init(string Where="") {
-		Path = SlashTerminate(Where);
+	Archive() {
 #if defined(__SHELL_TOOL__)
 		WriteToDisk = true;
 #else
 		WriteToDisk = false;
 #endif
+	}
+
+	void Init(string Where="") {
+		Path = SlashTerminate(Where);
 		OK = true;
 		Opened = false;
 		Closed = false;
@@ -184,7 +187,7 @@ struct Archive {
 	static void WriteItem(DecodedItem& Item, string Path) {
 		string oof = Item.Found_Data;
 		Path += Item.Found_Path;
-		puts(Path.c_str());
+//		puts(Path.c_str());
 		if (MakePathFor(Path))
 			WriteFile((u8*)oof.c_str(), (int)oof.length(), Path);
 	}
@@ -192,10 +195,12 @@ struct Archive {
 	
 	static void WriteAnyway(string Data, string Path) {
 		DecodedItem Item;
-		Path = SlashTerminate(Path);
-		Item.Src = Data;
-		while (GetNext(Item)) {
-			WriteItem(Item, Path);
+		if (MakePath(Path)) {
+			Path = SlashTerminate(ResolvePath(Path));
+			Item.Src = Data;
+			while (GetNext(Item)) {
+				WriteItem(Item, Path);
+			}
 		}
 		// im sad ur PC hate me ;_;
 	}

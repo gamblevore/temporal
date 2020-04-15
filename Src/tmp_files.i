@@ -19,15 +19,20 @@ Ooof string GetCWD() {
 }
 
 
-Ooof string ResolvePath(string S) {
+Ooof string ResolvePath(string S, bool ErrIfCantFind=true) {
 	if (S=="-")
 		return S;
+	if (S[0] == '~' and S[1] == '/') {
+		S = getenv("HOME") + S.substr(1, S.length()-1);
+	}
 	auto P = realpath(S.c_str(), 0);
 	if (P) {
 		string Result = P;
 		free(P);
 		return P;
 	}
+	if (ErrIfCantFind)
+		fprintf(stderr, "Can't resolve: %s (%s)\n", S.c_str(), strerror(errno));
 	return "";
 }
 
@@ -63,8 +68,9 @@ Ooof bool WriteFile (u8* Data, int N, string Name) {
 	if (oof) {
 		int N2 = (int)fwrite(Data, 1, N, oof);
 		fclose(oof);
-		return (N2==N);
+		if (N2 == N) return true;
 	}
+	fprintf(stderr, "Can't write: %s (%s)\n", Name.c_str(), strerror(errno));
 	return false;
 }
 
@@ -120,7 +126,11 @@ Ooof bool MakePath(const std::vector<string>& Pieces) {
 	string FullPath;
 	for (auto& Item : Pieces) {
 		if (Item == "") continue;
-		FullPath += "/" + Item;
+		if (FullPath == "" and Item == "~") {
+			FullPath = ResolvePath("~/");
+		} else {
+			FullPath += "/" + Item;
+		}
 		auto P = FullPath.c_str();
 		if (fisdir(P))
 			continue;

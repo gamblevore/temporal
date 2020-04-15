@@ -13,7 +13,7 @@ bh_stats*		bh_hitbooks2		(BookHitter* B,  unsigned char* Output,  int OutLen,  b
 void			bh_free				(BookHitter* B);
 
 // debugging
-int				bh_run_command		(BookHitter* B, const char** argv);
+int				bh_run_command		(BookHitter* B, const char** argv, bool WriteToString);
 void			bh_extract_archive	(const char* Data, const char* Path);
 // rnd
 uint64_t		bh_rand_u64			(BookHitter* B);
@@ -36,17 +36,6 @@ void			bh_logfiles			(BookHitter* B);
 
 // outdated
 bh_stats*		bh_hitbooks			(BookHitter* B,  unsigned char* Output,  int OutLen);
-
-
-#ifdef LibUsageExample
-inline void UsageExample() {
-	BookHitter* Stv = bh_create();
-	unsigned char Data[1024*1024];
-	auto T = bh_hitbooks(Stv, Data, sizeof(Data)); // call as many times as you like...
-	printf("%i temporal bytes in %fs\n", T->GenerateTime + T->ProcessTime );
-	bh_free(Stv);  // free once you are finished
-}
-#endif
 
 
 // Input medium-quality entropy (PEAR GCP project) and get good entropy back. 

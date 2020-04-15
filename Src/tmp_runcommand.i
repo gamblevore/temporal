@@ -2,12 +2,13 @@
 
 #define OptionList(A) auto A_ = A; if (false)
 #define Option(B) } else if (matchi(A_,B)) {
-int bh_run_command (BookHitter* External,  const char** argv) {
+int bh_run_command (BookHitter* External,  const char** argv, bool Archive) {
 	auto Args = ArgArray(argv);
 	int Err = 0;
 
 	if (Args.size()) {
-		auto B = External ? External : bh_create();
+		auto B = External ? External : SteveDefault();
+		B->Arc->WriteToDisk = !Archive;
 
 		errno = 0;
 		OptionList(Args[0]) {
@@ -35,8 +36,6 @@ int bh_run_command (BookHitter* External,  const char** argv) {
 		}
 		
 		B->SendBack(argv);
-		if (!External)
-			bh_free(B);
 	} else {
 		Err = ArgError;
 	}
@@ -59,4 +58,23 @@ int bh_run_command (BookHitter* External,  const char** argv) {
 
 void bh_extract_archive (const char* Data, const char* Path) {
 	Archive::WriteAnyway(Data, Path);
+}
+
+const char* IPhoneExample() {
+	const char* input[] = {"temporal", "list", "1", 0};
+	bh_run_command(nullptr, input, true);
+	const char* iPhoneOutput = input[0];
+	puts(iPhoneOutput); // or some other way to send it back to the Mac.
+	return iPhoneOutput;
+}
+
+void MacOSXExample(const char* iPhoneOutput) { // take the data we just puts() on the iPhone
+	bh_extract_archive(iPhoneOutput, "~/Desktop/TemporalList1");
+}
+
+void DummyIPhoneTest() {
+	// normally we run these two funcs on different devices
+	// but we can run it on the same, to test that it works even.
+	auto x = IPhoneExample();
+	MacOSXExample(x);
 }

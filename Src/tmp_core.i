@@ -1,5 +1,19 @@
 
 
+BookHitter* StevesDefaultHome;
+void ClearSteveDefault() {
+	bh_free(StevesDefaultHome);
+	StevesDefaultHome = 0;
+}
+
+BookHitter* SteveDefault() {
+	if (!StevesDefaultHome) {
+		StevesDefaultHome = bh_create();
+		atexit(ClearSteveDefault);
+	}
+	return StevesDefaultHome;
+}
+
 
 void BookHitter::FindMinMax() {
 	GenApproach& S = *App;
@@ -208,14 +222,8 @@ bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
 
 
 u8* bh_rand_ptr (BookHitter* B, int N) {
-	static BookHitter* Oof;
 	if (!B) { // allow call with nil.
-		if (!Oof) {
-			Oof = bh_create();
-			bh_config(Oof)->Log = -1; // no log even debug
-			bh_config(Oof)->Channel = 0;
-		}
-		B = Oof;
+		B = SteveDefault();
 	} 
 	
 	// just create like... 8KB at a time.
