@@ -45,7 +45,9 @@ struct GenApproach {
 	u8			LastMod;
 	bool		DisableHTMLGen;
 	
-	
+	ArchiveFile& Arc(string Extra="");
+	ArchiveFile& Png(string Extra="");
+
 	bool IsExternal() {
 		return _name_.length();
 	}
@@ -216,6 +218,9 @@ struct BookHitter {
 	ApproachVec		MinMaxes;
 	bh_stats		Timing;
 	bh_conf			Conf;
+	ref(Archive)	Arc;
+	string			Unified;
+	
 	u32				RequestLimit;
 	u32				Consumed;
 	short			DebugLoopCount;
@@ -276,6 +281,15 @@ struct BookHitter {
 	
 	bool NoImgs() {
 		return (DuringTesting == 2);
+	}
+	
+	
+	void SendBack(const char** argv) {
+		if (!Arc->WriteToDisk) {
+			Arc->Close();
+			Unified = Arc->ConCat.str();
+			argv[0] = Unified.c_str();
+		}
 	}
 
 	bool LogOrDebug() {
@@ -385,6 +399,7 @@ struct BookHitter {
 		MinMaxes.push_back(M);
 	}
 	void Allocate(int N) {
+		Arc = New(Archive);
 		Samples.resize(N);
 		Buff.resize(Samples.size()/8);
 		BSL.resize(Samples.size()+1);
@@ -428,3 +443,11 @@ string GenApproach::NameSub() {
 	return name;
 }
 
+ArchiveFile& GenApproach::Arc(string Extra) {
+	Owner->Arc->Open();
+	return Owner->Arc->AddFile(Name() + Extra);
+}
+ArchiveFile& GenApproach::Png(string Extra) {
+	Owner->Arc->Open();
+	return Owner->Arc->AddFile(FileName(Extra));
+}

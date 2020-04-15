@@ -16,6 +16,14 @@ Ooof int InPlaceConvertToHex (u8* Data, int N) {
 }
 
 
+Ooof string HexString(string s) {
+	int n = (int)s.length();
+	s.resize(n*2);
+	InPlaceConvertToHex((u8*)s.c_str(), n);
+	return s;
+}
+
+
 Ooof int SplitUnit (string L) {
 	for_(L.size())
 		if (L[i] < '0' or L[i] > '9')
@@ -28,12 +36,6 @@ Ooof char lower (char a) {
 	if (a >= 'A' and a <= 'Z')
 		return a + ('a'-'A');
 	return a;
-}
-
-
-Ooof void fhex (u8 c, FILE* F) {
-	fputc(HexChars[c>>4], F);
-	fputc(HexChars[c&15], F);
 }
 
 
@@ -63,12 +65,11 @@ Ooof u8 HexRead (u8* Data) {
 }
 
 
-Ooof int HexCleanup (u8* Addr, u32 Len) {
+Ooof int HexCleanup (u8* Write, u8* Addr, u32 Len) {
 	// and this low-level shit too?
 	auto T = HexCharsInit();
 	int Count = 0;
 	u32 Byte = 0;
-	u8* Write = Addr;
 	
 	for_(Len) {
 		u8 Value = T[Addr[i]];
@@ -93,11 +94,6 @@ Ooof bool AllHex (u8* Addr, u32 Len) {
 	return true;
 }
 
-
-Ooof void fhexwrite (u8* D, int N, FILE* F) {
-	for_(N)
-		fhex(D[i], F);
-}
 
 
 Ooof std::vector<string> ArgArray(const char* argv[]) {
@@ -192,4 +188,11 @@ Ooof int GetNum (StringVec& V, int i) {
 	}
 	errno = ArgError;
 	return 0;
+}
+
+Ooof string UnHexString(const string& s) {
+	string d;
+	d.resize((int)s.length()/2);
+	HexCleanup((u8*)d.c_str(), (u8*)s.c_str(), (int)s.length());
+	return d;
 }

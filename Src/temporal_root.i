@@ -44,6 +44,7 @@ extern "C" {
 #include "tmp_files.i"
 #include "tmp_utils.i"
 #include "tmp_options.i"
+#include "tmp_archive.i"
 #include "tmp_directory.i"
 #include "tmp_shared.i"
 #include "tmp_math.i"

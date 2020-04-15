@@ -221,7 +221,7 @@ Ooof void PrintProbabilities() {
 
 Ooof void FullRandomnessDetect (GenApproach& R,  u8* Addr,  u32 Len) {
 	if (!R.DisableHTMLGen)
-		WriteColorImg(Addr, Len, R.FileName());	
+		WriteColorImg(Addr, Len, R.Png());	
 
 	BitView		V = {Addr, Len};
 	ByteArray	D(Len*8+1, 0);

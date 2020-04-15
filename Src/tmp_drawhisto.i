@@ -56,8 +56,7 @@ Ooof void DrawHistogramSub (GenApproach* App, Histogram& H, float N, string Extr
 		x += BarGap;
 	}
 
-	string name = GenApproach::FileName_(App, ExtraName + "h");
-	WriteImg(Start, Size, 1, name);
+	WriteImg(Start, Size, 1, App->Png(ExtraName + "h"));
 }
 
 

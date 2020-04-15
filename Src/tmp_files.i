@@ -1,11 +1,12 @@
 
 
+
 void OpenFile(string Path) {
-#if __linux__
-	printf("Take a look at output file: %s\n", Path.c_str());
-#else
+#if defined(__APPLE__) && defined(__MACH__)
 	Path = string("open \"") + Path + "\"";
 	system(Path.c_str());
+#else
+	printf("Take a look at output file: %s\n", Path.c_str());
 #endif
 }
 
@@ -57,12 +58,14 @@ Ooof string ReadFile (string name, int MaxLength) {
 }
 
 
-Ooof void WriteFile (u8* Data, int N, string Name) {
+Ooof bool WriteFile (u8* Data, int N, string Name) {
 	FILE* oof = fopen(Name.c_str(), "wb");
 	if (oof) {
-		fwrite(Data, 1, N, oof);
+		int N2 = (int)fwrite(Data, 1, N, oof);
 		fclose(oof);
+		return (N2==N);
 	}
+	return false;
 }
 
 
@@ -113,19 +116,66 @@ Ooof bool mkduuhh(const char* s) {
 	return !Error;
 }
 
-
 Ooof bool MakePath(const std::vector<string>& Pieces) {
 	string FullPath;
 	for (auto& Item : Pieces) {
+		if (Item == "") continue;
 		FullPath += "/" + Item;
 		auto P = FullPath.c_str();
-		mkduuhh(P);
-		struct stat sb;
-		if (stat(P, &sb)) {
-			fprintf(stderr, "Path %s can't be accessed.\n", P);
+		if (fisdir(P))
+			continue;
+		if (!mkduuhh(P))
 			return false;
-		}
 	}
 
 	return true;
+}
+
+
+Ooof std::vector<string> PathSplit(string S) {
+	std::stringstream	Pieces(S);
+	std::string			Item;
+	std::vector<string> Result;
+	while (std::getline(Pieces, Item, '/')) {
+		Result.push_back(Item);
+	}
+	return Result;
+}
+
+
+Ooof bool MakePath(string P) {
+	auto R = PathSplit(P);
+	return MakePath(R);
+}
+
+Ooof bool MakePathFor(string P) {
+	auto S = PathSplit(P);
+	S.pop_back();
+	return MakePath(S);
+}
+
+
+Ooof string Suffix(string S) {
+	auto i = S.length();
+	while (i >= 1) {
+		auto C = S[--i]; 
+		if (C == '.')
+			return S.substr(i+1, S.length());
+		  else if (C=='/')
+			return "";
+	}
+	return "";
+}
+
+Ooof string SlashTerminate(string s) {
+	if (s != "" and s[s.length()-1]!='/')
+		return s + "/";
+	return s;
+}
+
+Ooof bool EndsWith(string s, string find) {
+	auto nf = find.length();
+	auto ns = s.length();
+	s = s.substr(ns - nf, nf);
+	return s == find;
 }

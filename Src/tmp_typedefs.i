@@ -13,7 +13,7 @@ typedef u32					uSample;
 struct RandoStats;		struct GenApproach;		struct BookHitter;
 struct NamedGen; 		struct HTML_Random;
 
-using   std::ofstream;  using std::string;		using std::to_string;	using std::shared_ptr;
+using std::string;		using std::to_string;	using std::shared_ptr;
 using	std::max;		using std::min;
 #define ref(x) std::shared_ptr<x>
 typedef std::vector<u8>		   				ByteArray;

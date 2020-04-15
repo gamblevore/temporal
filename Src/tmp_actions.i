@@ -7,8 +7,6 @@ static const char* WelcomeMsg = R"(teMpOwAl resurtch!!
 Steve is about to divulge magical temporal randomness from the brain of your device.
 )";
 
-string OrigPath;
-
 Ooof int ParseWarmup(StringVec& Args) {
 	if (Args.size() >= 3) {
 		auto S = Args[2];
@@ -77,7 +75,7 @@ static void ReportStats(GenApproach& R,  string Name,  std::ostream& ofs) {
 
 static int ReadMemoryAction (GenApproach& R, u8* Addr, u32 Len, std::ostream& ofs, string Name) {
 	if (AllHex(Addr, Len))
-		Len = HexCleanup(Addr, Len);
+		Len = HexCleanup(Addr, Addr, Len);
 	FullRandomnessDetect(R, Addr, Len);
 	ReportStats(R, Name, ofs);
 	return 0;

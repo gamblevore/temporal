@@ -1,5 +1,4 @@
 
-//#ifdef __SHELL_TOOL__ // just use anyway
 
 struct DirReader {
 	DIR*		D;
@@ -30,4 +29,6 @@ struct DirReader {
 	}
 };
 
-//#endif
+
+struct ArchiveFile;
+struct GenApproach;

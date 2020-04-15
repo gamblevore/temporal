@@ -142,7 +142,7 @@ static void ExtractRetro (BookHitter& B, bool IsFirst) {
 		Shrinkers Retro = {};
 		Retro.Log = 1;
 		Do_Histo(B, BV, Retro);
-		WriteColorImg(BV.Data, BV.ByteLength(), B.App->FileName(""));
+		WriteColorImg(BV.Data, BV.ByteLength(), B.App->Png());
 	}
 }
 

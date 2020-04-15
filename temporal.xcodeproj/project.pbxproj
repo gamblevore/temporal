@@ -7,9 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AC019061242FE3BF00E6EC7F /* temporal_ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC019060242FE3BF00E6EC7F /* temporal_ios.swift */; };
-		AC019065242FE3F900E6EC7F /* gen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACA5A15124046D3A00EFFC13 /* gen.cpp */; };
-		AC019066242FE3F900E6EC7F /* lib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC69202B240FF3FF007F3DB4 /* lib.cpp */; };
 		AC50FC3324042AB400AB4285 /* libgenerators.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC50FC242404297400AB4285 /* libgenerators.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		AC692030240FF412007F3DB4 /* lib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC69202B240FF3FF007F3DB4 /* lib.cpp */; };
 		ACA5A16624046D3F00EFFC13 /* temporal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACA5A15C24046D3A00EFFC13 /* temporal.cpp */; };
@@ -34,15 +31,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		AC01905C242FE3BF00E6EC7F /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		ACD54ACD2299957800526848 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -55,8 +43,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		AC01905E242FE3BF00E6EC7F /* libtemporal_ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libtemporal_ios.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		AC019060242FE3BF00E6EC7F /* temporal_ios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = temporal_ios.swift; sourceTree = "<group>"; };
 		AC0D0B782413E18200E245C3 /* temporal_root.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = temporal_root.i; path = Src/temporal_root.i; sourceTree = "<group>"; };
 		AC105AD8241459470001A7B2 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		AC105AD9241459470001A7B2 /* make.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = make.sh; sourceTree = "<group>"; };
@@ -91,18 +77,12 @@
 		ACA5A16424046D3A00EFFC13 /* tmp_math.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_math.i; path = Src/tmp_math.i; sourceTree = "<group>"; };
 		ACA5A16524046D3A00EFFC13 /* tmp_sorting.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_sorting.i; path = Src/tmp_sorting.i; sourceTree = "<group>"; };
 		ACD54ACF2299957800526848 /* temporal */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = temporal; sourceTree = BUILT_PRODUCTS_DIR; };
+		ACF5E8712445F2DB00E68257 /* tmp_archive.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_archive.i; path = Src/tmp_archive.i; sourceTree = "<group>"; };
 		ACF89D8324338518006A9448 /* tmp_funcs.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_funcs.i; path = Src/tmp_funcs.i; sourceTree = "<group>"; };
 		ACF89D852433965B006A9448 /* tmp_directory.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_directory.i; path = Src/tmp_directory.i; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		AC01905B242FE3BF00E6EC7F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AC50FC222404297400AB4285 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -128,21 +108,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		AC01905F242FE3BF00E6EC7F /* temporal_ios */ = {
-			isa = PBXGroup;
-			children = (
-				AC019060242FE3BF00E6EC7F /* temporal_ios.swift */,
-			);
-			path = temporal_ios;
-			sourceTree = "<group>";
-		};
 		ACD54AC62299957800526848 = {
 			isa = PBXGroup;
 			children = (
 				AC105AD9241459470001A7B2 /* make.sh */,
 				AC105AD8241459470001A7B2 /* readme.md */,
 				ACD54AD12299957800526848 /* cpp files */,
-				AC01905F242FE3BF00E6EC7F /* temporal_ios */,
 				ACD54AD02299957800526848 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -153,7 +124,6 @@
 				ACD54ACF2299957800526848 /* temporal */,
 				AC50FC242404297400AB4285 /* libgenerators.a */,
 				AC69201E240FF302007F3DB4 /* libTemporal.a */,
-				AC01905E242FE3BF00E6EC7F /* libtemporal_ios.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -171,6 +141,7 @@
 				ACA5A14F24046D3A00EFFC13 /* tmp_api.i */,
 				ACA5A16124046D3A00EFFC13 /* tmp_classes.i */,
 				ACA5A15B24046D3A00EFFC13 /* tmp_core.i */,
+				ACF5E8712445F2DB00E68257 /* tmp_archive.i */,
 				AC5E1F0A244201AB00E17828 /* tmp_files.i */,
 				ACF89D8324338518006A9448 /* tmp_funcs.i */,
 				ACA5A15224046D3A00EFFC13 /* tmp_debias.i */,
@@ -216,23 +187,6 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		AC01905D242FE3BF00E6EC7F /* temporal_ios */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AC019064242FE3BF00E6EC7F /* Build configuration list for PBXNativeTarget "temporal_ios" */;
-			buildPhases = (
-				AC01905A242FE3BF00E6EC7F /* Sources */,
-				AC01905B242FE3BF00E6EC7F /* Frameworks */,
-				AC01905C242FE3BF00E6EC7F /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = temporal_ios;
-			productName = temporal_ios;
-			productReference = AC01905E242FE3BF00E6EC7F /* libtemporal_ios.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		AC50FC232404297400AB4285 /* generators */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AC50FC2C2404297400AB4285 /* Build configuration list for PBXNativeTarget "generators" */;
@@ -296,10 +250,6 @@
 				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = Theodore;
 				TargetAttributes = {
-					AC01905D242FE3BF00E6EC7F = {
-						CreatedOnToolsVersion = 11.3.1;
-						ProvisioningStyle = Automatic;
-					};
 					AC50FC232404297400AB4285 = {
 						CreatedOnToolsVersion = 11.3;
 					};
@@ -328,22 +278,11 @@
 				AC69201D240FF302007F3DB4 /* lib */,
 				ACD54ACE2299957800526848 /* temporal */,
 				AC50FC232404297400AB4285 /* generators */,
-				AC01905D242FE3BF00E6EC7F /* temporal_ios */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		AC01905A242FE3BF00E6EC7F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AC019066242FE3F900E6EC7F /* lib.cpp in Sources */,
-				AC019065242FE3F900E6EC7F /* gen.cpp in Sources */,
-				AC019061242FE3BF00E6EC7F /* temporal_ios.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AC50FC212404297400AB4285 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -384,50 +323,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		AC019062242FE3BF00E6EC7F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_STYLE = Automatic;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		AC019063242FE3BF00E6EC7F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_STYLE = Automatic;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
-				MTL_FAST_MATH = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-Osize";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 		AC50FC2D2404297400AB4285 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -594,15 +489,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AC019064242FE3BF00E6EC7F /* Build configuration list for PBXNativeTarget "temporal_ios" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AC019062242FE3BF00E6EC7F /* Debug */,
-				AC019063242FE3BF00E6EC7F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		AC50FC2C2404297400AB4285 /* Build configuration list for PBXNativeTarget "generators" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -3,8 +3,8 @@
 struct HTML_Random {
 	string			FileName;
 	string			Title;
-	std::ofstream	ofs;
-	string			Path;
+//	string			Path;
+	ArchiveFileOofer ofs;
 	int				Variations;
 	bool			Started;
 	BookHitter*		B;
@@ -15,7 +15,6 @@ struct HTML_Random {
 		Title = t;
 		Variations = 0;
 		Started = false;
-		ofs = {};
 		B = b;
 	}
 	
@@ -36,7 +35,7 @@ struct HTML_Random {
 			for_ (5) {
 				if (i == W)  ofs << "<b>";
 				ofs << "<br/>" + ScoreNames[i].substr(0,5) + " ";
-				ofs << std::fixed << std::setprecision(3) << R[i];
+				ofs.Oof() << std::fixed << std::setprecision(3) << R[i];
 				ofs << (((1<<i) & F) ? " ❌" : "");
 				if (i == W)  ofs << "</b>";
 			}
@@ -47,7 +46,7 @@ struct HTML_Random {
 	}
 
 
-	void HTMLOpen(std::ofstream& fs, string RealTitle) {
+	void HTMLOpen(ArchiveFileOofer fs, string RealTitle) {
 		fs << R"(<html>
 <head>
 	<title>)";
@@ -129,19 +128,19 @@ img {
 	}
 
 
-	void HTMLClose(std::ofstream& fs) {
+	void HTMLClose(ArchiveFileOofer fs) {
 		fs << R"(
 </tr>
 </table>
 </body>
 </html>)";
-		fs.close();
+		fs.Close();
 	}
 	
 	void Start() {
 		if (Started) return; Started = true;
-		Path = GetCWD() + string("/") + FileName;
-		ofs.open (Path);
+		
+		ofs = B->Arc->AddFile(FileName, true).Oof();
 	
 		HTMLOpen(ofs, Title);
 		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr><td>\n"; 
@@ -149,7 +148,8 @@ img {
 		auto tm = *std::localtime(&t);
 		
 		ofs << "<p>Created on: ";
-		ofs << std::put_time(&tm, "%d %b %y, %H:%M:%S");
+		
+		ofs.Oof() << std::put_time(&tm, "%d %b %y, %H:%M:%S"); 
 		if (FileName == "scoring.html" or FileName == "temporal.html")
 			ofs << "<br/>&nbsp;&nbsp;<a href='scoring.html'>Scoring</a>&nbsp;&nbsp;<a href='temporal.html'>Temporal</a>";
 		ofs << "&nbsp;&nbsp;<a href='http://github.com/gamblevore/temporal'>github</a>";
@@ -165,20 +165,17 @@ img {
 
 	string FullScreenHTML(GenApproach* V) {
 		GenApproach& R = *V;
-		std::ofstream	fs;
-		string html = R.Name() + "_view.html";
-		string Paeth = GetCWD() + string("/") + html;
-		fs.open (Paeth);
+		auto fs = R.Arc("_view.html").Oof();
 		HTMLOpen(fs, "🔎 " + R.Name() + " 🔎");
 		fs << "<div class='full'>";
 		HTMLImgSub(fs, V, "");
 		fs << "</div>";
 		HTMLClose(fs);
-		return html;
+		return fs.Path();
 	}
 	
 	
-	void HTMLImgSub(std::ofstream& fs, GenApproach* V, string Link) {
+	void HTMLImgSub(ArchiveFileOofer fs, GenApproach* V, string Link) {
 		GenApproach& R = *V;
 		fs << "<div class='img_ontop'>\n";
 		if (Link!="")
@@ -209,10 +206,6 @@ img {
 		printf("\n:: %i Randomness variations!  :: \n", Variations);
 		
 		HTMLClose(ofs);
-		if (B->LogOrDebug())
-			FilesToOpenLater.push_back(Path);
-		  else
-			printf("Debug Steve output at: %s\n", Path.c_str());
 	}
 };
 
@@ -251,21 +244,14 @@ void BookHitter::CreateDirs(string path) {
 	if (CreatedDirs or !LogOrDebug()) return;
 
 	CreatedDirs = true;
-	const char* BasePath = "/tmp/";
-	if (path!="") {
-		BasePath = path.c_str();
+	if (path == "") {
+		if (fexists("/tmp/")) {
+			path = "/tmp/temporal_scoring/";
+		} else {
+			path = GetCWD();
+		}
 	}
-	if (fexists(BasePath)) {
-		chduuhh(BasePath);
-	} else {
-		errno = ENOENT;
-		return;
-	}
-	if (path=="") {
-		mkduuhh("temporal_scoring");
-		chduuhh("temporal_scoring");
-	}
-	mkduuhh("time_imgs");
+	Arc->Init(path);
 }
 
 
@@ -274,7 +260,7 @@ void BookHitter::TryLogApproach(string Debiased="") {
 	int N = App->Stats.Length;
 	u8* R = Extracted();
 	if (Debiased != "")
-		WriteColorImg(R, N, App->FileName(Debiased));
+		WriteColorImg(R, N, App->Png(Debiased));
 	  else
-		WriteColorImg(R, N, App->FileName());
+		WriteColorImg(R, N, App->Png());
 }

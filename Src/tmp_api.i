@@ -24,10 +24,23 @@ BookHitter* bh_create() {
 }
 
 
-void bh_logfiles(BookHitter* f) {
-	for (auto S : FilesToOpenLater)
-		OpenFile(S);
-	FilesToOpenLater.clear();
+void bh_logfiles(BookHitter* B) {
+	if (!B->LogOrDebug()) {
+		return;
+	}
+	
+	auto& A = *B->Arc;
+	A.Close();
+	if (!A.WriteToDisk) {
+		return;
+	}
+	
+	for (auto& F : A.Files) {
+		auto P = F->FullPath();
+		if (Suffix(P) == "html" and F->OpenMe) {
+			OpenFile(P);
+		}
+	}
 }
 
 
@@ -66,15 +79,21 @@ u64 bh_rand_u64 (BookHitter* B) {
 }
 
 double bh_rand_double (BookHitter* B) {
-	return *((double*)bh_rand_ptr(B, sizeof(double)));
+	const u64 wtf = -1;
+	const double wtf2 = (double)wtf;
+	const double iwtf2 = 1.0 / wtf2;
+	return (double)bh_rand_u64(B) * iwtf2; 
 }
 
-int bh_rand_int (BookHitter* B) {
-	return *((int*)bh_rand_ptr(B, sizeof(int)));
+u32 bh_rand_u32 (BookHitter* B) {
+	return *((u32*)bh_rand_ptr(B, sizeof(u32)));
 }
 
 float bh_rand_float (BookHitter* B) {
-	return *((float*)bh_rand_ptr(B, sizeof(float)));
+	const u32 wtf = -1;
+	const float wtf2 = (float)wtf;
+	const float iwtf2 = 1.0 / wtf2;
+	return (float)bh_rand_u32(B) * iwtf2; 
 }
 
 

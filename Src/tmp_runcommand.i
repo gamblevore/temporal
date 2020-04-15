@@ -2,13 +2,12 @@
 
 #define OptionList(A) auto A_ = A; if (false)
 #define Option(B) } else if (matchi(A_,B)) {
-int bh_run_command (BookHitter* B_,  const char** argv) {
+int bh_run_command (BookHitter* External,  const char** argv) {
 	auto Args = ArgArray(argv);
 	int Err = 0;
 
 	if (Args.size()) {
-		OrigPath = GetCWD();
-		auto B = B_ ? B_ : bh_create();
+		auto B = External ? External : bh_create();
 
 		errno = 0;
 		OptionList(Args[0]) {
@@ -34,9 +33,10 @@ int bh_run_command (BookHitter* B_,  const char** argv) {
 			fprintf(stderr, "Unrecognised action: '%s'\n", A_.c_str());
 			Err = ArgError; 
 		}
-
-		bh_free(B_);
-		chduuhh(OrigPath.c_str());
+		
+		B->SendBack(argv);
+		if (!External)
+			bh_free(B);
 	} else {
 		Err = ArgError;
 	}
@@ -56,3 +56,7 @@ int bh_run_command (BookHitter* B_,  const char** argv) {
 	return Err;
 }
 
+
+void bh_extract_archive (const char* Data, const char* Path) {
+	Archive::WriteAnyway(Data, Path);
+}
