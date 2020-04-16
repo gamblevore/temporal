@@ -2,7 +2,7 @@
 
 
 static u8	HexTest[256];
-const char* HexChars  =  "0123456789abcdef";
+cstring HexChars  =  "0123456789abcdef";
 
 Ooof int InPlaceConvertToHex (u8* Data, int N) {
 	u8* Read = Data + N;
@@ -96,7 +96,7 @@ Ooof bool AllHex (u8* Addr, u32 Len) {
 
 
 
-Ooof std::vector<string> ArgArray(const char* argv[]) {
+Ooof std::vector<string> ArgArray(cstring argv[]) {
 	std::vector<string> Result;
 	int i = 1;
 	while (argv[i]) {
@@ -107,7 +107,7 @@ Ooof std::vector<string> ArgArray(const char* argv[]) {
 }
 
 
-Ooof bool cmatchi (const char* a, const char* b) {
+Ooof bool cmatchi (cstring a, cstring b) {
 	if (!a or !b)
 		return a==b;
 

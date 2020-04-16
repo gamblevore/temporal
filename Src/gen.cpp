@@ -28,6 +28,7 @@ extern "C" {
 	// don't redefine!
 #elif defined(__i386__) || defined(__x86_64__) || defined(__amd64__)
 	#define TSC TSC_RD        	// rdtsc
+	#define TMP_IS_IOS false
 #elif defined(__APPLE__)
 	#define TSC TSC_mach		// mach_absolute_time
 #elif defined(ARM_ASM) && (__ARM_ARCH >= 6)
@@ -41,6 +42,16 @@ extern "C" {
 #endif
 
 
+#if !defined(TMP_IS_IOS)
+	#if defined(TARGET_OS_IPHONE)
+		#define TMP_IS_IOS true
+	#else
+		#define TMP_IS_IOS false
+	#endif
+#endif
+
+
+
 
 static inline u32 Time32 () {
 #if TSC == TSC_RD
@@ -48,7 +59,7 @@ static inline u32 Time32 () {
 	asm volatile ( "rdtscp\n" : "=a" (rax));
 	return (u32)rax;
 #elif TSC == TSC_mach
-	return mach_absolute_time();
+	return (u32)mach_absolute_time();
 #elif TSC == TSC_MRC
 	volatile u32 cc;
 	__asm__ __volatile__ ("mrc p15, 0, %0, c9, c13, 0" : "=r"(cc));
@@ -68,7 +79,7 @@ static inline u32 Time32 () {
 
 
 bool TmpTimingStartsPoor() {
-	return (TSC == TSC_timespec) or (TSC == TSC_MRC) or (TSC == TSC_MRS);
+	return (TSC == TSC_timespec) or (TSC == TSC_MRC) or (TSC == TSC_MRS) or (TSC == TSC_MRS) or TMP_IS_IOS;
 }
 
 

@@ -13,9 +13,6 @@
 // * histogram fails for generating big files.
 	// * temporal hexdump 1 100mb /dev/null/
 
-// * html titles for single-view
-	// * mouse over smaller area
-
 // * tweak stuff till the visualiser looks nice!
 	// * What can I tweak even?
 		// * Need tweak raw ASM!

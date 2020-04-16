@@ -2,7 +2,7 @@
 
 static void ArchivePNG(void* context, void* data, int size) {
 	auto& F = *((ArchiveFile*)context);
-	F.Data.write((const char*)data, size);
+	F.Data.write((cstring)data, size);
 	F.Close();
 }
 

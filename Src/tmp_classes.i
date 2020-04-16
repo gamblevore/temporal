@@ -284,7 +284,7 @@ struct BookHitter {
 	}
 	
 	
-	void SendBack(const char** argv) {
+	void SendBack(cstring* argv) {
 		if (!Arc->WriteToDisk) {
 			Arc->Close();
 			Unified = Arc->ConCat.str();

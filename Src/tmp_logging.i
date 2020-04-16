@@ -143,7 +143,7 @@ img {
 		ofs = B->Arc->AddFile(FileName, true).Oof();
 	
 		HTMLOpen(ofs, Title);
-		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr><td>\n"; 
+		cstring Row = "</tr>\n\n<tr><td><br/></td></tr><tr><td>\n"; 
 		auto t = std::time(nullptr);
 		auto tm = *std::localtime(&t);
 		
@@ -193,7 +193,7 @@ img {
 
 	void WriteOne(GenApproach* App) {
 		if (!Started) return;
-		const char* Row = "</tr>\n\n<tr><td><br/></td></tr><tr>\n";
+		cstring Row = "</tr>\n\n<tr><td><br/></td></tr><tr>\n";
 		if (!App->Stats.Length) return;
 		if (Variations % 8 == 0) ofs << Row;
 		HTMLImg(App);

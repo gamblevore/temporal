@@ -45,14 +45,14 @@ int				bh_extract_perform	(BookHitter* B_, unsigned int* Samples, int N, bh_stat
 
 struct bh_stats {
 // stats, can be ignored
-	float	GenerateTime;
-	float	ProcessTime;
-	int		Spikes;
-	int		SamplesGenerated;
-	int		BytesUsed;  // not bytes output, but throughput... including wasted bytes.
-	int		BytesGiven; // not bytes output, but throughput... including wasted bytes.
+	float		GenerateTime;
+	float		ProcessTime;
+	int			Spikes;
+	int			SamplesGenerated;
+	int			BytesUsed;  // not bytes output, but throughput... including wasted bytes.
+	int			BytesGiven; // not bytes output, but throughput... including wasted bytes.
 	const char* ApproachName;
-	int 	ApproachReps;
+	int 		ApproachReps;
 	
 // Error number. 0 means no error.
 	int		Err;

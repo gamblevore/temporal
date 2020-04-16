@@ -2,7 +2,7 @@
 
 
 void OpenFile(string Path) {
-#if defined(__APPLE__) && defined(__MACH__)
+#if defined(TARGET_MAC_OS)
 	Path = string("open \"") + Path + "\"";
 	system(Path.c_str());
 #else
@@ -12,7 +12,7 @@ void OpenFile(string Path) {
 
 
 Ooof string GetCWD() {
-	const char* c = getcwd(0, 0);
+	cstring c = getcwd(0, 0);
 	string s = c;
 	free((void*)c);
 	return s;
@@ -20,8 +20,6 @@ Ooof string GetCWD() {
 
 
 Ooof string ResolvePath(string S, bool ErrIfCantFind=true) {
-	if (S=="-")
-		return S;
 	if (S[0] == '~' and S[1] == '/') {
 		S = getenv("HOME") + S.substr(1, S.length()-1);
 	}
@@ -42,7 +40,7 @@ Ooof string ReadStdin () {
 	return goddamnit_cpp;
 }
 
-Ooof string ReadFile (string name, int MaxLength) {
+Ooof string ReadFile (string name, int MaxLength=1024*1024*256) {
 	struct stat sb;
 	if (stat(name.c_str(), &sb)==0) {
 		if (sb.st_size > MaxLength) {
@@ -76,7 +74,7 @@ Ooof bool WriteFile (u8* Data, int N, string Name) {
 
 
 
-Ooof bool chduuhh(const char* s) {
+Ooof bool chduuhh(cstring s) {
 	// avoid stupid warnings... sigh.
 	int Error = chdir(s);
 	if (Error) {
@@ -87,7 +85,7 @@ Ooof bool chduuhh(const char* s) {
 }
 
 
-Ooof bool fexists(const char* s) {
+Ooof bool fexists(cstring s) {
 	// file-systems suck... lol.
 	struct stat sb;
 	int OldErr = errno;
@@ -98,14 +96,14 @@ Ooof bool fexists(const char* s) {
 }
 
 
-Ooof bool fisdir(const char* s) {
+Ooof bool fisdir(cstring s) {
 	struct stat sb;
 	int Error = stat(s, &sb);
 	return !Error and S_ISDIR(sb.st_mode);
 }
 
 
-Ooof bool mkduuhh(const char* s) {
+Ooof bool mkduuhh(cstring s) {
 	// avoid stupid warnings... sigh.
 	struct stat sb;
 	int Error = stat(s, &sb);

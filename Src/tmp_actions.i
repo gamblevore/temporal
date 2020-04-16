@@ -2,7 +2,7 @@
 
 
 
-static const char* WelcomeMsg = R"(teMpOwAl resurtch!!
+static cstring WelcomeMsg = R"(teMpOwAl resurtch!!
 
 Steve is about to divulge magical temporal randomness from the brain of your device.
 )";
@@ -89,7 +89,7 @@ static int ReadStrAction (GenApproach& R, string S, std::ostream& ofs, string Na
 }
 
 
-int ExpectedDir(const char* P) {
+int ExpectedDir(cstring P) {
 	debugger;
 	if (cmatchi(P, "")) {
 		if (!errno) {
@@ -112,9 +112,12 @@ bool ViewAcceptFile(string Item, string FullPath) {
 
 static int ViewAction (BookHitter* B, StringVec& Args, bool Visualise) {
 	if (Args.size() < 2) return ArgError;
-	auto Path = ResolvePath(Args[1]);
-	if (Path != "-" and !fisdir(Path.c_str())) {
-		return ExpectedDir(Args[1].c_str());
+	auto Path = Args[1];
+	if (Path != "-") {
+		Path = ResolvePath(Path);
+		if (!fisdir(Path.c_str())) {
+			return ExpectedDir(Args[1].c_str());
+		}
 	}
 
 	string OutFol = "";
@@ -246,22 +249,24 @@ static int PrintAction (BookHitter* B, StringVec& Args) {
 	printf( "printing temporal %s\n", S.c_str() );
 
 	int N = ParseLength(Args[1]);
-//	std::vector<u64> asdas(N);
 
 	for_(N) {
 		if (i)
 			printf(", ");
 		u64 X = bh_rand_u64(B);
 		printf("%lli", X);
-//		asdas[i] = X;
 	}
 	printf("\n");
-
-//	u8* Data = (u8*)&asdas[0];
-//	auto R = B->ExternalGen("Steve", false);
-//	FullRandomnessDetect(*R, Data, N*8);
-//	ReportStats(*R, "Steve", std::cout);
-
 	return 0;
 }
 
+
+static int UnarchiveAction (BookHitter* B, StringVec& Args) {
+	// input-fiel, output-file.
+	if (Args.size() < 3) return ArgError;
+		
+	auto Data = ReadFile(Args[1]);
+	if (!errno)
+		Archive::WriteAnyway(Data, Args[2]);
+	return errno;
+}

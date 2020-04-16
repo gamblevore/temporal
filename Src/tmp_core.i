@@ -9,6 +9,7 @@ void ClearSteveDefault() {
 BookHitter* SteveDefault() {
 	if (!StevesDefaultHome) {
 		StevesDefaultHome = bh_create();
+		errno = 0;
 		atexit(ClearSteveDefault);
 	}
 	return StevesDefaultHome;

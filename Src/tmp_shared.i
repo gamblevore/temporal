@@ -20,7 +20,7 @@ typedef u64 (*GenFunc) (uSample* Data, uSample* DataEnd, u32 Input, int Reps);
 
 struct NamedGen {
 	GenFunc		Func;
-	const char*	Name;
+	cstring	Name;
 	u8       	Slowness;
 };
 

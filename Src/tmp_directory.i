@@ -15,7 +15,7 @@ struct DirReader {
 	int Next() {
 		require (D);
 		while ((Child = readdir(D))) {
-			const char* P = Child->d_name;
+			cstring P = Child->d_name;
 			if (!strcmp(P, ".") or !strcmp(P, ".."))
 				continue;
 			return true;
@@ -24,7 +24,7 @@ struct DirReader {
 	}
 	string Name() {
 		require(D and Child);
-		const char* P = Child->d_name;
+		cstring P = Child->d_name;
 		return string(P);
 	}
 };
