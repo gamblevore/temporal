@@ -128,6 +128,12 @@ Ooof bool matchi (string a, string b) {
 }
 
 
+Ooof string ArrRead (StringVec& S, int i) {
+	if (S.size() > i)
+		return S[i];
+	return "";
+}
+
 Ooof int ParseLength (string L) {
 	int mul = 0;
 	int spl = SplitUnit(L);
@@ -158,13 +164,7 @@ Ooof int ParseLength (string L) {
 
 
 Ooof FILE* CmdArgFile (string FileOut, FILE* Default) {
-	if (FileOut == "")  {
-		std::cerr << "No file specified.\n\n";
-		errno = ArgError;
-		return 0;
-	}
-	
-	if (FileOut == "-")
+	if (FileOut == "" or FileOut == "-")
 		return Default;
 
 	auto Dest = fopen(FileOut.c_str(), "w");

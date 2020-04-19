@@ -172,7 +172,7 @@ static int ViewAction (BookHitter* B, StringVec& Args, bool Visualise) {
 
 
 int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {
-	if (Args.size() < 4)
+	if (Args.size() < 3)
 		return ArgError;
 	
 	bh_config(B)->Log = -1; // no log even debug
@@ -181,7 +181,7 @@ int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {
 	int          Remain   = ParseLength(Args[2]);
 	if (Hex)	 Remain  /= 2;
 	if (!Remain) return errno;
-	string       FileOut  = Args[3];
+	string       FileOut  = ArrRead(Args,3);
 	FILE*        Dest     = CmdArgFile(FileOut, stdout);
 	if (!Dest)   return errno;
 

@@ -46,6 +46,7 @@ void bh_extract_archive (cstring Data, cstring Path) {
 	Archive::WriteAnyway(Data, Path);
 }
 
+
 cstring IPhoneExample() {
 	cstring input[] = {"temporal", "list", "1", 0};
 	bh_run_command(nullptr, input, true);
@@ -54,9 +55,11 @@ cstring IPhoneExample() {
 	return iPhoneOutput;
 }
 
+
 void MacOSXExample(cstring iPhoneOutput) { // take the data we just puts() on the iPhone
 	bh_extract_archive(iPhoneOutput, "~/Desktop/TemporalList1");
 }
+
 
 void DummyIPhoneTest() {
 	// normally we run these two funcs on different devices

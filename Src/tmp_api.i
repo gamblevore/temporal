@@ -79,9 +79,7 @@ u64 bh_rand_u64 (BookHitter* B) {
 }
 
 double bh_rand_double (BookHitter* B) {
-	const u64 wtf = -1;
-	const double wtf2 = (double)wtf;
-	const double iwtf2 = 1.0 / wtf2;
+	const double iwtf2 = 1.0 / 18446744073709551616.0;
 	return (double)bh_rand_u64(B) * iwtf2; 
 }
 
@@ -90,9 +88,7 @@ u32 bh_rand_u32 (BookHitter* B) {
 }
 
 float bh_rand_float (BookHitter* B) {
-	const u32 wtf = -1;
-	const float wtf2 = (float)wtf;
-	const float iwtf2 = 1.0 / wtf2;
+	const float iwtf2 = 1.0 / 4294967296.0;
 	return (float)bh_rand_u32(B) * iwtf2; 
 }
 

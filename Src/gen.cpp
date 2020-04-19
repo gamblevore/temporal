@@ -79,7 +79,7 @@ static inline u32 Time32 () {
 
 
 bool TmpTimingStartsPoor() {
-	return (TSC == TSC_timespec) or (TSC == TSC_MRC) or (TSC == TSC_MRS) or (TSC == TSC_MRS) or TMP_IS_IOS;
+	return (TSC == TSC_timespec) or (TSC == TSC_MRC) or (TSC == TSC_MRS) or TMP_IS_IOS;
 }
 
 
