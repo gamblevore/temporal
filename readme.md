@@ -56,7 +56,7 @@ example:
 	temporal hexdump     0      128MB    File.txt # dump chaotic generators
 	temporal list        0                        # view chaotic generators
 	temporal view        ~/Desktop/Rands          # view the randomness in the files.
-	cat file.txt | temporal view  -                   # read from stdin. 'cat' in this case.
+	cat file.txt | temporal view                  # read from stdin. 'cat' in this case.
 
 
 

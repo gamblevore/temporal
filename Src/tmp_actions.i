@@ -111,9 +111,9 @@ bool ViewAcceptFile(string Item, string FullPath) {
 
 
 static int ViewAction (BookHitter* B, StringVec& Args, bool Visualise) {
-	if (Args.size() < 2) return ArgError;
-	auto Path = Args[1];
-	if (Path != "-") {
+	auto Path = ArrRead(Args,1);
+	if (Path == "_") Path = "";
+	if (Path != "") {
 		Path = ResolvePath(Path);
 		if (!fisdir(Path.c_str())) {
 			return ExpectedDir(Args[1].c_str());
@@ -135,7 +135,7 @@ static int ViewAction (BookHitter* B, StringVec& Args, bool Visualise) {
 	B->ExternalReports(OutFol);
 	ApproachVec Reports;
 	
-	if (Path == "-") {
+	if (Path == "") {
 		auto R = B->ExternalGen("stdin", Visualise);
 		Reports.push_back(R);
 		string StdIn = (Args.size() >= 3) ? Args[2] : ReadStdin();
