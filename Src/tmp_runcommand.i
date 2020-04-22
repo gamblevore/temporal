@@ -18,6 +18,7 @@ int bh_run_command (BookHitter* External,  cstring* argv, bool Archive) {
 		  Option ("view")		ViewAction		(B, Args, true);
 		  Option ("print") 		PrintAction		(B, Args);
 		  Option ("unarchive")	UnarchiveAction (B, Args);
+		  Option ("leaktest")   LeakTestAction  (B, Args);
 		} else {
 			fprintf(stderr, "Unrecognised action: '%s'\n", A_.c_str());
 		}
@@ -33,7 +34,7 @@ int bh_run_command (BookHitter* External,  cstring* argv, bool Archive) {
 "       temporal read       (file.txt)\n"
 "       temporal view       (/path/to/folder/)\n"
 "       temporal unarchive  (/path/to/archive /path/output_dir/)\n"
-"       cat file.txt | temporal view -       # temporal can read from stdin.\n"
+"       cat file.txt | temporal view       # temporal can read from stdin.\n"
 "\n"
 "  About: http://randonauts.com/s/temporal \n");
 

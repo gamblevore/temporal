@@ -30,15 +30,15 @@ bool bh_isdebug() {
 
 
 void bh_logfiles(BookHitter* B) {
-	if (!B->LogOrDebug())
-		return;
-	
 	auto& A = *B->Arc;
 	A.Close();
-	if (!A.WriteToDisk)
+	auto List = A.Files;
+	A.Files = {};
+
+	if (!B->LogFiles() or !A.WriteToDisk)
 		return;
 	
-	for (auto& F : A.Files)
+	for (auto& F : List)
 		if (Suffix(F->FullPath()) == "html" and F->OpenMe)
 			OpenFile(F->FullPath());
 }

@@ -49,7 +49,7 @@ void BookHitter::BestApproachCollector(ApproachVec& L) {
 	
 	if (!IsRetro() or !Conf.DontSortRetro)
 		ApproachSort(L);
-	if (LogOrDebug())
+	if (LogFiles())
 		CreateHTMLRandom(L,  "scoring.html",  "Fatum Temporal Randomness Test");
 	RemoveSudo(L);
 }

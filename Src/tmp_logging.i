@@ -212,7 +212,7 @@ img {
 
 ref(HTML_Random) BookHitter::HTML(string fn, string t) {
 	auto Result = New4(HTML_Random, fn, t, this);
-	if (LogOrDebug())
+	if (LogFiles())
 		Result->Start();
 	return Result;
 }	
@@ -241,7 +241,7 @@ void BookHitter::CreateHTMLRandom(ApproachVec& V1, string FileName, string Title
 
 
 void BookHitter::CreateDirs(string path) {
-	if (CreatedDirs or !LogOrDebug()) return;
+	if (CreatedDirs or !LogFiles()) return;
 
 	CreatedDirs = true;
 	if (path == "") {
@@ -256,7 +256,7 @@ void BookHitter::CreateDirs(string path) {
 
 
 void BookHitter::TryLogApproach(string Debiased="") {
-	if (!LogOrDebug() or NoImgs()) return;
+	if (!LogFiles() or NoImgs()) return;
 	int N = App->Stats.Length;
 	u8* R = Extracted();
 	if (Debiased != "")

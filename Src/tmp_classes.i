@@ -270,10 +270,6 @@ struct BookHitter {
 	}
 	
 	void SettingApp(string name) {
-//		if (LogOrDebug()) {
-//			auto N = App->Name();
-//			printf("		Approach '%s' <-- '%s'\n", N.c_str(), name.c_str()); 
-//		}
 	}
 
 	void ExternalReports(string Path) {
@@ -318,6 +314,10 @@ struct BookHitter {
 	bool LogOrDebug() {
 		if (Conf.Log == 255) return false;
 		return DEBUG_AS_NUM or Conf.Log;
+	}
+	bool LogFiles() {
+		if (Conf.Log == 255) return false;
+		return Conf.Log;
 	}
 
 	bool IsRetro() {
@@ -456,14 +456,6 @@ struct BookHitter {
 		CreateApproaches();
 	}
 };
-
-
-void GenApproach::DebugName() {
-	if (Owner->LogOrDebug()) {
-		string s = Name();
-		printf("%s ", s.c_str());
-	}
-}
 
 
 string GenApproach::NameSub() {

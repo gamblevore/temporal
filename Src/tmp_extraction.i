@@ -130,7 +130,7 @@ static void ExtractRetro (BookHitter& B, bool IsFirst) {
 	B.App->Stats = {}; // stats is written to by do_histo, so clear here.
 	B.App->Stats.Length = Bits.ByteLength();
 
-	if (IsFirst and B.LogOrDebug() and !B.NoImgs()) {
+	if (IsFirst and B.LogFiles() and !B.NoImgs()) {
 		B.TryLogApproach("p");
 		
 		u32 DummyLength = 1<<14; // should have more than that many bytes avail in samples.
@@ -149,7 +149,7 @@ static void ExtractRetro (BookHitter& B, bool IsFirst) {
 
 static void ExtractRandomness (BookHitter& B,  int Mod,  Shrinkers Flags) {
 	B.App->Stats = {}; // stats is written to by do_histo, so clear here.
-	if (!B.LogOrDebug()) 
+	if (!B.LogFiles()) 
 		Flags.Log = false;
 
 	if (B.ChaosTesting()) {

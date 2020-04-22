@@ -1,7 +1,5 @@
 
 
-
-
 static cstring WelcomeMsg = R"(teMpOwAl resurtch!!
 
 Steve is about to divulge magical temporal randomness from the brain of your device.
@@ -259,5 +257,15 @@ static int UnarchiveAction (BookHitter* B, StringVec& Args) {
 	auto Data = ReadFile(Args[1]);
 	if (!errno)
 		Archive::WriteAnyway(Data, Args[2]);
+	return errno;
+}
+
+
+static int LeakTestAction (BookHitter* B, StringVec& Args) {
+	bh_config(B)->AutoReScore = false;
+	for_(1000) {
+		bh_hitbooks(B, 0, 1024*32);
+		printf("%i\n", i);
+	}
 	return errno;
 }
