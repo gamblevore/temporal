@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright: Theodore H. Smith, 2020.
 
 ### conf ##
 ANDROID="$2"

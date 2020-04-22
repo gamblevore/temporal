@@ -24,6 +24,11 @@ BookHitter* bh_create() {
 }
 
 
+bool bh_isdebug() {
+	return DEBUG_AS_NUM;
+}
+
+
 void bh_logfiles(BookHitter* B) {
 	if (!B->LogOrDebug())
 		return;

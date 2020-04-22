@@ -1,6 +1,14 @@
 
 // API
 
+//  Generate temporal number stream: © 2019-2020 Theodore H. Smith
+//  Could be used in almost anything! Even games :3
+//  Can we make a computer FEEL Psychic energy?
+// ** I made TemporalLib and nobody else did, and no one paid me or asked me to make it.
+// I made it because... I thought it was cool.
+// I dunno if thats good enough for a legal binding crap but whatever it'll do. **
+
+
 #include <stdint.h>
 #include <string>
 
@@ -34,6 +42,7 @@ bh_conf*		bh_config			(BookHitter* B);
 
 // Tells the bookhitter to write the html debug-log-files to disk.
 void			bh_logfiles			(BookHitter* B);
+bool			bh_isdebug();
 
 // outdated
 bh_stats*		bh_hitbooks			(BookHitter* B,  unsigned char* Output,  int OutLen);

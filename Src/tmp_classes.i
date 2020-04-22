@@ -312,6 +312,9 @@ struct BookHitter {
 		}
 	}
 
+	bool IsDebug() {
+		return DEBUG_AS_NUM;
+	}
 	bool LogOrDebug() {
 		if (Conf.Log == 255) return false;
 		return DEBUG_AS_NUM or Conf.Log;

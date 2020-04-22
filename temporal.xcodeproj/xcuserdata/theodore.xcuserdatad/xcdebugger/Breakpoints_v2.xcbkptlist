@@ -141,38 +141,6 @@
             endingLineNumber = "35"
             landmarkName = "ResolvePath(S)"
             landmarkType = "9">
-            <Locations>
-               <Location
-                  uuid = "186E047B-835F-441C-94D6-1C00777BDAE7 - 24ca3c7e42044160"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ResolvePath(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, bool)"
-                  moduleName = "temporal"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/theodore/Speedie/temporal_steve/Src/tmp_files.i"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "35"
-                  endingLineNumber = "35"
-                  offsetFromSymbolStart = "217">
-               </Location>
-               <Location
-                  uuid = "186E047B-835F-441C-94D6-1C00777BDAE7 - 24ca3c7e42044160"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ResolvePath(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, bool)"
-                  moduleName = "temporal"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/theodore/Speedie/temporal_steve/Src/tmp_files.i"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "35"
-                  endingLineNumber = "35"
-                  offsetFromSymbolStart = "335">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -189,6 +157,22 @@
             endingLineNumber = "136"
             landmarkName = "MakePath(Pieces)"
             landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "85D95954-8F9B-422F-ADA6-C730E491C617"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Src/tmp_archive.i"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "ArchiveFile"
+            landmarkType = "14">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
