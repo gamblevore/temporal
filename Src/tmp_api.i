@@ -25,22 +25,17 @@ BookHitter* bh_create() {
 
 
 void bh_logfiles(BookHitter* B) {
-	if (!B->LogOrDebug()) {
+	if (!B->LogOrDebug())
 		return;
-	}
 	
 	auto& A = *B->Arc;
 	A.Close();
-	if (!A.WriteToDisk) {
+	if (!A.WriteToDisk)
 		return;
-	}
 	
-	for (auto& F : A.Files) {
-		auto P = F->FullPath();
-		if (Suffix(P) == "html" and F->OpenMe) {
-			OpenFile(P);
-		}
-	}
+	for (auto& F : A.Files)
+		if (Suffix(F->FullPath()) == "html" and F->OpenMe)
+			OpenFile(F->FullPath());
 }
 
 

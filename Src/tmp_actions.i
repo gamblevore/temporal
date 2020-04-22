@@ -7,15 +7,6 @@ static cstring WelcomeMsg = R"(teMpOwAl resurtch!!
 Steve is about to divulge magical temporal randomness from the brain of your device.
 )";
 
-Ooof int ParseWarmup(StringVec& Args) {
-	if (Args.size() >= 3) {
-		auto S = Args[2];
-		return Num(S);
-	}
-	
-	return 1;
-}
-
 
 static int ListAction (BookHitter* B, StringVec& Args) {
 	if (Args.size() < 2) return ArgError;
@@ -25,7 +16,7 @@ static int ListAction (BookHitter* B, StringVec& Args) {
 	auto& Conf = *bh_config(B);
 
 	Conf.Log = true;
-	B->SetChannel( GetNum(Args, 1) );
+	B->SetChannel( GetArg(Args, 1).c_str() );
 	if (errno) return errno;
 //	Conf.DontSortRetro = true; // better to sort?
 	Conf.AutoReScore = 0;
@@ -176,7 +167,7 @@ int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {
 		return ArgError;
 	
 	bh_config(B)->Log = -1; // no log even debug
-	B->SetChannel(GetNum(Args,1));
+	B->SetChannel(GetArg(Args,1).c_str());
 	
 	int          Remain   = ParseLength(Args[2]);
 	if (Hex)	 Remain  /= 2;

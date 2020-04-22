@@ -58,6 +58,10 @@ struct GenApproach {
 		return Result;
 	}
 	
+	string SimpleName() {
+		return string(Gen->Name) + "_" + to_string(Reps);
+	}
+	
 	Shrinkers FinalFlags() {
 		auto Result = ShrinkFlags_(this);
 		Result.Log = true;
@@ -270,12 +274,20 @@ struct BookHitter {
 		CreateDirs(Path);
 	}
 	
-	void SetChannel(int i) {
-		char s = i;
-		if (i != s) {
-			printf("Can't set channel %i, out of range (-128 to 127)\n", i);
+	void SetChannel(const char* name) {
+		bool OK;
+		int i = Num(name, OK);
+		if (OK) {
+			char s = i;
+			if (i != s) {
+				printf("Can't set channel %i, out of range (-128 to 127)\n", i);
+			} else {
+				Conf.Channel = s;
+				Conf.NamedChannel = 0;
+			}
 		} else {
-			Conf.Channel = s;
+			Conf.NamedChannel = name;
+			Conf.Channel = 1;
 		}
 	}
 	
@@ -321,19 +333,31 @@ struct BookHitter {
 		}
 	} 
 
-	int UserChannelIndex() {
-		int i = Conf.Channel;
-		if (i < 0)
-			i = -i;
-		if (i) i--;
-		return i;
-	}
-	
 	GenApproach* ViewChannel() {
 		auto& L = ApproachesForChannel();
-		int i = UserChannelIndex() % L.size();
-		App = L[i].get();
+		if (Conf.NamedChannel) {
+			App = FindNamedChannel(L, Conf.NamedChannel);
+		} else {
+			int i = Conf.Channel;
+			i = (i < 0) ? (-i-1) : (i?i-1:0);
+			i = i % L.size();
+			App = L[i].get();
+		}
 		return App;
+	}
+	
+	GenApproach* FindNamedChannel(ApproachVec& L, const char* s) {
+		for (auto a: L) {
+			auto N = a->SimpleName();
+			if (N == s) {
+				return a.get();
+			}
+		}
+		if (!App) {
+			string N = L[0]->SimpleName();
+			printf("Error: Can't find channel: '%s' (using '%s' instead).\n", s, N.c_str());
+		}
+		return L[0].get();
 	}
 	
 	ApproachVec& ApproachesForChannel() {

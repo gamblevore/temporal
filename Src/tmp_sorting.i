@@ -99,19 +99,22 @@ static bool ShouldAddApproach(BookHitter& B, GenApproach& oof) {
 ApproachVec& BookHitter::FindBestApproach(ApproachVec& V) {
 	if (V.size())
 		return V;
-
+	
 	for (auto oof: ApproachList)
 		if (ShouldAddApproach(self, *oof))
 			V.push_back(oof);
 
+	auto OldApp = App;
 	DuringTesting = true;
 	BestApproachCollector(V);
 	DuringTesting = false;
+	App = OldApp;
 	
 	ResetMinMaxes();
 	auto Name = ViewChannel()->Name();
 	if (LogOrDebug() and !Timing.Err)
 		printf(":: Lets use '%s' ::\n", Name.c_str());
+
 	return V;
 }
 

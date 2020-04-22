@@ -176,18 +176,24 @@ Ooof FILE* CmdArgFile (string FileOut, FILE* Default) {
 }
 
 
-Ooof int Num (string s) {
-	return atoi(s.c_str());
+Ooof int Num (string s, bool& OK) {
+	const char* str = s.c_str();
+	char* Out = 0;
+	int OldErr = errno;
+	errno = 0;
+	auto Result = (int)strtol(str, &Out, 10);
+	OK = !errno;
+	errno = OldErr;
+	return (int)Result;
 }
 
 
-Ooof int GetNum (StringVec& V, int i) {
+Ooof string GetArg (StringVec& V, int i) {
 	if (i < V.size()) {
-		auto s = V[i];
-		return Num(s);
+		return V[i];
 	}
 	errno = ArgError;
-	return 0;
+	return "";
 }
 
 Ooof string UnHexString(const string& s) {
