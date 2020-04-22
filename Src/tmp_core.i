@@ -93,6 +93,7 @@ int BookHitter::UseApproach (bool IsFirst) {
 
 NamedGen* BookHitter::NextApproachOK(GenApproach& app,  NamedGen* LastGen) {
 	this->App = &app;
+	SettingApp("NextappOk");
 	if ( app.Gen != LastGen  and  LogOrDebug() )
 		printf( "\n:: %s gen :: \n", app.Gen->Name );
 	LastGen = app.Gen;
@@ -149,7 +150,7 @@ static void XorCopy(u8* Src, FunWriter FW) {
 
 
 bool BookHitter::CollectPieceOfRandom (RandomBuildup& B) {
-	B.Chan = ViewChannel();
+	B.Chan = ViewChannel("CollectPieceOfRandom");
 	require(!Timing.Err);
 	u32 Least = -1; 
 	

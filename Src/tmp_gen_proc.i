@@ -215,6 +215,7 @@ static void GenerateWrapper(BookHitter& B) {
 static float TemporalGeneration(BookHitter& B, GenApproach& App) {
 	auto t_Start = Now();
 	B.App = &App;
+	B.SettingApp("tempgen");
 	B.Timing.Err = 0;
 	App.Stats = {};
 

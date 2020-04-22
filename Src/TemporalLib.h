@@ -2,6 +2,7 @@
 // API
 
 #include <stdint.h>
+#include <string>
 
 extern "C" {
 
@@ -60,11 +61,11 @@ struct bh_stats {
 
 
 struct bh_conf {
-	  const char*   NamedChannel;
 	         char  	Channel;
 	unsigned char   Log;
 	unsigned char   DontSortRetro;
 	unsigned char   AutoReScore;
+	  std::string   NamedChannel;
 };
 
 }

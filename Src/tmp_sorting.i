@@ -71,6 +71,7 @@ void BookHitter::ReScore() {
 	if (!RescoreSelf) {
 		u32 i = RescoreIndex++ % L.size();
 		App = L[ i ].get();
+		SettingApp("rescore");
 	}
 	float OldWorst = App->Stats.Worst;
 
@@ -83,6 +84,7 @@ void BookHitter::ReScore() {
 	
 	DuringTesting = false;
 	App = Orig;
+	SettingApp("rescore (orig)");
 }
 
 
@@ -109,9 +111,10 @@ ApproachVec& BookHitter::FindBestApproach(ApproachVec& V) {
 	BestApproachCollector(V);
 	DuringTesting = false;
 	App = OldApp;
+	SettingApp("find best (orig)");
 	
 	ResetMinMaxes();
-	auto Name = ViewChannel()->Name();
+	auto Name = ViewChannel("FindBestApproach")->Name();
 	if (LogOrDebug() and !Timing.Err)
 		printf(":: Lets use '%s' ::\n", Name.c_str());
 

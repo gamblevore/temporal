@@ -121,11 +121,12 @@ struct GenApproach {
 		return FileName_(this, s);
 	}
 	static string Name_(GenApproach* App) {
+		if (!App) return "nil";
 		if (App->_name_.length())
 			return App->_name_;
 		if (App->Stats.Type>3) debugger; 
-		if (App and App->Stats.Type)   return MaxNames[App->Stats.Type];
-		if (!App or !App->Gen) return "unknown_";
+		if (App->Stats.Type)   return MaxNames[App->Stats.Type];
+		if (!App->Gen) return "unknown_";
 		return App->NameSub();
 	}
 	static string FileName_(string Name, string s="") {
@@ -268,6 +269,13 @@ struct BookHitter {
 		return R;
 	}
 	
+	void SettingApp(string name) {
+//		if (LogOrDebug()) {
+//			auto N = App->Name();
+//			printf("		Approach '%s' <-- '%s'\n", N.c_str(), name.c_str()); 
+//		}
+	}
+
 	void ExternalReports(string Path) {
 		Conf.Log = true;
 		Conf.Channel = 0; // if we are marked as "Retro"... reporting doesn't add scores.
@@ -283,7 +291,7 @@ struct BookHitter {
 				printf("Can't set channel %i, out of range (-128 to 127)\n", i);
 			} else {
 				Conf.Channel = s;
-				Conf.NamedChannel = 0;
+				Conf.NamedChannel = "";
 			}
 		} else {
 			Conf.NamedChannel = name;
@@ -333,20 +341,22 @@ struct BookHitter {
 		}
 	} 
 
-	GenApproach* ViewChannel() {
+	GenApproach* ViewChannel(string Reason) {
 		auto& L = ApproachesForChannel();
-		if (Conf.NamedChannel) {
+		if (Conf.NamedChannel.length()) {
 			App = FindNamedChannel(L, Conf.NamedChannel);
+			SettingApp(Reason+": ViewChannel Named: " + Conf.NamedChannel);
 		} else {
 			int i = Conf.Channel;
 			i = (i < 0) ? (-i-1) : (i?i-1:0);
 			i = i % L.size();
 			App = L[i].get();
+			SettingApp(Reason+": ViewChannel num");
 		}
 		return App;
 	}
 	
-	GenApproach* FindNamedChannel(ApproachVec& L, const char* s) {
+	GenApproach* FindNamedChannel(ApproachVec& L, string s) {
 		for (auto a: L) {
 			auto N = a->SimpleName();
 			if (N == s) {
@@ -355,7 +365,7 @@ struct BookHitter {
 		}
 		if (!App) {
 			string N = L[0]->SimpleName();
-			printf("Error: Can't find channel: '%s' (using '%s' instead).\n", s, N.c_str());
+			printf("Error: Can't find channel: '%s' (using '%s' instead).\n", s.c_str(), N.c_str());
 		}
 		return L[0].get();
 	}

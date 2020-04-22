@@ -184,7 +184,7 @@ int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {
 	if (Hex) HSize *= 2;
 	ByteArray D(HSize, 0);
 
-	auto Chan = B->ViewChannel();
+	auto Chan = B->ViewChannel("DumpAction");
 	auto ChanName = Chan->Name();
  
 	if (Dest == stdout) {
@@ -236,7 +236,7 @@ static int PrintAction (BookHitter* B, StringVec& Args) {
 	// assume chaotic?
 	bh_config(B)->Log = -1; // no log even debug
 	bh_config(B)->Channel = 0;
-	string S = B->ViewChannel()->Name();
+	string S = B->ViewChannel("PrintAction")->Name();
 	printf( "printing temporal %s\n", S.c_str() );
 
 	int N = ParseLength(Args[1]);
