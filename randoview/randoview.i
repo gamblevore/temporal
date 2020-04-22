@@ -1,5 +1,6 @@
 
 #include "TemporalLib.h"
+#include <chrono>
 
 BookHitter* Steve;
 
@@ -41,13 +42,14 @@ struct KeyHandler {
 	SDL_Event event;
 	u8 Channel;
 	bool IsRaw;
-	int FPS;
-	Uint64		LastLimit;
+	bool IsBG;
+	double FrameLength;
+	std::chrono::high_resolution_clock::time_point		LastTime;
 
 	
 	KeyHandler() {
 		Channel = 1;
-		FPS = 60;
+		FrameLength = 1.0/60.0;
 		IsRaw = true;
 	}
 	
@@ -59,24 +61,29 @@ struct KeyHandler {
 	}
 	
 	void FrameLimit() {
-		// Not perfect... (SDL_GetPerformanceFrequency()/FPS) is a fractional number.
-		// We lose some info :( could cause wobbly frame-rate?
-		// what about overflow?
-		// so... lets say we are at 4gb-10
-		// then... the nextlimit is 0... so we just gotta wait till we are more than
-		// 0, which is right away... so its just too fast. but only for 1 frame?
-		// its rare? I cant be bothered to fix this...
-		
-		auto oof = SDL_GetPerformanceFrequency();
-		Uint64 NextLimit = LastLimit + (oof/FPS);
-		while ( SDL_GetPerformanceCounter() < NextLimit ) {
+		auto F = FrameLength;
+		if (IsBG)
+			F = 1.0/1.0;
+		while ( true ) {
+			auto t_now = std::chrono::high_resolution_clock::now();
+			auto Durr = std::chrono::duration_cast<std::chrono::duration<double>>(t_now - LastTime).count();
+			if (Durr >= F) {
+				LastTime = t_now;
+				break;
+			}
 			SDL_Delay(1);
 		}
-		LastLimit = NextLimit;
 	}
 	
 	bool CheckEvent() {
 		auto t = event.type;
+		
+		if (t == SDL_APP_DIDENTERFOREGROUND or t == SDL_APP_DIDENTERBACKGROUND) {
+			IsBG = (t == SDL_APP_DIDENTERBACKGROUND);
+			return true;
+		}
+
+
 		if (t == SDL_QUIT or t==SDL_APP_TERMINATING)
 			return false;
 		
@@ -84,9 +91,12 @@ struct KeyHandler {
 			int ev = event.window.event;
 			if (ev == SDL_WINDOWEVENT_CLOSE) {
 				return false;
+			} else if (ev == SDL_WINDOWEVENT_FOCUS_GAINED) {
+				IsBG = false;
+			} else if (ev == SDL_WINDOWEVENT_FOCUS_LOST) {
+				IsBG = true;
 			}
-		}
-		if (t == SDL_KEYDOWN and !event.key.repeat) {
+		} else if (t == SDL_KEYDOWN and !event.key.repeat) {
 			auto key = event.key.keysym.sym;
 			if (key == SDLK_LEFT) {
 				Channel--;

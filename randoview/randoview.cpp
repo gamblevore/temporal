@@ -67,7 +67,7 @@ struct FullScreenSteve {
 int main(int argc, char** argv) {
 	Steve = bh_create();
 	bh_config(Steve)->AutoReScore = false;
-	bh_config(Steve)->Log = -1;
+//	bh_config(Steve)->Log = -1;
 
 	FullScreenSteve View = {};
 	View.DetectSizes();
