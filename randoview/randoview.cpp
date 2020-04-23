@@ -40,9 +40,9 @@ struct FullScreenSteve {
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w*4, h*4, SDL_WINDOW_RESIZABLE);
 
 		renderer = SDL_CreateRenderer(window, -1, 0);
-		// prefered format is 372645892. gives 4 bytes per pixel... rgba.
-		// it should be one of the sdl_format defines, dunno which.
 		Raw = SDL_CreateTexture(renderer, 0, SDL_TEXTUREACCESS_STREAMING, w, h);
+// prefered format is 372645892. gives 4 bytes per pixel... rgba.
+// it should be one of the sdl_format defines, dunno which.
 //		Uint32 f; int w; int h; int a;
 //		SDL_QueryTexture(Raw, &f, &a, &a, &h);
 		
@@ -108,6 +108,7 @@ struct FullScreenSteve {
 int main(int argc, char** argv) {
 	Steve = bh_create();
 	bh_config(Steve)->AutoReScore = false;
+	bh_config(Steve)->DontSortRetro = true;
 
 	FullScreenSteve View = {};
 	View.DetectSizes();

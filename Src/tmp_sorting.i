@@ -38,19 +38,21 @@ static void RemoveSudo(ApproachVec& L) {
 
 
 void BookHitter::BestApproachCollector(ApproachVec& L) {
-	if (LogOrDebug()) printf( "\n:: Locating Temporal Randomness in %i locations! :: \n", (int)L.size() );
-	
-	NamedGen* LastGen = 0;
-	for (auto app : L) {
-		LastGen = NextApproachOK(*app, LastGen);
-		if (!LastGen) return;
-		UseApproach(true);
+	if (!Conf.DontSortRetro and !LogFiles()) {
+		if (LogOrDebug()) printf( "\n:: Locating Temporal Randomness in %i locations! :: \n", (int)L.size() );
+		
+		NamedGen* LastGen = 0;
+		for (auto app : L) {
+			LastGen = NextApproachOK(*app, LastGen);
+			if (!LastGen) return;
+			UseApproach(true);
+		}
+		
+		if (!IsRetro() and !Conf.DontSortRetro)
+			ApproachSort(L);
+		if (LogFiles())
+			CreateHTMLRandom(L,  "scoring.html",  "Fatum Temporal Randomness Test");
 	}
-	
-	if (!IsRetro() or !Conf.DontSortRetro)
-		ApproachSort(L);
-	if (LogFiles())
-		CreateHTMLRandom(L,  "scoring.html",  "Fatum Temporal Randomness Test");
 	RemoveSudo(L);
 }
 

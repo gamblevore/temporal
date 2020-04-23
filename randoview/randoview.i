@@ -51,8 +51,6 @@ struct RawDrawInfo {
 	}
 
 	void DrawChar(int C, int DrawX, int DrawY, RawDrawInfo& Where) {
-		// OK so... we need to copy some pixels... basically. How?
-		// define a src-rect and a dest-rect?
 		FOR_ (y, CharHeight) {
 			FOR_ (x, CharWidth) {
 				Pixel* D = Where.Get(x+DrawX, DrawY+y);
@@ -63,8 +61,9 @@ struct RawDrawInfo {
 	}
 	
 	void DrawText(const char* Str, RawDrawInfo& Where, int x=0, int y=0) {
-		for (int i = 0; Str[i]; i++)
-			DrawChar(Str[i], x + i*CharWidth, y, Where);
+		if (Where.Pixels and Pixels)
+			for (int i = 0; Str[i]; i++)
+				DrawChar(Str[i], x + i*CharWidth, y, Where);
 	}
 };
 
@@ -105,7 +104,6 @@ struct KeyHandler {
 		if (IsBG)
 			F = 1.0/1.0;
 		while ( true ) {
-		std::chrono::high_resolution_clock::now();
 			auto t_now = now();
 			auto Durr = std::chrono::duration_cast<std::chrono::duration<double>>(t_now - LastTime).count();
 			if (Durr >= F) {
@@ -137,7 +135,7 @@ struct KeyHandler {
 			} else if (ev == SDL_WINDOWEVENT_FOCUS_LOST) {
 				IsBG = true;
 			}
-		} else if (t == SDL_KEYDOWN and !event.key.repeat) {
+		} else if (t == SDL_KEYDOWN) {
 			auto key = event.key.keysym.sym;
 			if (key == SDLK_LEFT) {
 				Channel--;
