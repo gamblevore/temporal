@@ -1,40 +1,75 @@
 
 #include "TemporalLib.h"
 #include <chrono>
+#include "../Src/tmp_defines.i"
 
 BookHitter* Steve;
 
 typedef unsigned char u8;
 
+struct Pixel {
+	u8 R;
+	u8 G;
+	u8 B;
+	u8 A;
+};
+
+int clamp(int a, int b, int c) {
+	if (a < b)
+		return b;
+	if (a >= c)
+		return c-1;
+	return a;
+}
+
+int InRange(int a, int b) {
+	return ((unsigned int)a < (unsigned int)b);
+}
 
 struct RawDrawInfo {
 	int w; int h;
-	unsigned char* Pixels;
+	Pixel* Pixels;
 	int BytesPerPixel;
+	int Stride; // in case of working a section of an img.
+
+	static const int CharWidth = 6; 
+	static const int CharHeight = 9; 
+	
+	bool Load(const char* Name) {
+		Pixels = (Pixel*)stbi_load(Name, &w, &h, &BytesPerPixel, sizeof(Pixel));
+		Stride = BytesPerPixel * w / sizeof(Pixel);
+		if (!Pixels) {
+			printf( "Can't load image: '%s'\n", Name);
+		}
+		return Pixels;
+	}
+	
+	Pixel* Get(int x, int y) {
+		if (InRange(x,w) and InRange(y,h))
+			return Pixels + x + ((-y+h-1)*Stride);
+		return Pixels;
+	}
+
+	void DrawChar(int C, int DrawX, int DrawY, RawDrawInfo& Where) {
+		// OK so... we need to copy some pixels... basically. How?
+		// define a src-rect and a dest-rect?
+		FOR_ (y, CharHeight) {
+			FOR_ (x, CharWidth) {
+				Pixel* D = Where.Get(x+DrawX, DrawY+y);
+				Pixel* R = Get(x+C*CharWidth, DrawY+y);
+				*D = *R;
+			} 
+		} 
+	}
+	
+	void DrawText(const char* Str, RawDrawInfo& Where, int x=0, int y=0) {
+		for (int i = 0; Str[i]; i++)
+			DrawChar(Str[i], x + i*CharWidth, y, Where);
+	}
 };
 
 
  
-void DrawSteveFrame(const RawDrawInfo& T, bool What) {
-	int n = T.w * T.h;
-	if (What) {
-		bh_hitbooks(Steve, 0, 1);
-		bh_view_colorised_samples(Steve, T.Pixels, n);
-	} else if (T.BytesPerPixel == 4) {
-
-//		n = n / 4;
-// why is this not crashing? it should corrupt memory?
-
-		static std::string s;
-		s.resize(n);
-		u8* S = (u8*)s.c_str();
-
-		bh_hitbooks(Steve, S, n);
-		bh_colorise_external(S, n, T.Pixels);
-	} else {
-		// ermm... dunno what to do.
-	}
-}
 
 
 
@@ -45,6 +80,7 @@ struct KeyHandler {
 	bool IsBG;
 	double FrameLength;
 	std::chrono::high_resolution_clock::time_point		LastTime;
+	std::chrono::high_resolution_clock::time_point		ChannelTime;
 
 	
 	KeyHandler() {
@@ -60,12 +96,17 @@ struct KeyHandler {
 		return true;
 	}
 	
+	std::chrono::high_resolution_clock::time_point now() {
+		return std::chrono::high_resolution_clock::now();
+	}
+	
 	void FrameLimit() {
 		auto F = FrameLength;
 		if (IsBG)
 			F = 1.0/1.0;
 		while ( true ) {
-			auto t_now = std::chrono::high_resolution_clock::now();
+		std::chrono::high_resolution_clock::now();
+			auto t_now = now();
 			auto Durr = std::chrono::duration_cast<std::chrono::duration<double>>(t_now - LastTime).count();
 			if (Durr >= F) {
 				LastTime = t_now;
@@ -100,8 +141,10 @@ struct KeyHandler {
 			auto key = event.key.keysym.sym;
 			if (key == SDLK_LEFT) {
 				Channel--;
+				ChannelTime = now();
 			} else if (key == SDLK_RIGHT) {
 				Channel++;
+				ChannelTime = now();
 			} else if (key == SDLK_UP) {
 				IsRaw = true;
 			} else if (key == SDLK_DOWN) {

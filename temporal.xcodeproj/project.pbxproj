@@ -229,7 +229,7 @@
 				AC6C7C772450B181004CEA27 /* randoview */,
 				AC105AD9241459470001A7B2 /* make.sh */,
 				AC105AD8241459470001A7B2 /* readme.md */,
-				ACD54AD12299957800526848 /* cpp files */,
+				ACD54AD12299957800526848 /* temporal */,
 				ACD54AD02299957800526848 /* Products */,
 				AC6C7CC42450B6C4004CEA27 /* Frameworks */,
 			);
@@ -247,7 +247,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		ACD54AD12299957800526848 /* cpp files */ = {
+		ACD54AD12299957800526848 /* temporal */ = {
 			isa = PBXGroup;
 			children = (
 				ACA5A15124046D3A00EFFC13 /* gen.cpp */,
@@ -283,7 +283,7 @@
 				ACA5A14E24046D3A00EFFC13 /* tmp_utils.i */,
 				ACA5A15A24046D3A00EFFC13 /* tmp_vars.i */,
 			);
-			name = "cpp files";
+			name = temporal;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -7,7 +7,7 @@ Time() is interesting, its a physical sensor, like microphone, that can get phys
 
 This is research to play around with! Don't expect anything more! Have fun experimenting or don't use.
 
-![Temporal Randomness](screenshot.png)
+![Temporal Randomness](resources/screenshot.png)
 
 This project was inspired by the fatum project, a totally cool project about: Novelty, deeper mystery, and expanded exploration. Give it a look. http://randonauts.com    
 
@@ -32,7 +32,7 @@ This project was inspired by the fatum project, a totally cool project about: No
 * We use some defines to make code more consistant. `Time_`, `for_`, `Gen`
 * A lot more design is going on, inside... to make it work and be nice...
 
-![Temporal Randomness](screenshot2.jpg)
+![Temporal Randomness](resources/screenshot2.jpg)
 
 
 
