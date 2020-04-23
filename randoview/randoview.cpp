@@ -36,7 +36,7 @@ struct FullScreenSteve {
 	void StartSteveWindow() {
 		SDL_Init(SDL_INIT_VIDEO);
 
-		window = SDL_CreateWindow("Tune Into Some Steveness",
+		window = SDL_CreateWindow("Steve‘s Crazy TV Channels",
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w*4, h*4, SDL_WINDOW_RESIZABLE);
 
 		renderer = SDL_CreateRenderer(window, -1, 0);
@@ -74,32 +74,30 @@ struct FullScreenSteve {
 
 	void DrawSteveFrame(RawDrawInfo& T, bool What) {
 		int n = T.w * T.h;
-		bh_stats* Stats=0;
-		if (What) {
-			Stats = bh_hitbooks(Steve, 0, 1);
-			bh_view_colorised_samples(Steve, (u8*)T.Pixels, n);
-		} else if (T.BytesPerPixel == 4) {
+		bh_stats* Stats = 0;
+		if (bh_config(Steve)->Channel <= 0) {
 			static std::string s;
 			s.resize(n);
 			u8* S = (u8*)s.c_str();
-
-			Stats = bh_hitbooks(Steve, S, n);
+			Stats = bh_hitbooks(Steve, S, n/16);
 			bh_colorise_external(S, n, (u8*)T.Pixels);
+
 		} else {
-			// ermm... dunno what to do.
+			Stats = bh_hitbooks(Steve, NULL, 1);
+			bh_view_colorised_samples(Steve, (u8*)T.Pixels, n);
 		}
 		
-		
 		auto Durr = std::chrono::duration_cast<std::chrono::duration<double>>(Keys.now() - Keys.ChannelTime).count();
+		
 		if (Stats and Durr < 2.0) {
 			int C = bh_config(Steve)->Channel;
 			std::string S;
 			S = std::to_string(C) + ": ";
 			S += Stats->ApproachName;
- 			S += "_";
+			S += "_";
 			S += std::to_string(Stats->ApproachReps);
 			SmallFont.DrawText( S.c_str(), T);
-		}
+		}		
 	}
 
 };

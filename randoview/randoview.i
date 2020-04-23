@@ -13,6 +13,7 @@ struct Pixel {
 	u8 B;
 	u8 A;
 };
+static Pixel PixelBadPixel;
 
 int clamp(int a, int b, int c) {
 	if (a < b)
@@ -47,14 +48,14 @@ struct RawDrawInfo {
 	Pixel* Get(int x, int y) {
 		if (InRange(x,w) and InRange(y,h))
 			return Pixels + x + ((-y+h-1)*Stride);
-		return Pixels;
+		return &PixelBadPixel;
 	}
 
 	void DrawChar(int C, int DrawX, int DrawY, RawDrawInfo& Where) {
 		FOR_ (y, CharHeight) {
 			FOR_ (x, CharWidth) {
 				Pixel* D = Where.Get(x+DrawX, DrawY+y);
-				Pixel* R = Get(x+C*CharWidth, DrawY+y);
+				Pixel* R = self.Get(x+C*CharWidth, DrawY+y);
 				*D = *R;
 			} 
 		} 
