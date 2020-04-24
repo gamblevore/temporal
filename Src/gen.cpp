@@ -9,6 +9,7 @@
 #include "tmp_headers.i"
 #include "tmp_typedefs.i"
 #include "tmp_defines.i"
+#include "tmp_funcs.i"
 #include "tmp_shared.i"
 
 

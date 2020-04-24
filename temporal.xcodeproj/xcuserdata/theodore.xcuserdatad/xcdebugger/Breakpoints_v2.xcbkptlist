@@ -141,6 +141,38 @@
             endingLineNumber = "35"
             landmarkName = "ResolvePath(S)"
             landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "186E047B-835F-441C-94D6-1C00777BDAE7 - b4ca6ebfb869f5d4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ResolvePath(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, bool)"
+                  moduleName = "randoview"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/theodore/Speedie/temporal_steve/Src/tmp_files.i"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "35"
+                  endingLineNumber = "35"
+                  offsetFromSymbolStart = "217">
+               </Location>
+               <Location
+                  uuid = "186E047B-835F-441C-94D6-1C00777BDAE7 - b4ca6ebfb869f5d4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ResolvePath(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, bool)"
+                  moduleName = "randoview"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/theodore/Speedie/temporal_steve/Src/tmp_files.i"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "35"
+                  endingLineNumber = "35"
+                  offsetFromSymbolStart = "335">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

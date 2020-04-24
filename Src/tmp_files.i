@@ -1,7 +1,7 @@
 
 
 
-void OpenFile(string Path) {
+Ooof void OpenFile(string Path) {
 #if defined(__APPLE__) && defined(__MACH__) && (defined(__i386__) || defined(__x86_64__) || defined(__amd64__))
 	Path = string("open \"") + Path + "\"";
 	system(Path.c_str());

@@ -1,11 +1,5 @@
 
-#include "TemporalLib.h"
-#include <chrono>
-#include "../Src/tmp_defines.i"
-
 BookHitter* Steve;
-
-typedef unsigned char u8;
 
 struct Pixel {
 	u8 R;
@@ -37,7 +31,12 @@ struct RawDrawInfo {
 	static const int CharHeight = 9; 
 	
 	bool Load(const char* Name) {
-		Pixels = (Pixel*)stbi_load(Name, &w, &h, &BytesPerPixel, sizeof(Pixel));
+		string Data = ReadFile(Name);
+		return LoadStr(Data, Name);
+	}
+	
+	bool LoadStr(string Data, const char* Name) {
+		Pixels = (Pixel*)stbi_load_from_memory((u8*)Data.c_str(), (int)Data.length(), &w, &h, &BytesPerPixel, sizeof(Pixel));
 		Stride = BytesPerPixel * w / sizeof(Pixel);
 		if (!Pixels) {
 			printf( "Can't load image: '%s'\n", Name);
@@ -87,6 +86,7 @@ struct KeyHandler {
 		Channel = 1;
 		FrameLength = 1.0/60.0;
 		IsRaw = true;
+		ChannelTime = now();
 	}
 	
 	bool Running() {

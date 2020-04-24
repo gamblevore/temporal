@@ -1,10 +1,9 @@
 
 #pragma clang diagnostic ignored "-Wdocumentation"
-#include <SDL2/SDL.h>        
-#include "../Src/includes/stb_image.h"
-
+#include <SDL2/SDL.h>
+#include "../Src/lib.cpp"
+#include "smallfont.i"    
 #include "randoview.i"
-#include "unistd.h"
 
 
 struct FullScreenSteve {
@@ -46,7 +45,7 @@ struct FullScreenSteve {
 //		Uint32 f; int w; int h; int a;
 //		SDL_QueryTexture(Raw, &f, &a, &a, &h);
 		
-		SmallFont.Load("resources/SmallFont.png");
+		SmallFont.LoadStr(SmallFontPngStr, "smallfont");
 	}
 
 	RawDrawInfo StartFrame(SDL_Texture* T) {
@@ -76,7 +75,7 @@ struct FullScreenSteve {
 		int n = T.w * T.h;
 		bh_stats* Stats = 0;
 		if (bh_config(Steve)->Channel <= 0) {
-			static std::string s;
+			static string s;
 			s.resize(n);
 			u8* S = (u8*)s.c_str();
 			Stats = bh_hitbooks(Steve, S, n/16);
@@ -91,11 +90,11 @@ struct FullScreenSteve {
 		
 		if (Stats and Durr < 2.0) {
 			int C = bh_config(Steve)->Channel;
-			std::string S;
-			S = std::to_string(C) + ": ";
+			string S;
+			S = to_string(C) + ": ";
 			S += Stats->ApproachName;
 			S += "_";
-			S += std::to_string(Stats->ApproachReps);
+			S += to_string(Stats->ApproachReps);
 			SmallFont.DrawText( S.c_str(), T);
 		}		
 	}

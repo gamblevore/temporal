@@ -30,26 +30,16 @@
 //      * Needs to be done in terms of "how long ago did find a section of the same length"?
 
 
-#include "TemporalLib.h"
-#include "tmp_headers.i"
-#include "tmp_stb.i"
+#include "TemporalLibForProjects.h"
+
 extern "C" {
-#include "tmp_typedefs.i"
-#include "tmp_defines.i"
 #include "tmp_funcs.i"
 #include "tmp_vars.i"
-#include "tmp_files.i"
-#include "tmp_utils.i"
-#include "tmp_options.i"
-#include "tmp_archive.i"
-#include "tmp_directory.i"
 #include "tmp_shared.i"
-#include "tmp_math.i"
 #include "tmp_classes.i"
 #include "tmp_gen_proc.i"
 #include "tmp_stats.i"
-#include "tmp_img.i"
-#include "tmp_logging.i"
+#include "tmp_logging.i" 
 #include "tmp_histogram.i"
 #include "tmp_drawhisto.i"
 #include "tmp_debias.i"

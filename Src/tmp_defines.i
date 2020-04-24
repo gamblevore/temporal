@@ -5,9 +5,6 @@
 #define for_(count)			for (int i = 0; i < count; i++)
 #define FOR_(var, count)	for (int var = 0; var < count; var++)
 #define require(expr)		if (!(expr)) {return {};}
-#define Time_(R)			TimeInit(); u32 Finish = 0; while (Data < DataEnd) { u32 Start = Time32(); for_(R)
-#define TimeEnd 			; Finish = Time32(); *Data++ = TimeDiff(Start,Finish);} TimeFinish();
-#define Gen(name) 			u64 name##Generator (uSample* Data, uSample* DataEnd, u32 Input, int Reps)
 #define New(x)				std::make_shared<x>()
 #define New2(x,a)			std::make_shared<x>(a)
 #define New3(x,a,b)			std::make_shared<x>(a,b)
@@ -25,10 +22,4 @@
 #define Ooof				[[maybe_unused]] static
 #define test(cond)			if (!(cond)) {debugger;}
 #define sizecheck(a,b)		static_assert (sizeof(a)==b, "bad size!") // sizecheck
-
-
-#define		kSudo	 			1
-#define		kChaotic	  		2
 #define     ArgError			-5555
-#define		GenerationError		-5556
-

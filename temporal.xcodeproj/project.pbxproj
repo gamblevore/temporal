@@ -24,10 +24,9 @@
 		AC6C7CC12450B68C004CEA27 /* ForceFeedback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC6C7CB52450B68C004CEA27 /* ForceFeedback.framework */; };
 		AC6C7CC22450B68C004CEA27 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC6C7CB62450B68C004CEA27 /* IOKit.framework */; };
 		AC6C7CC32450B68C004CEA27 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC6C7CB72450B68C004CEA27 /* Carbon.framework */; };
-		AC6C7CC52450B6C4004CEA27 /* libTemporal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC69201E240FF302007F3DB4 /* libTemporal.a */; };
-		AC6C7CC62450B6D4004CEA27 /* libgenerators.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC50FC242404297400AB4285 /* libgenerators.a */; };
 		ACA5A16624046D3F00EFFC13 /* temporal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACA5A15C24046D3A00EFFC13 /* temporal.cpp */; };
 		ACA5A16724046D4800EFFC13 /* gen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACA5A15124046D3A00EFFC13 /* gen.cpp */; };
+		ACF63CA22452F3BF00462BF4 /* gen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACA5A15124046D3A00EFFC13 /* gen.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +128,7 @@
 		ACA5A16524046D3A00EFFC13 /* tmp_sorting.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_sorting.i; path = Src/tmp_sorting.i; sourceTree = "<group>"; };
 		ACD54ACF2299957800526848 /* temporal */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = temporal; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACF5E8712445F2DB00E68257 /* tmp_archive.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_archive.i; path = Src/tmp_archive.i; sourceTree = "<group>"; };
+		ACF63CA12452E80E00462BF4 /* TemporalLibForProjects.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TemporalLibForProjects.h; sourceTree = "<group>"; };
 		ACF89D8324338518006A9448 /* tmp_funcs.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_funcs.i; path = Src/tmp_funcs.i; sourceTree = "<group>"; };
 		ACF89D852433965B006A9448 /* tmp_directory.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_directory.i; path = Src/tmp_directory.i; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -159,8 +159,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC6C7CC62450B6D4004CEA27 /* libgenerators.a in Frameworks */,
-				AC6C7CC52450B6C4004CEA27 /* libTemporal.a in Frameworks */,
 				AC6C7CBE2450B68C004CEA27 /* CoreAudio.framework in Frameworks */,
 				AC6C7CC32450B68C004CEA27 /* Carbon.framework in Frameworks */,
 				AC6C7CBF2450B68C004CEA27 /* OpenGL.framework in Frameworks */,
@@ -253,10 +251,11 @@
 				ACA5A15124046D3A00EFFC13 /* gen.cpp */,
 				ACA5A15C24046D3A00EFFC13 /* temporal.cpp */,
 				AC69202B240FF3FF007F3DB4 /* lib.cpp */,
+				AC0D0B782413E18200E245C3 /* temporal_root.i */,
 				AC4281CD24423F310065362E /* TemporalLib.h */,
+				ACF63CA12452E80E00462BF4 /* TemporalLibForProjects.h */,
 				AC5E1F092441FB4E00E17828 /* tmp_actions.i */,
 				AC5E1F082441FA6300E17828 /* tmp_runcommand.i */,
-				AC0D0B782413E18200E245C3 /* temporal_root.i */,
 				ACA5A15924046D3A00EFFC13 /* tmp_headers.i */,
 				ACA5A14F24046D3A00EFFC13 /* tmp_api.i */,
 				ACA5A16124046D3A00EFFC13 /* tmp_classes.i */,
@@ -475,6 +474,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ACF63CA22452F3BF00462BF4 /* gen.cpp in Sources */,
 				AC6C7C862450B2ED004CEA27 /* randoview.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

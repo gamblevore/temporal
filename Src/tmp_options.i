@@ -38,6 +38,19 @@ Ooof char lower (char a) {
 	return a;
 }
 
+Ooof bool IsLower (char a) {
+	return (a >= 'a' and a <= 'z');
+}
+
+Ooof bool IsUpper (char a) {
+	return (a >= 'A' and a <= 'Z');
+}
+
+Ooof bool IsDigit (char a) {
+	return (a >= '0' and a <= '9');
+}
+
+
 
 // why am i forever doing this low-level shit?
 Ooof const u8* HexCharsInit () {
@@ -202,3 +215,42 @@ Ooof string UnHexString(const string& s) {
 	HexCleanup((u8*)d.c_str(), (u8*)s.c_str(), (int)s.length());
 	return d;
 }
+
+Ooof string CPrint(string s) {
+	bool Escaped = false;
+	std::stringstream Data;
+	Data << '"';
+	auto T = HexCharsInit();
+	
+	for (auto c2: s) {
+		u8 c = (u8)c2;
+		if (c < 32 or c >= 128 or c == '"' or c == '\\' or c=='\?') {
+			if (!c) {
+				Data << "\\0";
+			} else {
+				Data << "\\x";
+				Data << HexChars[c>>4];
+				Data << HexChars[c&15];
+			}
+			Escaped = true;
+		} else {
+			if (Escaped) {
+				if (T[c]==255) {
+					Escaped = false;
+				} else {
+					Data << '"';
+					Data << '"';
+				}
+			}
+			Escaped = false;
+			Data << c;
+		}
+	}
+	Data << '"';
+	string s2 = Data.str();
+	return s2;
+}
+
+//\" = quotation mark (backslash not required for '"')
+//\? = question mark (used to avoid trigraphs)
+//\\ = backslash
