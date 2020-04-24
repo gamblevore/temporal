@@ -51,7 +51,7 @@ void BookHitter::BestApproachCollector(ApproachVec& L) {
 		if (!Conf.DontSort)
 			ApproachSort(L);
 		if (LogFiles())
-			CreateHTMLRandom(L,  "scoring.html",  "Fatum Temporal Randomness Test");
+			CreateHTMLRandom(L,  "scoring.html",  "Batch Test");
 	}
 	RemoveSudo(L);
 }

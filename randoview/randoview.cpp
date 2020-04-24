@@ -114,7 +114,6 @@ int main(int argc, char** argv) {
 	View.StartSteveWindow();
 	
 	while (View.Keys.Running()) {
-		bh_config(Steve)->Channel = View.Keys.Channel;
 		auto Buff = View.StartFrame(View.Raw);
 		View.DrawSteveFrame(Buff, View.Keys.IsRaw);
 		View.Keys.FrameLimit();

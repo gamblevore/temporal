@@ -24,6 +24,7 @@ void			bh_free				(BookHitter* B);
 // debugging
 int				bh_run_command		(BookHitter* B, const char** argv, bool WriteToString);
 void			bh_extract_archive	(const char* Data, const char* Path);
+
 // rnd
 uint64_t		bh_rand_u64			(BookHitter* B);
 double			bh_rand_double		(BookHitter* B);
@@ -38,6 +39,7 @@ int				bh_view_rawsamples			(BookHitter* B, unsigned char* Out, int OutLength);
 
 // config
 bh_conf*		bh_config			(BookHitter* B);
+int				bh_setchannel_num	(BookHitter* B, int i);
 
 
 // Tells the bookhitter to write the html debug-log-files to disk.

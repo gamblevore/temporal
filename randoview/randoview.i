@@ -74,7 +74,6 @@ struct RawDrawInfo {
 
 struct KeyHandler {
 	SDL_Event event;
-	u8 Channel;
 	bool IsRaw;
 	bool IsBG;
 	double FrameLength;
@@ -83,7 +82,6 @@ struct KeyHandler {
 
 	
 	KeyHandler() {
-		Channel = 1;
 		FrameLength = 1.0/60.0;
 		IsRaw = true;
 		ChannelTime = now();
@@ -139,10 +137,10 @@ struct KeyHandler {
 		} else if (t == SDL_KEYDOWN) {
 			auto key = event.key.keysym.sym;
 			if (key == SDLK_LEFT) {
-				Channel--;
+				bh_setchannel_num(Steve, bh_config(Steve)->Channel - 1);
 				ChannelTime = now();
 			} else if (key == SDLK_RIGHT) {
-				Channel++;
+				bh_setchannel_num(Steve, bh_config(Steve)->Channel + 1);
 				ChannelTime = now();
 			} else if (key == SDLK_UP) {
 				IsRaw = true;

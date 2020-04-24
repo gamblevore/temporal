@@ -58,6 +58,15 @@ bh_conf* bh_config (BookHitter* f) {
 	return &f->Conf;
 }
 
+int bh_setchannel_num (BookHitter* B, int i) {
+	int N = (int)B->RetroApproaches.size();
+	int i2 = min(abs(i), N);
+	i = Sign(i)*i2;
+	B->Conf.Channel = i;
+	return B->Conf.Channel; 
+}
+
+
 
 bh_stats* bh_hitbooks2 (BookHitter* B, u8* Data, int DataLength, bool Hex) {
 	int N = DataLength;
