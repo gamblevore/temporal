@@ -26,7 +26,7 @@
 		AC6C7CC32450B68C004CEA27 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC6C7CB72450B68C004CEA27 /* Carbon.framework */; };
 		ACA5A16624046D3F00EFFC13 /* temporal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACA5A15C24046D3A00EFFC13 /* temporal.cpp */; };
 		ACA5A16724046D4800EFFC13 /* gen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACA5A15124046D3A00EFFC13 /* gen.cpp */; };
-		ACF63CA22452F3BF00462BF4 /* gen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ACA5A15124046D3A00EFFC13 /* gen.cpp */; };
+		ACF63CA424532E5700462BF4 /* libgenerators.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC50FC242404297400AB4285 /* libgenerators.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -159,6 +159,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ACF63CA424532E5700462BF4 /* libgenerators.a in Frameworks */,
 				AC6C7CBE2450B68C004CEA27 /* CoreAudio.framework in Frameworks */,
 				AC6C7CC32450B68C004CEA27 /* Carbon.framework in Frameworks */,
 				AC6C7CBF2450B68C004CEA27 /* OpenGL.framework in Frameworks */,
@@ -474,7 +475,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ACF63CA22452F3BF00462BF4 /* gen.cpp in Sources */,
 				AC6C7C862450B2ED004CEA27 /* randoview.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
