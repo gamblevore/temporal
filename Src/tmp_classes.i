@@ -51,7 +51,11 @@ struct GenApproach {
 	bool IsExternal() {
 		return _name_.length();
 	}
+	bool OhBeQuick();
 	static Shrinkers ShrinkFlags_(GenApproach* App) {
+		if (App->OhBeQuick()) {
+			return {};
+		}
 		Shrinkers Result = {16, 1, 1};
 		if (App and App->IsChaotic())
 			Result.PreXOR = 4;
@@ -198,6 +202,9 @@ struct RandomBuildup {
 		if (!Chan->Stats.FailedCount)
 			AnyOK = true;
 
+		if (Chan->OhBeQuick())
+			return Loops <= 1;
+		
 		int IsChaotic = Chan->IsChaotic(); 
 		if (IsRetro or (IsChaotic and AnyOK))
 			return Loops <= 1;
@@ -479,4 +486,8 @@ ArchiveFile& GenApproach::Arc(string Extra) {
 ArchiveFile& GenApproach::Png(string Extra) {
 	Owner->Arc->Open();
 	return Owner->Arc->AddFile(FileName(Extra));
+}
+
+bool GenApproach::OhBeQuick() {
+	return (Owner->Conf.OhBeQuick);
 }

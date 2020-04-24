@@ -16,7 +16,7 @@ static int ListAction (BookHitter* B, StringVec& Args) {
 	Conf.Log = true;
 	B->SetChannel( GetArg(Args, 1).c_str() );
 	if (errno) return errno;
-//	Conf.DontSortRetro = true; // better to sort?
+//	Conf.DontSort = true; // better to sort?
 	Conf.AutoReScore = 0;
 	
 	puts(WelcomeMsg);

@@ -78,7 +78,7 @@ struct FullScreenSteve {
 			static string s;
 			s.resize(n);
 			u8* S = (u8*)s.c_str();
-			Stats = bh_hitbooks(Steve, S, n/16);
+			Stats = bh_hitbooks(Steve, S, n);
 			bh_colorise_external(S, n, (u8*)T.Pixels);
 
 		} else {
@@ -105,7 +105,9 @@ struct FullScreenSteve {
 int main(int argc, char** argv) {
 	Steve = bh_create();
 	bh_config(Steve)->AutoReScore = false;
-	bh_config(Steve)->DontSortRetro = true;
+	bh_config(Steve)->DontSort = true;
+	bh_config(Steve)->OhBeQuick = true;
+	
 
 	FullScreenSteve View = {};
 	View.DetectSizes();

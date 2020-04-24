@@ -72,8 +72,9 @@ struct bh_stats {
 struct bh_conf {
 	         char  	Channel;
 	unsigned char   Log;
-	unsigned char   DontSortRetro;
+	unsigned char   DontSort;
 	unsigned char   AutoReScore;
+	unsigned char	OhBeQuick;
 	  std::string   NamedChannel;
 };
 
