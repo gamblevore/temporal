@@ -1,10 +1,5 @@
 
 /*
-	* no more than 1.5 hours a day
-	* 15 mins session... if I can't complete, it wastes hte entire
-		* Don't worry... can think while not coding!
-	* save enthusiasm!
-	
 	todo:
 		* Y-table... of struct, with start/end int values
 			* So we know if our x is within the circle or not!
