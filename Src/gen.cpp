@@ -33,7 +33,7 @@
 extern "C" {
 
 #define ARM_ASM // disable ARM_ASM if its not working on android!
-#define BAD_TIMER_EMULATION 1
+//#define BAD_TIMER_EMULATION 1
 #define TSC_RD			1
 #define TSC_mach		2
 #define TSC_MRC			3
