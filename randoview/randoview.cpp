@@ -2,8 +2,10 @@
 #pragma clang diagnostic ignored "-Wdocumentation"
 #include <SDL2/SDL.h>
 #include "../Src/lib.cpp"
-#include "smallfont.i"    
+#include "smallfont.i"
+#include "audio.i"  
 #include "randoview.i"
+
 
 
 struct FullScreenSteve {
@@ -14,6 +16,8 @@ struct FullScreenSteve {
 	SDL_Texture* Raw;
 	KeyHandler		Keys;
 	RawDrawInfo  SmallFont;
+	SDL_AudioDeviceID AudioStream;
+    SDL_AudioSpec     AudioSpec;
 
 	
 	~FullScreenSteve() {
@@ -33,23 +37,20 @@ struct FullScreenSteve {
 	}
 	
 	void StartSteveWindow() {
-		SDL_Init(SDL_INIT_VIDEO);
+		SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
 		window = SDL_CreateWindow("Steve‘s Crazy TV Channels",
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w*4, h*4, SDL_WINDOW_RESIZABLE);
 
 		renderer = SDL_CreateRenderer(window, -1, 0);
-		Raw = SDL_CreateTexture(renderer, 0, SDL_TEXTUREACCESS_STREAMING, w, h);
-// prefered format is 372645892. gives 4 bytes per pixel... rgba.
-// it should be one of the sdl_format defines, dunno which.
-//		Uint32 f; int w; int h; int a;
-//		SDL_QueryTexture(Raw, &f, &a, &a, &h);
-		
+//		auto F = SDL_PIXELFORMAT_RGBA8888;
+		auto F = SDL_PIXELFORMAT_ARGB8888;
+		Raw = SDL_CreateTexture(renderer, F, SDL_TEXTUREACCESS_STREAMING, w, h);
 		SmallFont.LoadStr(SmallFontPngStr, "smallfont");
 	}
 
 	RawDrawInfo StartFrame(SDL_Texture* T) {
-		RawDrawInfo Result = {w,h};
+		RawDrawInfo Result = {w, h};
 		SDL_LockTexture(T, NULL, (void**)(&Result.Pixels), &Result.Stride);
 		Result.BytesPerPixel = Result.Stride / w;
 		Result.Stride /= 4;
@@ -104,9 +105,10 @@ struct FullScreenSteve {
 
 int main(int argc, char** argv) {
 	Steve = bh_create();
-	bh_config(Steve)->AutoReScore = false;
-	bh_config(Steve)->DontSort = true;
-	bh_config(Steve)->OhBeQuick = true;
+	auto& Conf = *bh_config(Steve); 
+	Conf.AutoReScore = false;
+	Conf.DontSort = true;
+	Conf.OhBeQuick = true;
 	
 
 	FullScreenSteve View = {};

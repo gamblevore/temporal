@@ -13,17 +13,34 @@
 #include "tmp_shared.i"
 
 
+#define Time_(R)			TimeInit(); u32 Finish = 0; while (Data < DataEnd) { u32 Start = Time32(); for_(R)
+#define TimeEnd 			; Finish = Time32(); *Data++ = TimeDiff(Start,Finish);} TimeFinish();
+#define SlowTime_(R)							\
+	u32 MinTime = TimeInit();					\
+	while (Data < DataEnd) {					\
+		u32 Score = 0;							\
+		u32 Start = Time32();					\
+		u32 Finish = Start + (Reps*MinTime);	\
+		while (true) {							\
+			Score++;							\
+			u32 T = Time32();					\
+			if (T<Start or T >= Finish) break; 
+#define SlowTimeEnd };							\
+		*Data++ = Score;						\
+	} TimeFinish();
+#define Gen(name) 			u64 name##Generator (uSample* Data, uSample* DataEnd, u32 Input, int Reps)
 
 extern "C" {
 
 #define ARM_ASM // disable ARM_ASM if its not working on android!
+#define BAD_TIMER_EMULATION 1
 #define TSC_RD			1
 #define TSC_mach		2
 #define TSC_MRC			3
 #define TSC_MRS			4
 #define TSC_timespec	5
 
-//#define TSC TSC_timespec	// force clock_gettime(very bad one but its for testing)
+//#define TSC TSC_timespec	// force clock_gettime
 
 #if defined(TSC)
 	// don't redefine!
@@ -51,6 +68,11 @@ extern "C" {
 	#endif
 #endif
 
+#if (TSC == TSC_timespec) || (TSC == TSC_MRC) || (TSC == TSC_MRS) || TMP_IS_IOS || BAD_TIMER_EMULATION
+	#define TIMING_IS_POOR 1
+#else
+	#define TIMING_IS_POOR 0
+#endif
 
 
 
@@ -58,9 +80,12 @@ static inline u32 Time32 () {
 #if TSC == TSC_RD
 	u64 rax;
 	asm volatile ( "rdtscp\n" : "=a" (rax));
+	#if BAD_TIMER_EMULATION
+		return ((u32)rax)&~(511);
+	#endif
 	return (u32)rax;
 #elif TSC == TSC_mach
-	return (u32)mach_absolute_time();
+	return (u32)mach_absolute_time(); // poor on iOS
 #elif TSC == TSC_MRC
 	volatile u32 cc;
 	__asm__ __volatile__ ("mrc p15, 0, %0, c9, c13, 0" : "=r"(cc));
@@ -79,23 +104,24 @@ static inline u32 Time32 () {
 }
 
 
-bool TmpTimingStartsPoor() {
-	return (TSC == TSC_timespec) or (TSC == TSC_MRC) or (TSC == TSC_MRS) or TMP_IS_IOS;
-}
-
-
 static inline void TimeFinish () {
 #if (TSC == TSC_MRC)
 	__asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 2" :: "r"(1<<31)); /* stop the cc */
 #endif
 }
 
-static inline void TimeInit () {
+static inline int TimeInit () {
 #if (TSC == TSC_MRC)
 	__asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 2" :: "r"(1<<31)); /* stop the cc */
 	__asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 0" :: "r"(5));     /* initialize */
 	__asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 1" :: "r"(1<<31)); /* start the cc */
 #endif
+	auto A = Time32();
+	while (1) {
+		auto B = Time32();
+		if (B!=A)
+			return B-A;
+	}
 }
 
 
@@ -104,7 +130,12 @@ static int TimeDiff (s64 A, s64 B) {
 	return (int)D;
 }
 
-//	 										//////// Generators ////////	 
+bool TimingIsPoor() {
+	return TIMING_IS_POOR;
+}
+
+
+//	 							//////// Generators ////////	 
 
 Gen(FloatSame) {
 	const float x0 = Input + 1;
@@ -195,6 +226,114 @@ Gen(Memory) {
 		x = x xor CachedMemory[index];
 		CachedMemory[index] = x;
 	} TimeEnd
+	
+	return x;
+}
+
+
+
+Gen(SlowFloatSame) {
+	const float x0 = Input + 1;
+	const float y0 = Input + 1;
+	float x = 0;
+	float y = 0;
+	SlowTime_ (Reps)
+		y = y0 + 1000.5;
+		x = x0 / 2.0;
+		x += y;
+	SlowTimeEnd
+	
+	return x;
+}
+
+
+Gen(SlowTime) {
+	u32 x = Input;
+	SlowTime_ (Reps)
+		x = x xor Time32();
+	SlowTimeEnd
+
+	return x;
+}
+
+
+Gen(SlowBool) {
+	bool f = (Input == 0);
+	bool t = (((int)Input) < 1);
+	
+	SlowTime_ (Reps)
+		f = f and t;
+		t = t or f;
+	SlowTimeEnd
+	
+	return f;
+}
+
+
+Gen(SlowBitOps) {
+	u64 x = Input + 1;
+	u64 y = Input + 1;
+	SlowTime_ (Reps)
+		y = y + 981723981723;
+		x = x xor (y << 63);
+	SlowTimeEnd
+	
+	return x;
+}
+
+
+
+Gen(SlowAtomic) {
+	ax = Input + 1;
+	ay = Input + 1;
+	SlowTime_ (Reps) {
+		ay = ay + 981723981723;
+		ax = ax xor (ay << 63);
+	} SlowTimeEnd
+	
+	return ax;
+}
+
+
+
+Gen(SlowPlus) {
+	int x = Input + 1;
+	SlowTime_ (Reps) {
+		x = x + 3;
+	} SlowTimeEnd
+	
+	return x;
+}
+
+Gen(SlowXOR) {
+	int x = Input + 1;
+	SlowTime_ (Reps) {
+		x = x ^ 981723981723;
+	} SlowTimeEnd
+	
+	return x;
+}
+
+
+Gen(SlowFmin) {
+	float f = -(Input + 1);
+	SlowTime_ (Reps) {
+		f = fminf(f, 0);
+	} SlowTimeEnd
+	
+	return f;
+}
+
+
+Gen(SlowMemory) {
+	u32 CachedMemory[1024]; // 4KB of data.
+	u32 x = Input;
+	u32 Place = 0;
+	SlowTime_ (Reps)
+		u32 index = Place++ % 1024;
+		x = x xor CachedMemory[index];
+		CachedMemory[index] = x;
+	SlowTimeEnd
 	
 	return x;
 }
@@ -299,7 +438,20 @@ Gen(Sudo) { // just to test our numerical strength.
 }
 
 
+
 NamedGen TmpGenList[] = {
+#if TIMING_IS_POOR
+	{	SlowFloatSameGenerator,	"float",	10	},
+	{	SlowPlusGenerator,		"plus",		10	},
+	{	SlowXORGenerator,		"xor",		10	},
+	{	SlowFminGenerator,		"fmin",		10	},
+	{	SudoGenerator,			"pseudo",	10	},
+	{	SlowAtomicGenerator,	"atomic",	10	}, // not slower!
+	{	SlowBoolGenerator,		"bool",		10	},
+	{	SlowBitOpsGenerator,	"bitops",	10	},
+	{	SlowMemoryGenerator,	"memory",	10	},
+	{	SlowTimeGenerator,		"time",		10	},
+#else
 	{	FloatSameGenerator,		"float",	10	},
 	{	SudoGenerator,			"pseudo",	10	},
 	{	AtomicGenerator,		"atomic",	40	}, // 4x slower
@@ -307,6 +459,7 @@ NamedGen TmpGenList[] = {
 	{	BitOpsGenerator,		"bitops",	10	},
 	{	MemoryGenerator,		"memory",	10	},
 	{	TimeGenerator,			"time",		10	},
+#endif
 	{	ChaoticGenerator,		"chaotic",	10	},
 	{},
 };

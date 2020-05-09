@@ -241,7 +241,6 @@ struct BookHitter {
 	u8				DuringTesting;
 	bool			RescoreSelf;
 	bool			CreatedDirs;
-	bool			TimingIsPoor;
 
 // // Funcs
 	bh_stats*		Hit (u8* Data, int DataLength);
@@ -410,10 +409,6 @@ struct BookHitter {
 	}
 
 	int Space() {
-		if (IsRetro() and TimingIsPoor) {
-			return GenSpace()/8;
-		}
-		
 		int N = (int)Samples.size();
 		
 		if (ChaosTesting())
@@ -430,8 +425,6 @@ struct BookHitter {
 	int GenSpace() {
 		if (IsRetro()) { // half extra, for temporal cohesion...
 			int N = (RetroCount*8)+(RetroCount/2);
-			if (TimingIsPoor)
-				N *= 8;
 			return N;
 		}
 		return Space();

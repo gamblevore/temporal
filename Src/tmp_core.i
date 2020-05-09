@@ -106,7 +106,12 @@ NamedGen* BookHitter::NextApproachOK(GenApproach& app,  NamedGen* LastGen) {
 }
 
 
+bool TimingIsPoor();
 static IntVec& RepListFor(BookHitter& B, NamedGen* G) {
+	if (TimingIsPoor()) {
+		static IntVec PoorVec = {1,2,3,4,5};
+		return PoorVec;
+	}
 	if (matchi(G->Name, "chaotic")) {
 		B.ChaoticRepList = {};
 		for_(15) B.ChaoticRepList.push_back(i+1);

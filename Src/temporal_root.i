@@ -10,6 +10,9 @@
 
 
 // todo:
+// * New "bad timer" gens...
+	// * How many instructions can we run before the timer ticks.
+
 // * histogram fails for generating big files.
 	// * temporal hexdump 1 100mb /dev/null/
 
@@ -38,6 +41,7 @@ extern "C" {
 #include "tmp_shared.i"
 #include "tmp_classes.i"
 #include "tmp_gen_proc.i"
+#include "tmp_density.i"
 #include "tmp_stats.i"
 #include "tmp_logging.i" 
 #include "tmp_histogram.i"

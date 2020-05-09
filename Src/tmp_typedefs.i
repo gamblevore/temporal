@@ -11,7 +11,7 @@ typedef u32					uSample;
 
 
 using std::string;		using std::to_string;	using std::shared_ptr;
-using	std::max;		using std::min;
+using	std::max;		using std::min;         using std::vector;
 #define ref(x) std::shared_ptr<x>
 typedef std::vector<u8>		   				ByteArray;
 typedef std::vector<string>					StringVec;

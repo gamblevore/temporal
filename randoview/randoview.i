@@ -9,18 +9,6 @@ struct Pixel {
 };
 static Pixel PixelBadPixel;
 
-int clamp(int a, int b, int c) {
-	if (a < b)
-		return b;
-	if (a >= c)
-		return c-1;
-	return a;
-}
-
-int InRange(int a, int b) {
-	return ((unsigned int)a < (unsigned int)b);
-}
-
 struct RawDrawInfo {
 	int w; int h;
 	Pixel* Pixels;

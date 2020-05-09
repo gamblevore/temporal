@@ -28,7 +28,6 @@ static void FindLowest (uSample* Results, int Count, BookHitter& B) {
 
 
 static void TemporalHeart (BookHitter& B) {
-	B.TimingIsPoor		= TmpTimingStartsPoor();
 	GenApproach& A		= *B.App;	
 	auto Out			= B.Out();
 	int Space			= B.GenSpace();
@@ -134,7 +133,7 @@ static bool DoDivide (BookHitter& B, const int oof) {
 		H[i] = Total;
 	}
 	
-	if (RunningTotal!=n) debugger; // wat?
+	//if (RunningTotal!=n) debugger; // wat?
 	return true;
 }
 
@@ -162,38 +161,15 @@ static void Divide(BookHitter &B) {
 }
 
 
-static void TemporalEnrichment(BookHitter& B) {
-	// clock_gettime returns multiples of 1000!!!! TERRIBLE! Needs enriching. 
-	int N		= B.GenSpace();
-	auto Read	= B.Out();
-	auto Write	= Read;
-	
-	for_(N/8) {
-		auto ReadEnd = Read + 8;
-		uSample Result = 0;
-		while (Read < ReadEnd) {
-			auto Oof = *Read++;
-			Result = rotr32(Result, 1) ^ (Oof);
-		}
-		*Write++ = Result;
-	}
-	B.TimingIsPoor = false;
-}
-
 
 static void PreProcess (BookHitter& B) {
-	if (B.IsRetro() and !B.TimingIsPoor) return;
+	if (B.IsRetro()) return;
 	B.App->Highest = 0;
 	B.SampleHisto.assign(HistoMax, 0);
 	if (B.App->IsSudo()) return;
 	
 	RawHisto(B);
 	Divide(B);
-
-	if (B.TimingIsPoor) {
-		TemporalEnrichment(B);
-		Divide(B);
-	}
 	
 	GroupHisto(B);
 	
