@@ -75,7 +75,7 @@ extern "C" {
 #endif
 
 
-bool bh_is_timer_available() {
+static bool HasTimer() {
 #if TSC==TSC_MRC  // V6 is the earliest arch that has a standard cyclecount
 	u32 pmccntr;
 	u32 pmuseren;
@@ -89,6 +89,18 @@ bool bh_is_timer_available() {
 	return Result;  // Is it counting?
 #endif
 	return true;
+}
+
+
+bool bh_is_timer_available() {
+	if (HasTimer())
+		return true;
+	static bool UnavailMsg;
+	if (!UnavailMsg) {
+		UnavailMsg = true;
+		puts("Temporal info is not available on this device.");
+	}
+	return false;
 }
 
 

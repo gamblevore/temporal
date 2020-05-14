@@ -7,7 +7,10 @@ Steve is about to divulge magical temporal randomness from the brain of your dev
 
 
 static int ListAction (BookHitter* B, StringVec& Args) {
-	if (Args.size() < 2) return ArgError;
+	if (Args.size() < 2)
+		return ArgError;
+	if (!bh_is_timer_available())
+		return -1;
 	const int NumBytes = 16 * 1024; 
 	ByteArray D(NumBytes, 0);
 	
@@ -163,6 +166,8 @@ static int ViewAction (BookHitter* B, StringVec& Args, bool Visualise) {
 int DumpAction (BookHitter* B, StringVec& Args, bool Hex) {
 	if (Args.size() < 3)
 		return ArgError;
+	if (!bh_is_timer_available())
+		return -1;
 	
 	bh_config(B)->Log = -1; // no log even debug
 	B->SetChannel(GetArg(Args,1).c_str());
