@@ -93,6 +93,7 @@ static bool HasTimer() {
 
 
 bool bh_is_timer_available() {
+	// minor change.
 	if (HasTimer())
 		return true;
 	static bool UnavailMsg;
