@@ -24,11 +24,9 @@ u32 rotr32(u32 x, int N) {
 
 
 int Sign(int x) {
-	if (x > 0)
-		return 1;
 	if (x < 0)
 		return -1;
-	return 0;
+	return (x > 0);
 }
 
 

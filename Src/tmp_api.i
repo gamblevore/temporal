@@ -101,6 +101,10 @@ float bh_rand_float (BookHitter* B) {
 	return (float)bh_rand_u32(B) * iwtf2; 
 }
 
+float bh_rand_float2 (BookHitter* B, float Start, float End) {
+	return bh_rand_float(B) * (End-Start) + Start;
+}
+
 
 
 //

@@ -24,12 +24,14 @@ void			bh_free				(BookHitter* B);
 // debugging
 int				bh_run_command		(BookHitter* B, const char** argv, bool WriteToString);
 void			bh_extract_archive	(const char* Data, const char* Path);
+bool			bh_is_timer_available();
 
 // rnd
 uint64_t		bh_rand_u64			(BookHitter* B);
 double			bh_rand_double		(BookHitter* B);
 uint32_t		bh_rand_u32			(BookHitter* B);
 float			bh_rand_float		(BookHitter* B);
+float			bh_rand_float2		(BookHitter* B, float Start, float End);
 
 // visualisation
 int				bh_colorise_external		(unsigned char* Input, int InLength, unsigned char* WriteTo);

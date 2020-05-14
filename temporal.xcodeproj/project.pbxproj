@@ -141,7 +141,6 @@
 		ACB12C37245F0B5400B24E7A /* tmp_density.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_density.i; path = Src/tmp_density.i; sourceTree = "<group>"; };
 		ACD54ACF2299957800526848 /* temporal */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = temporal; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACF5E8712445F2DB00E68257 /* tmp_archive.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_archive.i; path = Src/tmp_archive.i; sourceTree = "<group>"; };
-		ACF63CA12452E80E00462BF4 /* TemporalLibForProjects.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TemporalLibForProjects.h; sourceTree = "<group>"; };
 		ACF89D8324338518006A9448 /* tmp_funcs.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_funcs.i; path = Src/tmp_funcs.i; sourceTree = "<group>"; };
 		ACF89D852433965B006A9448 /* tmp_directory.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; name = tmp_directory.i; path = Src/tmp_directory.i; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -277,7 +276,6 @@
 				AC69202B240FF3FF007F3DB4 /* lib.cpp */,
 				AC0D0B782413E18200E245C3 /* temporal_root.i */,
 				AC4281CD24423F310065362E /* TemporalLib.h */,
-				ACF63CA12452E80E00462BF4 /* TemporalLibForProjects.h */,
 				AC5E1F092441FB4E00E17828 /* tmp_actions.i */,
 				ACB12C37245F0B5400B24E7A /* tmp_density.i */,
 				AC5E1F082441FA6300E17828 /* tmp_runcommand.i */,

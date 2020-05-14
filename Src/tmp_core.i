@@ -108,7 +108,7 @@ NamedGen* BookHitter::NextApproachOK(GenApproach& app,  NamedGen* LastGen) {
 
 bool TimingIsPoor();
 static IntVec& RepListFor(BookHitter& B, NamedGen* G) {
-	if (TimingIsPoor()) {
+	if (!G->Slowness) {
 		static IntVec PoorVec = {1,2,3,4,5};
 		return PoorVec;
 	}
@@ -205,6 +205,12 @@ Ooof void StopStrip(BookHitter&B) {
 
 
 bh_stats* BookHitter::Hit (u8* Data, int DataLength) {
+	Timing = {};
+	if (!bh_is_timer_available()) {
+		Timing.Err = -1;
+		return &Timing;
+	}
+
 	CreateDirs("");
 
 	if (Data)

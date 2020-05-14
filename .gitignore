@@ -37,6 +37,7 @@ Thumbs.db
 ########################
 /Debug/
 /temporal_research.build/
+*tmp_density.i
 *build/
 temporal
 scoring

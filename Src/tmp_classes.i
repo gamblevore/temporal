@@ -89,9 +89,13 @@ struct GenApproach {
 
 	bool SetGenReps(NamedGen* G, int R) {
 		Gen  = G;
-		Reps = (R*10 + 9) / G->Slowness;
+		if (G->Slowness)
+			Reps = (R*10 + 9) / G->Slowness;
+		  else
+			Reps = R;
 		return IsSudo();
 	}
+	
 	void EndExtract() {
 		Fails += Stats.FailedCount;
 	}

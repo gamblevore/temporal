@@ -3,6 +3,7 @@
 
 struct FunWriter {
 	// absolutely no point to this class! 
+	// I did have a need originally... thats why I made it
 	u8*			Output;
 	u8*			OutEnd;
 	
@@ -22,14 +23,57 @@ struct FunWriter {
 };
 
 
+#pragma GCC push_options // too slow to even debug !
+#pragma GCC optimize ("-O3")
+struct BitCombiner {
+	u32 	True[64];
+	u64		RawValue;
+	u32		Count;
+	bool	Vote;
+	
+	void operator << (u64 Rnd) {
+		RawValue ^= Rnd;
+		if (!Vote)
+			return;
+		u64 C = 1;
+		Count++;
+		u32* T = &True[0];
+		while (Rnd) {
+			*T += (bool)(Rnd&C);
+			Rnd &=~ C;
+			C <<= 1;
+			T++;
+		}
+	}
+	
+	u64 Result() {
+		if (!Vote)
+			return RawValue;
+
+		if (~Count&1)
+			debugger; // must be odd!
+		u64 V = 0;
+		u32 False = Count / 2;
+		for_(64) {
+			V |= (((u64)(True[i] > False))<<i);
+		}
+		return V;
+	}
+};
+#pragma GCC pop_options
+
+
 static void XorRetro(u64* Oofers, FunWriter FW) {
 	while (FW) {
-		u64 Oof = 0;
-		for_(RetroCount) {
+		BitCombiner yeet = {};
+		// yeet.Vote = true; // slow...
+		int N = RetroCount - yeet.Vote;  
+		for_(N) {
 			u64 Next = uint64_hash(Oofers[i]);
 			Oofers[i] = Next;
-			Oof ^= Next;
+			yeet << Next;
 		}
+		auto Oof = yeet.Result();
 		
 		for (int i = 0; (i < 8) and FW; i++) {
 			FW << Oof;

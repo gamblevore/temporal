@@ -75,6 +75,22 @@ extern "C" {
 #endif
 
 
+bool bh_is_timer_available() {
+#if TSC==TSC_MRC  // V6 is the earliest arch that has a standard cyclecount
+	u32 pmccntr;
+	u32 pmuseren;
+	u32 pmcntenset;
+	// Read the user mode perf monitor counter access permissions.
+	asm volatile("mrc p15, 0, %0, c9, c14, 0" : "=r"(pmuseren));
+	require (pmuseren & 1);  // Allows reading perfmon counters for user mode code.
+	asm volatile("mrc p15, 0, %0, c9, c12, 1" : "=r"(pmcntenset));
+	bool Result = pmcntenset & 0x80000000ul; 
+	__asm__ __volatile__ ("mcr p15, 0, %0, c9, c12, 2" :: "r"(1<<31)); /* stop the cc */
+	return Result;  // Is it counting?
+#endif
+	return true;
+}
+
 
 static inline u32 Time32 () {
 #if TSC == TSC_RD
@@ -305,10 +321,11 @@ Gen(SlowPlus) {
 	return x;
 }
 
+
 Gen(SlowXOR) {
 	int x = Input + 1;
 	SlowTime_ (Reps) {
-		x = x ^ 981723981723;
+		x = x ^ (int)981723981723;
 	} SlowTimeEnd
 	
 	return x;
@@ -441,17 +458,16 @@ Gen(Sudo) { // just to test our numerical strength.
 
 NamedGen TmpGenList[] = {
 #if TIMING_IS_POOR
-	{	SlowFloatSameGenerator,	"float",	10	},
-	{	SlowPlusGenerator,		"plus",		10	},
-	{	SlowXORGenerator,		"xor",		10	},
-	{	SlowFminGenerator,		"fmin",		10	},
-	{	SudoGenerator,			"pseudo",	10	},
-	{	SlowAtomicGenerator,	"atomic",	10	}, // not slower!
-	{	SlowBoolGenerator,		"bool",		10	},
-	{	SlowBitOpsGenerator,	"bitops",	10	},
-	{	SlowMemoryGenerator,	"memory",	10	},
-	{	SlowTimeGenerator,		"time",		10	},
-#else
+	{	SlowFloatSameGenerator,	"floatARM",	0	},
+	{	SlowXORGenerator,		"xorARM",	0	},
+	{	SlowFminGenerator,		"fminARM",	0	},
+	{	SlowBoolGenerator,		"boolARM",	0	},
+	{	SlowAtomicGenerator,	"atomicARM",0	}, // not slower!
+	{	SlowTimeGenerator,		"timeARM",	0	},
+	{	SlowBitOpsGenerator,	"bitopsARM",0	},
+#endif
+	{	SlowPlusGenerator,		"plusARM",	0	},
+	{	SlowMemoryGenerator,	"memoryARM",0	},
 	{	FloatSameGenerator,		"float",	10	},
 	{	SudoGenerator,			"pseudo",	10	},
 	{	AtomicGenerator,		"atomic",	40	}, // 4x slower
@@ -459,7 +475,6 @@ NamedGen TmpGenList[] = {
 	{	BitOpsGenerator,		"bitops",	10	},
 	{	MemoryGenerator,		"memory",	10	},
 	{	TimeGenerator,			"time",		10	},
-#endif
 	{	ChaoticGenerator,		"chaotic",	10	},
 	{},
 };
