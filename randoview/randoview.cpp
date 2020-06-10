@@ -8,18 +8,39 @@
 
 
 
+
 struct FullScreenSteve {
 	int w; int h;
 	int FrameCount;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	SDL_Texture* Raw;
+	SDL_Texture*	Raw;
 	KeyHandler		Keys;
-	RawDrawInfo  SmallFont;
+	RawDrawInfo		SmallFont;
 	SDL_AudioDeviceID AudioStream;
     SDL_AudioSpec     AudioSpec;
 
-	
+
+	void SteveToBits(const char* Text, RawDrawInfo T) {
+		RawDrawInfo R;
+		int tw = ((int)strlen(Text)) * RawDrawInfo::CharWidth;
+		R.LoadEmpty(tw, 8);
+		SmallFont.DrawText(Text, R);
+		R.DrawTo(T);
+		string S;
+		S.resize(tw);
+		for_(tw) {
+			u8 B = 0;
+			FOR_(j, 8)
+				if (R.Get(i, j)->Gray())
+					B |= ((1<<j));
+			S[i] = B;
+		}
+		puts(HexString(S).c_str());
+		debugger;
+	}
+
+
 	~FullScreenSteve() {
 		SDL_DestroyTexture(Raw);
 		SDL_DestroyRenderer(renderer);
@@ -96,12 +117,12 @@ struct FullScreenSteve {
 			S += Stats->ApproachName;
 			S += "_";
 			S += to_string(Stats->ApproachReps);
+//			SteveToBits("StEeV sAyS: Let me treat myself as (~mOrRE~).", T);
 			SmallFont.DrawText( S.c_str(), T);
 		}		
 	}
 
 };
-
 
 int main(int argc, char** argv) {
 	Steve = bh_create();

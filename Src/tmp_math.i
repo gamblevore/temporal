@@ -118,6 +118,10 @@ struct BitView {
 			Tmp = 0;
 		}
 	}
+	void WriteByte(u8 Byte) {
+		Data[Pos>>3] = Byte;
+		Pos += 8;
+	}
 	bool Active() {
 		return Pos < Length;
 	}

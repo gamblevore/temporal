@@ -13,6 +13,20 @@ Ooof void VerifyBSL (BitSections Sections, BitView R) {
 }
 
 
+Ooof
+
+void BiasAmplification256(BitView In, BitView Out) {
+	// take in 256 bits (32 bytes)... for 1 byte out. Each bit can set the entire byte.
+	while (In) {
+		u8 Byte = 0;
+		for_(256)
+			if (In.Read())
+				Byte ^= i;
+		Out.WriteByte(Byte);
+	}
+}
+
+
 Ooof void DebugSamples (BookHitter& B) {
 	auto Name = B.App->Name();
 	printf("Samples for %s:\n", Name.c_str());

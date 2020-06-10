@@ -6,6 +6,9 @@ struct Pixel {
 	u8 G;
 	u8 B;
 	u8 A;
+	u32 Gray() {
+		return (R + G + B);
+	}
 };
 static Pixel PixelBadPixel;
 
@@ -23,6 +26,18 @@ struct RawDrawInfo {
 		return LoadStr(Data, Name);
 	}
 	
+	bool LoadEmpty(int W, int H) {
+		if (w!=W or H!=h) {
+			free(Pixels);
+			w = W; h = H;
+		
+			Pixels = (Pixel*)calloc(w*h, sizeof(Pixel));
+			BytesPerPixel = 4;
+			Stride = BytesPerPixel * w / sizeof(Pixel);
+		}
+		return Pixels;
+	}
+	
 	bool LoadStr(string Data, const char* Name) {
 		Pixels = (Pixel*)stbi_load_from_memory((u8*)Data.c_str(), (int)Data.length(), &w, &h, &BytesPerPixel, sizeof(Pixel));
 		Stride = BytesPerPixel * w / sizeof(Pixel);
@@ -38,20 +53,29 @@ struct RawDrawInfo {
 		return &PixelBadPixel;
 	}
 
-	void DrawChar(int C, int DrawX, int DrawY, RawDrawInfo& Where) {
+	void DrawChar(int C, RawDrawInfo& Where, int DrawX, int DrawY) {
 		FOR_ (y, CharHeight) {
 			FOR_ (x, CharWidth) {
 				Pixel* D = Where.Get(x+DrawX, DrawY+y);
-				Pixel* R = self.Get(x+C*CharWidth, DrawY+y);
+				Pixel* R = self.Get(x+C*CharWidth, y);
 				*D = *R;
 			} 
 		} 
 	}
 	
+	void DrawTo(RawDrawInfo& Where, int DrawX=0, int DrawY=0) {
+		FOR_ (y, h) {
+			FOR_ (x, w) {
+				Pixel* D = Where.Get(x+DrawX, DrawY+y);
+				Pixel* R = self.Get(x, y);
+				*D = *R;
+			} 
+		} 
+	}
 	void DrawText(const char* Str, RawDrawInfo& Where, int x=0, int y=0) {
 		if (Where.Pixels and Pixels)
 			for (int i = 0; Str[i]; i++)
-				DrawChar(Str[i], x + i*CharWidth, y, Where);
+				DrawChar(Str[i], Where, x + i*CharWidth, y);
 	}
 };
 
