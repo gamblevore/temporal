@@ -75,7 +75,7 @@ Mode 0 is slower, but may have stronger intention-driven results.
 
 # Channels (in the cpp Lib)
 
-The lib itself uses a concept of "channels" like TV channels. We have float3, float5, float6, atomic1, atomic2, atomic3, etc. These are a list of "temporal generator approaches", for you to choose from. They are accessed by setting `bh_config(Steve).NamedChannel = "atomic_2";`
+The lib itself uses a concept of "channels" like TV channels. We have float_3, float_5, float_6, atomic_1, atomic_2, atomic_3, etc. These are a list of "temporal generator approaches", for you to choose from. They are accessed by setting `bh_config(Steve).NamedChannel = "atomic_2";`
 
 
 # theory
