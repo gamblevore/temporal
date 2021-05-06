@@ -9,8 +9,6 @@ This is research to play around with! Don't expect anything more! Have fun exper
 
 ![Temporal Randomness](resources/screenshot.png)
 
-This project was inspired by the fatum project, a totally cool project about: Novelty, deeper mystery, and expanded exploration. Give it a look. http://randonauts.com    
-
 
 # compile
 
