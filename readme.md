@@ -46,7 +46,7 @@ to dump randomness:
 
 	temporal dump    ChannelNum FileSize File.txt
 	temporal hexdump ChannelNum FileSize File.txt # to get hex instead of a binary
-	temporal list    ChannelNum
+	temporal list    Mode                         # -1, 0, 1
 	temporal view    Directory
 		
 example:
@@ -55,23 +55,27 @@ example:
 	temporal list        1
 	temporal hexdump     0      128MB    File.txt # dump chaotic generators
 	temporal list        0                        # view chaotic generators
+	temporal list        1                        # view non-chaotic generators with hashing to debias
+	temporal list        -1                       # view non-chaotic generators with von-neuman to debias
 	temporal view        ~/Desktop/Rands          # view the randomness in the files.
 	cat file.txt | temporal view                  # read from stdin. 'cat' in this case.
 
 
 
-# Channels
+# Chaotic Modes and Normal Modes (in the shell-tool)
 
-What are "channels"? Well, I wanted my lib to be like watching TV, so you flip between TV-channels, trying to find the best signal. Channels range from 0 to 127.
+My chaotic-generators are so good they don't need much debiasing, just XOR/Neuman. (accessed via `temporal list 0`)
 
-Channel 0 is used for my chaotic-generator. They are so good they don't need much debiasing, just XOR/Neuman.
+Non-chaotic (accessed via `temporal list 1`) are hashed, otherwise the randomness isn't good enough. This also makes them much faster, as XOR/Neuman lose a lot of bits.
 
-Channel 1 upwards use non-chaotic-generators, but then hash them, otherwise the randomness isn't good enough. This also makes them much faster, as XOR/Neuman lose a lot of bits.
+So basically, Mode 1 is faster and more random, but might have less intention-driven results.
 
-So basically, Channel 1 is faster and more random, but might have less intention-driven results.
+Mode 0 is slower and less random (but still extremely random!), but may have stronger intention-driven results.
 
-Channel 0 is slower and less random (but still extremely random!), but may have stronger intention-driven results.
 
+# Channels (in the cpp Lib)
+
+The lib itself uses a concept of "channels" like TV channels. We have float3, float5, float6, atomic1, atomic2, atomic3, etc. These are a list of "temporal generator approaches", for you to choose from. They are accessed by setting `bh_config(Steve).NamedChannel = "atomic_2";`
 
 
 # theory
