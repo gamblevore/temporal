@@ -62,13 +62,15 @@ example:
 
 # Chaotic Modes and Normal Modes (in the shell-tool)
 
-My chaotic-generators are so good they don't need much debiasing, just XOR/Neuman. (accessed via `temporal list 0`)
+Using `temporal list 0` lets you test my chaotic generators. They are so good they don't need much debiasing, just XOR/Neuman.
 
 Non-chaotic (accessed via `temporal list 1`) are hashed, otherwise the randomness isn't good enough. This also makes them much faster, as XOR/Neuman lose a lot of bits.
 
-So basically, Mode 1 is faster and more random, but might have less intention-driven results.
+Using `temporal list -1`) is also non-chaotic, but doesn't get hashed, only XOR+neuman, leading to very non-random output.
 
-Mode 0 is slower and less random (but still extremely random!), but may have stronger intention-driven results.
+So basically, Mode 1 is faster and more random. Mode -1 might be useful for experimentation.
+
+Mode 0 is slower, but may have stronger intention-driven results.
 
 
 # Channels (in the cpp Lib)
