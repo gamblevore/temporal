@@ -88,3 +88,7 @@ Some physical objects are better at sensing emotions/energy, just like some phys
 
 Thats the goal anyhow.
 
+# Sponsors!
+
+TemporalLib and my other work has been kindly sponsored by: @breck7, @randonautica
+
