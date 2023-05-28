@@ -248,7 +248,7 @@ static int PrintAction (BookHitter* B, StringVec& Args) {
 		if (i)
 			printf(", ");
 		u64 X = bh_rand_u64(B);
-		printf("%lli", X);
+		printf("%lui", X);
 	}
 	printf("\n");
 	return 0;

@@ -151,7 +151,7 @@ Ooof std::vector<string> PathSplit(string S) {
 }
 
 
-Ooof bool MakePath(string P) {
+Ooof bool MakePathP(string P) {
 	auto R = PathSplit(P);
 	return MakePath(R);
 }

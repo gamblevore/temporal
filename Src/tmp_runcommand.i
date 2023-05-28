@@ -2,7 +2,8 @@
 
 #define OptionList(A) auto A_ = A; if (false)
 #define Option(B) } else if (matchi(A_,B)) { Err = 
-int bh_run_command (BookHitter* External,  cstring* argv, bool Archive) {
+
+int bh_run_command (BookHitter* External, cstring* argv, bool Archive) {
 	auto Args = ArgArray(argv);
 	int Err = ArgError;
 
@@ -41,7 +42,6 @@ int bh_run_command (BookHitter* External,  cstring* argv, bool Archive) {
 	printf("\n");
 	return Err;
 }
-
 
 void bh_extract_archive (cstring Data, cstring Path) {
 	Archive::WriteAnyway(Data, Path);

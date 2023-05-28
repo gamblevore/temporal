@@ -131,7 +131,7 @@ struct Archive {
 			if (!WriteToDisk) {
 				ConCat << "{\n";
 			} else if (OK) {
-				OK = MakePath(Path);
+				OK = MakePathP(Path);
 			}
 			Opened = OK;
 		}
@@ -195,7 +195,7 @@ struct Archive {
 	
 	static void WriteAnyway(string Data, string Path) {
 		DecodedItem Item;
-		if (MakePath(Path)) {
+		if (MakePathP(Path)) {
 			Path = SlashTerminate(ResolvePath(Path));
 			Item.Src = Data;
 			while (GetNext(Item)) {
@@ -218,4 +218,3 @@ void ArchiveFile::Close () {
 string ArchiveFile::FullPath() {
 	return Parent->Path + Path;
 }
-
