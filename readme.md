@@ -90,5 +90,5 @@ Thats the goal anyhow.
 
 # Sponsors!
 
-TemporalLib and my other work has been kindly sponsored by: <a href=https://github.com/breck7>@breck7</a>, <a href=https://randonautica.com>@randonautica</a>. Please think about sponsoring my work so I can do more of this or improve it!
+TemporalLib and my other work has been kindly sponsored by <a href=https://randonautica.com>@randonautica</a>. Please think about sponsoring my work so I can do more of this or improve it!
 
