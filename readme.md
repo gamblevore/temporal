@@ -1,7 +1,7 @@
 
 # TemporalLib (codename SteveLib)
 
-TemporalLib can generate random numbers, using time() instruction. (`rtdsc`?) 
+TemporalLib can generate random numbers, using the time() instruction. (`rtdsc`?) 
 
 Time() is interesting, its a physical sensor, like microphone, that can get physical entropy.
 
