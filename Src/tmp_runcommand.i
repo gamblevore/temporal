@@ -37,7 +37,7 @@ int bh_run_command (BookHitter* External, cstring* argv, bool Archive) {
 "       temporal unarchive  (/path/to/archive /path/output_dir/)\n"
 "       cat file.txt | temporal view       # temporal can read from stdin.\n"
 "\n"
-"  About: http://randonauts.com/s/temporal \n");
+);
 
 	printf("\n");
 	return Err;
