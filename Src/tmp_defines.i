@@ -1,6 +1,7 @@
 
 
 // i hate C-style for-loops! XD
+typedef u32					uSample;
 
 #define for_(count)			for (int i = 0; i < (count); i++)
 #define FOR_(var, count)	for (int var = 0; var < (count); var++)
